@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { PrintButton } from "@/components/PrintButton";
-import { T } from "@/components/site";
-import { certifications, education, experience, lab, person, results, skills } from "@/content/site";
+import { certifications, education, experience, has, lab, person, results, skills } from "@/content/site";
 
 export const metadata: Metadata = { title: "CV" };
 
@@ -10,7 +9,7 @@ export default function CvPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
       <div className="no-print mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-stone-200 bg-white px-4 py-3 text-sm text-stone-600">
-        <span>Use “Print / Save as PDF” to download. Replace [bracketed] placeholders with verified details first.</span>
+        <span>Online version generated from the website content. Use “Print / Save as PDF” for a copy.</span>
         <PrintButton />
       </div>
 
@@ -19,9 +18,9 @@ export default function CvPage() {
           <h1 className="font-serif text-3xl text-ink-900 sm:text-4xl">{person.name}</h1>
           <p className="mt-1 text-sm font-medium text-gold-700">{person.headline}</p>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-stone-600">
-            <T>{person.location}</T>
-            <T>{person.email}</T>
-            <T>{person.linkedin}</T>
+            {[person.location, person.email, person.linkedin].filter(has).map((v) => (
+              <span key={v}>{v}</span>
+            ))}
           </p>
         </div>
 
@@ -29,12 +28,10 @@ export default function CvPage() {
           <p className="text-stone-700">{person.intro}</p>
         </CvSection>
 
-        <CvSection title="Selected results">
-          <ul className="grid gap-x-6 gap-y-1 text-sm text-stone-700 sm:grid-cols-2">
+        <CvSection title="Selected results — Apex Pharma">
+          <ul className="list-disc space-y-0.5 pl-5 text-sm text-stone-700">
             {results.map((r) => (
-              <li key={r.id}>
-                <span className="font-semibold text-ink-900">{r.value}</span> {r.label}
-              </li>
+              <li key={r.id}>{r.statement}</li>
             ))}
           </ul>
         </CvSection>
@@ -52,17 +49,17 @@ export default function CvPage() {
                 <ul className="mt-0.5 text-sm text-stone-700">
                   {e.roles.map((r) => (
                     <li key={r.title}>
-                      {r.title} — <T>{r.period}</T>
+                      {r.title} — {r.period}
                     </li>
                   ))}
                 </ul>
-                <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-stone-700">
-                  {e.points.map((p) => (
-                    <li key={p}>
-                      <T>{p}</T>
-                    </li>
-                  ))}
-                </ul>
+                {e.points.length > 0 && e.chapter === "Business development" && (
+                  <ul className="mt-1 list-disc space-y-0.5 pl-5 text-sm text-stone-700">
+                    {e.points.map((p) => (
+                      <li key={p}>{p}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
             ))}
           </div>
@@ -83,7 +80,7 @@ export default function CvPage() {
           <ul className="space-y-1 text-sm text-stone-700">
             {[...education, ...certifications].map((c) => (
               <li key={c.name}>
-                {c.name} — <T>{c.issuer}</T>, <T>{c.year}</T>
+                {[c.name, ...[c.issuer, c.year].filter(has)].join(" — ")}
               </li>
             ))}
           </ul>

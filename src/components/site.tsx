@@ -1,18 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { isPlaceholder, nav, person } from "@/content/site";
-
-/** Renders text; [bracketed] placeholders are shown as clearly unfinished, never as fact. */
-export function T({ children, className = "" }: { children: string; className?: string }) {
-  if (isPlaceholder(children)) {
-    return (
-      <span className={`italic text-stone-400 underline decoration-dotted decoration-stone-300 underline-offset-4 ${className}`} title="Placeholder — replace with verified information">
-        {children}
-      </span>
-    );
-  }
-  return <span className={className}>{children}</span>;
-}
+import { nav, person } from "@/content/site";
 
 export function SiteHeader() {
   return (

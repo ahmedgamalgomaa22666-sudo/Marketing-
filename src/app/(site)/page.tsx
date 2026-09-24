@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, Download, Linkedin, Mail, MapPin } from "@/components/siteIcons";
-import { ActionLink, Section, T } from "@/components/site";
+import { ActionLink, Section } from "@/components/site";
 import {
   about,
   businessDevelopment,
@@ -9,11 +9,12 @@ import {
   certifications,
   education,
   experience,
-  isPlaceholder,
+  has,
   lab,
   person,
   problems,
   results,
+  resultsEmployer,
   skills,
 } from "@/content/site";
 
@@ -88,9 +89,7 @@ export default function HomePage() {
             <article key={r.id} className="rounded-lg border border-stone-200 bg-white p-5">
               <p className="font-serif text-3xl text-ink-900">{r.value}</p>
               <p className="mt-1 text-stone-700">{r.label}</p>
-              <p className="mt-3 border-t border-stone-100 pt-2 text-sm">
-                <T>{r.context}</T>
-              </p>
+              <p className="mt-3 border-t border-stone-100 pt-2 text-sm text-stone-500">{resultsEmployer}</p>
             </article>
           ))}
         </div>
@@ -116,19 +115,17 @@ export default function HomePage() {
                         {e.roles.map((r) => (
                           <li key={r.title} className="flex flex-col text-stone-800 sm:flex-row sm:justify-between">
                             <span className="font-medium">{r.title}</span>
-                            <span className="text-sm text-stone-500">
-                              <T>{r.period}</T>
-                            </span>
+                            <span className="text-sm text-stone-500">{r.period}</span>
                           </li>
                         ))}
                       </ul>
-                      <ul className="mt-3 list-disc space-y-1 pl-5 text-stone-700">
-                        {e.points.map((p) => (
-                          <li key={p}>
-                            <T>{p}</T>
-                          </li>
-                        ))}
-                      </ul>
+                      {e.points.length > 0 && (
+                        <ul className="mt-3 list-disc space-y-1 pl-5 text-stone-700">
+                          {e.points.map((p) => (
+                            <li key={p}>{p}</li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                   ))}
               </ol>
@@ -163,23 +160,27 @@ export default function HomePage() {
         </p>
       </Section>
 
-      <Section id="case-studies" eyebrow="Case studies" title="How the results were achieved">
+      <Section id="case-studies" eyebrow="Case studies" title="Selected commercial cases">
         <div className="grid gap-4 lg:grid-cols-3">
           {caseStudies.map((c) => (
             <article key={c.id} className="flex flex-col rounded-lg border border-stone-200 bg-white p-6">
               <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">{c.tag}</p>
               <h3 className="mt-1 font-serif text-xl text-ink-900">{c.title}</h3>
               <p className="mt-3 rounded bg-[#f3f1ec] px-3 py-2 text-sm font-medium text-ink-900">Result: {c.result}</p>
-              <dl className="mt-4 space-y-3 text-sm">
-                {(["situation", "approach", "lesson"] as const).map((k) => (
-                  <div key={k}>
-                    <dt className="font-medium capitalize text-stone-500">{k}</dt>
-                    <dd className="text-stone-700">
-                      <T>{c[k]}</T>
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              {(["situation", "actions", "lessons"] as const).some((k) => has(c[k])) && (
+                <dl className="mt-4 space-y-3 text-sm">
+                  {(["situation", "actions", "lessons"] as const).map((k) => {
+                    const text = c[k];
+                    return has(text) ? (
+                      <div key={k}>
+                        <dt className="font-medium capitalize text-stone-500">{k}</dt>
+                        <dd className="text-stone-700">{text}</dd>
+                      </div>
+                    ) : null;
+                  })}
+                </dl>
+              )}
+              <p className="mt-auto pt-4 text-xs text-stone-500">{resultsEmployer}</p>
             </article>
           ))}
         </div>
@@ -232,9 +233,7 @@ export default function HomePage() {
           {[...education, ...certifications].map((c) => (
             <li key={c.name} className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between">
               <span className="font-serif text-lg text-ink-900">{c.name}</span>
-              <span className="text-sm text-stone-500">
-                <T>{c.issuer}</T> · <T>{c.year}</T>
-              </span>
+              {[c.issuer, c.year].some(has) && <span className="text-sm text-stone-500">{[c.issuer, c.year].filter(has).join(" · ")}</span>}
             </li>
           ))}
         </ul>
@@ -245,9 +244,9 @@ export default function HomePage() {
           <p className="max-w-2xl text-stone-700">A one-page CV generated from the same verified content as this site.</p>
           <div className="flex flex-wrap gap-3">
             <ActionLink href="/cv">View CV</ActionLink>
-            {isPlaceholder(person.cvFile) ? (
-              <span className="inline-flex items-center gap-2 rounded-md border border-dashed border-stone-300 px-4 py-2.5 text-sm">
-                <Download /> <T>{person.cvFile}</T>
+            {!has(person.cvFile) ? (
+              <span aria-disabled="true" className="inline-flex cursor-not-allowed items-center gap-2 rounded-md border border-stone-200 px-4 py-2.5 text-sm text-stone-400">
+                <Download /> PDF available soon
               </span>
             ) : (
               <a href={person.cvFile} className="inline-flex items-center gap-2 rounded-md border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-ink-900 hover:border-stone-400" download>
@@ -262,20 +261,20 @@ export default function HomePage() {
         <div className="grid gap-8 lg:grid-cols-2">
           <p className="text-[17px] leading-relaxed text-stone-700">{person.availability}</p>
           <ul className="space-y-4">
-            <ContactRow icon={<Mail />} label="Email">
-              {isPlaceholder(person.email) ? <T>{person.email}</T> : <a href={`mailto:${person.email}`} className="hover:underline">{person.email}</a>}
-            </ContactRow>
-            <ContactRow icon={<Linkedin />} label="LinkedIn">
-              {isPlaceholder(person.linkedin) ? (
-                <T>{person.linkedin}</T>
-              ) : (
+            {has(person.email) && (
+              <ContactRow icon={<Mail />} label="Email">
+                <a href={`mailto:${person.email}`} className="hover:underline">{person.email}</a>
+              </ContactRow>
+            )}
+            {has(person.linkedin) && (
+              <ContactRow icon={<Linkedin />} label="LinkedIn">
                 <a href={person.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
                   {person.linkedin.replace(/^https?:\/\/(www\.)?/, "")}
                 </a>
-              )}
-            </ContactRow>
+              </ContactRow>
+            )}
             <ContactRow icon={<MapPin />} label="Location">
-              <T>{person.location}</T>
+              {person.location}
             </ContactRow>
           </ul>
         </div>
