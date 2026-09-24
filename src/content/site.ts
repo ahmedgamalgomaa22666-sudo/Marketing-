@@ -29,12 +29,10 @@ export const person = {
   intro:
     "Commercial professional with 15+ years of sales, market development and leadership experience, now expanding into B2B business development across the UAE, Saudi Arabia and wider GCC.",
   location: "Egypt · Open to UAE & GCC Opportunities",
-  /** UNPUBLISHED until provided. */
-  email: null as Maybe,
-  /** UNPUBLISHED until provided, e.g. "https://www.linkedin.com/in/…". */
-  linkedin: null as Maybe,
-  /** UNPUBLISHED until the final PDF is added to /public, e.g. "/Ahmed-Gamal-CV.pdf". */
-  cvFile: null as Maybe,
+  email: "ahmedgamalgomaa226@yahoo.com" as Maybe,
+  linkedin: "https://www.linkedin.com/in/ahmed-gamal-063245a7" as Maybe,
+  /** Approved CV PDF in /public. The phone number appears only inside the PDF, never on the site. */
+  cvFile: "/Ahmed-Gamal-CV.pdf" as Maybe,
   availability:
     "Open to conversations with CEOs, founders, commercial directors and recruiters about business development and commercial roles in the UAE, Saudi Arabia and the wider GCC.",
 };

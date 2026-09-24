@@ -17,9 +17,9 @@ changed result wording and a UAE-based location.
 - [x] Three case studies — verified foundation and result only
 
 ## Required before deployment
-- [ ] `person.email` — professional email (Contact shows location only until set)
-- [ ] `person.linkedin` — LinkedIn URL
-- [ ] `person.cvFile` — add the final PDF to `public/` and set the path (button shows "PDF available soon" until then)
+- [x] `person.email` — professional email
+- [x] `person.linkedin` — LinkedIn URL
+- [x] `person.cvFile` — final approved CV at `public/Ahmed-Gamal-CV.pdf` (phone number appears only inside the PDF, never on the site)
 
 ## Optional — hidden until provided
 - [ ] Acting District Supervisor: team size, territory (add to Apex Pharma `points`)

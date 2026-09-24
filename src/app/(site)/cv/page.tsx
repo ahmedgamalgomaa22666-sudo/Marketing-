@@ -18,9 +18,17 @@ export default function CvPage() {
           <h1 className="font-serif text-3xl text-ink-900 sm:text-4xl">{person.name}</h1>
           <p className="mt-1 text-sm font-medium text-gold-700">{person.headline}</p>
           <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-stone-600">
-            {[person.location, person.email, person.linkedin].filter(has).map((v) => (
-              <span key={v}>{v}</span>
-            ))}
+            <span>{person.location}</span>
+            {has(person.email) && (
+              <a href={`mailto:${person.email}`} className="hover:underline">
+                {person.email}
+              </a>
+            )}
+            {has(person.linkedin) && (
+              <a href={person.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                {person.linkedin.replace(/^https?:\/\/(www\.)?/, "")}
+              </a>
+            )}
           </p>
         </div>
 

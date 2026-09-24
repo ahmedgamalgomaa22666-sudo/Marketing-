@@ -48,3 +48,12 @@ describe("public content guardrails", () => {
     expect(allText).not.toMatch(/based in (the )?(uae|dubai)/);
   });
 });
+
+describe("publication inputs", () => {
+  it("publishes the approved contact details and CV, but never a phone number", () => {
+    expect(site.person.email).toBe("ahmedgamalgomaa226@yahoo.com");
+    expect(site.person.linkedin).toBe("https://www.linkedin.com/in/ahmed-gamal-063245a7");
+    expect(site.person.cvFile).toBe("/Ahmed-Gamal-CV.pdf");
+    expect(allText).not.toMatch(/\+?20[\s-]?100|01000366228|036[\s-]?6228|phone/);
+  });
+});
