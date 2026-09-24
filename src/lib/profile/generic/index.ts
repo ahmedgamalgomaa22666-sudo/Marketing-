@@ -22,7 +22,7 @@ const PLAYBOOK: IndustryPlaybook = {
 
 export const genericProfile: WorkspaceProfile = {
   id: "generic",
-  company: { name: "My BD Workspace", industry: "B2B (any industry)", description: "Personal business development workspace." },
+  company: { name: "Personal BD Workspace", industry: "B2B (any industry)", description: "Ahmed Gamal's personal business development workspace — portable across employers and markets." },
   demoNotice: null,
   markets: ["UAE", "Saudi Arabia", "Egypt"],
   industries: ["Healthcare", "Pharmaceuticals", "Technology", "Retail", "Financial Services", "Manufacturing", "Professional Services", "Government / Semi-government"],

@@ -1,6 +1,11 @@
-# CLAUDE.md — Ahmed Gamal El-Din Gomaa: professional site + BD Operating System
+# CLAUDE.md — AHMED GAMAL · International Business Development (personal platform)
 
-## Product (two layers)
+## Product (two sides, owned by Ahmed Gamal El-Din Gomaa)
+Purpose: a long-term personal career asset — authentic commercial/BD identity (15+ years
+commercial sales, pharma sales leadership, launches, territory & market development, team
+leadership, B2B BD, consultative selling, C-level outreach, GCC markets, analytics). Never
+position him as a developer, AI engineer, founder, agency or consultant. Never depend on any
+employer/client (Bloom is only an optional sample profile).
 1. **Public professional website** (`src/app/(site)`) — executive profile, track record,
    experience, skills, case studies, projects, certifications, CV, contact. All content lives
    in `src/content/site.ts`. Only verified facts; unknowns stay as `[bracketed]` placeholders
@@ -15,8 +20,8 @@
   markets, industries, ICP, buyer roles/function, needs catalogue, signals, playbooks,
   challenges, market attractiveness, qualification labels/weights, terminology, outreach
   audience/signature, mapper module labels, starter offerings, optional demo data + guide.
-- Profiles: `bloom` (first use case, polished demo — don't add new Bloom features for now)
-  and `generic` (empty, proves reusability). Pure functions take `profile` as a parameter;
+- Profiles: `generic` = Personal BD Workspace (default) and `bloom` = optional sample with
+  fictional data (no new Bloom features; never linked from the public site). Pure functions take `profile` as a parameter;
   components read it from `useData()`.
 - Internal names `Programme`/`programmes` = generic "offerings" (kept for storage compat).
 

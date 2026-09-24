@@ -8,48 +8,62 @@
 
 export const person = {
   name: "Ahmed Gamal El-Din Gomaa",
-  headline: "Pharmaceutical Sales Leadership · Business Development · B2B Consultative Selling · GCC Markets",
+  /** Short brand used in the header and titles. */
+  brand: "Ahmed Gamal",
+  brandLine: "International Business Development",
+  headline: "Commercial Growth · B2B Business Development · Consultative Selling · GCC Markets",
   summary:
-    "Commercial leader with 15+ years in pharmaceutical sales and B2B business development across the UAE, Saudi Arabia and Egypt — launching products, developing markets and using sales analytics to turn data into commercial decisions.",
+    "Commercial professional with 15+ years in sales — from pharmaceutical sales leadership, product launches and territory development to B2B business development, consultative selling and C-level outreach across the UAE, Saudi Arabia and Egypt.",
   location: "[City, Country]",
   email: "[your.email@example.com]",
   linkedin: "[LinkedIn profile URL]",
   phone: "[Phone — optional]",
-  availability: "Open to conversations about commercial leadership and business development roles across the GCC.",
+  availability:
+    "Open to conversations with founders, CEOs and commercial leaders about business development and commercial growth roles or partnerships in the UAE and wider GCC.",
 };
 
 export const keyFacts = [
   { value: "15+", label: "years in commercial sales" },
   { value: "3", label: "markets: UAE · Saudi Arabia · Egypt" },
-  { value: "B2B", label: "consultative selling & business development" },
-  { value: "Data", label: "sales analytics & performance management" },
+  { value: "B2B", label: "business development & consultative selling" },
+  { value: "Data", label: "commercial analytics & pipeline discipline" },
 ];
 
 export const about = [
-  "I have spent more than fifteen years in commercial roles, most of them in pharmaceutical sales leadership. My work has covered the full commercial cycle: preparing and executing product launches, building presence in new territories, leading sales teams, and managing relationships with the customers and stakeholders who influence decisions.",
-  "Across the UAE, Saudi Arabia and Egypt, I have learned that growth comes from disciplined fundamentals — knowing which accounts matter, understanding the people behind a decision, following up consistently, and measuring what actually moves the numbers. I increasingly apply the same discipline to B2B business development beyond pharma, and I build my own tools to do it well.",
+  "My career has been built in commercial roles — most of it in pharmaceutical sales leadership. That work covered the full commercial cycle: preparing and executing product launches, developing territories and markets, leading and coaching sales teams, and building relationships with the customers and senior stakeholders who shape decisions.",
+  "Today I focus on international business development: identifying the right accounts, reaching decision-makers at C-level, understanding their business problems through consultative discovery, and developing accounts over time. I run my own BD work on a system I built for that purpose — so my pipeline, activity and conversion are measured, not guessed.",
 ];
 
 export const trackRecord = [
   {
-    title: "Pharmaceutical sales leadership",
-    body: "Leading sales teams and territories in regulated, relationship-driven markets.",
+    title: "Commercial & sales leadership",
+    body: "Leading pharmaceutical sales teams and territories in regulated, relationship-driven markets.",
     evidence: "[Add verified result — e.g. team size led, growth vs. target, ranking]",
   },
   {
     title: "Product launches",
-    body: "Preparing and executing product launches: targeting, messaging, field execution and early-adoption tracking.",
+    body: "Preparing and executing launches: targeting, messaging, field execution and early-adoption tracking.",
     evidence: "[Add verified launch — product category, market, outcome]",
   },
   {
-    title: "Market development",
+    title: "Territory & market development",
     body: "Opening and growing territories and accounts across the UAE, Saudi Arabia and Egypt.",
-    evidence: "[Add verified result — e.g. new accounts, market share, coverage]",
+    evidence: "[Add verified result — e.g. new accounts, coverage, share]",
   },
   {
     title: "B2B business development",
-    body: "Consultative selling to organisational buyers: account prioritisation, stakeholder mapping, discovery and follow-up discipline.",
-    evidence: "[Add verified result — e.g. pipeline built, deals closed]",
+    body: "Account prioritisation, C-level outreach, consultative discovery and disciplined follow-up with organisational buyers.",
+    evidence: "[Add verified result — e.g. meetings secured, pipeline built, deals closed]",
+  },
+  {
+    title: "Account development",
+    body: "Growing existing relationships by mapping stakeholders, understanding priorities and expanding scope over time.",
+    evidence: "[Add verified result — e.g. account growth, retention, expansion]",
+  },
+  {
+    title: "Commercial analytics",
+    body: "Using sales and pipeline data to decide where to focus, what to change and how to forecast.",
+    evidence: "[Add verified example — e.g. analysis that changed a decision]",
   },
 ];
 
@@ -78,10 +92,10 @@ export const experience = [
 ];
 
 export const skills = [
-  { group: "Commercial leadership", items: ["Pharmaceutical sales leadership", "Team coaching & performance management", "Territory & account planning", "Product launch execution"] },
-  { group: "Business development", items: ["B2B consultative selling", "Account qualification & prioritisation", "Stakeholder mapping", "Discovery & needs analysis", "Pipeline & follow-up discipline"] },
-  { group: "Analytics & problem-solving", items: ["Sales analytics & KPI tracking", "Funnel & conversion analysis", "Commercial problem-solving", "[Tools — e.g. CRM, Excel, BI]"] },
-  { group: "Markets", items: ["United Arab Emirates", "Saudi Arabia", "Egypt", "GCC healthcare & B2B environments"] },
+  { group: "Business development", items: ["B2B business development", "C-level outreach", "Consultative selling & discovery", "Account qualification & prioritisation", "Stakeholder mapping", "Account development"] },
+  { group: "Commercial leadership", items: ["Pharmaceutical sales leadership", "Team leadership & coaching", "Product launches", "Territory & market development"] },
+  { group: "Analytics", items: ["Commercial analytics & KPI tracking", "Pipeline & funnel analysis", "Commercial problem-solving", "[Tools — e.g. CRM, Excel, BI]"] },
+  { group: "Markets", items: ["United Arab Emirates", "Saudi Arabia", "Egypt", "Wider GCC"] },
 ];
 
 export const caseStudies = [
@@ -109,28 +123,17 @@ export const certifications = [
 export const projects = [
   {
     slug: "bd-operating-system",
-    title: "B2B Business Development Operating System",
-    kicker: "Proof of work · Product",
+    title: "Personal Business Development Operating System",
+    kicker: "Proof of work · How I run BD",
     summary:
-      "A working BD operating system I designed and built: account qualification, stakeholder mapping, discovery, opportunity mapping, pipeline, follow-up discipline and commercial analytics — configurable for any B2B company. First use case: a corporate-training business in the UAE and Saudi Arabia.",
+      "The system I designed and use to run my own business development: account qualification, stakeholder mapping, consultative discovery, opportunity mapping, pipeline, follow-up discipline and commercial analytics. Industry-neutral and configurable for any B2B market I work in.",
     points: [
       "Transparent 0–100 account fit score with reasons and risks",
-      "Stakeholder maps, discovery briefs and a deal coach that label guesses as hypotheses",
-      "Honest funnel analytics — no metric without underlying data",
-      "Reusable core + company profiles (industry modules are optional)",
+      "Stakeholder maps and discovery briefs that separate hypotheses from facts",
+      "Follow-up discipline: every priority account has a dated next action",
+      "Honest funnel analytics — the basis for measurable BD results",
     ],
-    links: [
-      { label: "Read the case study", href: "/projects/bd-operating-system" },
-      { label: "Open the live demo", href: "/workspace/demo" },
-    ],
-  },
-  {
-    slug: "bloom-marketing-plan",
-    title: "12-month marketing plan — business school (sample work)",
-    kicker: "Strategy · Sample",
-    summary: "A structured marketing plan: SWOT, personas, positioning, KPIs, channel strategy, funnel, quarterly roadmap and budget split. Figures are illustrative targets, not results.",
-    points: ["Audience personas and positioning", "Channel mix, funnel and budget allocation", "Measurement framework and 30-day action plan"],
-    links: [{ label: "View the plan", href: "/marketing-site/bloom-marketing-plan.html" }],
+    links: [{ label: "Read the case study", href: "/projects/bd-operating-system" }],
   },
 ];
 

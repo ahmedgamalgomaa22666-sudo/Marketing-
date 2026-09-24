@@ -11,8 +11,8 @@ import { createBloomDemoData, BLOOM_OFFERINGS } from "./seed";
 export const bloomProfile: WorkspaceProfile = {
   id: "bloom",
   company: {
-    name: "Bloom Business School",
-    industry: "Corporate Training / Executive Education",
+    name: "Sample: Bloom Business School",
+    industry: "Corporate Training / Executive Education (fictional sample data)",
     description: "Corporate learning, executive education and leadership development for organisations in the UAE and Saudi Arabia.",
   },
   demoNotice: "Demo data — not actual Bloom customer information. Programmes shown are DEMO placeholders.",

@@ -1,14 +1,20 @@
-# Ahmed Gamal El-Din Gomaa — Professional Site & BD Operating System
+# AHMED GAMAL — International Business Development
 
-Two layers in one Next.js app:
+The personal professional platform of **Ahmed Gamal El-Din Gomaa**:
+Commercial Growth · B2B Business Development · Consultative Selling · GCC Markets.
 
-1. **Public professional website** (`/`) — Pharmaceutical Sales Leadership · Business
-   Development · B2B Consultative Selling · GCC Markets. Home, about, track record,
-   experience, skills, case studies, projects, certifications, printable CV and contact.
-2. **Private BD Operating System** (`/workspace`) — a reusable B2B business development
-   workspace: accounts → contacts → qualification → stakeholder mapping → discovery →
-   opportunities → pipeline → activities → follow-ups → next best action → analytics.
-   **Bloom Business School** is the first configured use case and ships as a polished demo.
+Two sides of one product:
+
+1. **Public professional platform** (`/`) — for UAE/GCC recruiters, founders, CEOs and
+   commercial leaders: about, track record, experience, skills, case studies, proof of work,
+   certifications, printable CV and contact.
+2. **Private BD Operating System** (`/workspace`) — the owner's personal BD workspace,
+   portable across employers and markets: accounts → contacts → qualification → stakeholder
+   mapping → discovery → opportunities → pipeline → activities → follow-ups → next best
+   action → analytics. It produces measurable BD performance data for CVs and interviews.
+
+The platform does not depend on any employer or client. Companies (e.g. a past or future
+employer) exist only as workspace profiles or accounts inside the private workspace.
 
 > Public site content lives in `src/content/site.ts`. Anything in **[square brackets]** is a
 > placeholder, shown visibly as one — replace it with verified information before sharing.
@@ -45,16 +51,16 @@ optional module labels (e.g. Bloom's *Training Opportunity Mapper*).
 
 | Profile | Purpose |
 |---|---|
-| `bloom` — Bloom Business School | First use case: corporate training / executive education, UAE & KSA. Fictional demo data, DEMO programmes. |
-| `generic` — My BD Workspace | Any B2B company. Starts empty; use it for your own BD work. |
+| `generic` — Personal BD Workspace (**default**) | Your own BD work in any B2B market. Starts empty. |
+| `bloom` — Sample: Bloom Business School | Optional sample use case with fictional data (corporate training, UAE & KSA). Not linked from the public site. |
 
 Switch profiles in **Workspace → Settings**. Each profile keeps its own data (browser
 localStorage). Add a company by copying `profiles/generic` and registering it in
 `src/lib/profile/index.ts`. See `docs/ARCHITECTURE.md`.
 
-## 5-Minute Executive Demo (Bloom use case)
+## Guided demo (optional sample workspace)
 
-Open `/workspace/demo` (sidebar → **Guided demo**) and click **Reset demo data first**.
+Open `/workspace/demo` (sidebar → **Guided demo**), switch to the sample workspace, and click **Reset demo data first**.
 
 1. **Dashboard** — pipeline KPIs and *Today's priorities* (overdue follow-ups highlighted).
 2. **Pipeline** — funnel conversion, pipeline by stage and by market ("—" = no data, never faked).
@@ -88,4 +94,4 @@ real client data. No scraping, bulk messaging or credential handling anywhere.
 ## Docs
 
 `docs/PRODUCT_SPEC.md` (Bloom use-case spec) · `docs/ARCHITECTURE.md` · `docs/ROADMAP.md` ·
-`CLAUDE.md` · earlier sample work in `public/marketing-site/`.
+`CLAUDE.md` · earlier static pages archived (not served) in `docs/archive-marketing-site/`.

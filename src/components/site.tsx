@@ -18,8 +18,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-[#fbfaf7]/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link href="/" className="font-serif text-lg tracking-tight text-ink-900">
-          {person.name}
+        <Link href="/" className="leading-tight">
+          <span className="block font-serif text-lg uppercase tracking-[0.12em] text-ink-900">{person.brand}</span>
+          <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-700">{person.brandLine}</span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-stone-600 lg:flex">
           {nav.map((n) => (

@@ -60,7 +60,8 @@ function Brand() {
   const { profile } = useData();
   return (
     <div className="px-2.5">
-      <div className="text-sm font-semibold tracking-tight text-white">BD Operating System</div>
+      <div className="text-sm font-semibold uppercase tracking-[0.12em] text-white">Ahmed Gamal</div>
+      <div className="text-[11px] text-brand-100/90">BD Operating System</div>
       <div className="text-[11px] uppercase tracking-wider text-brand-100/70">{profile.company.name}</div>
     </div>
   );

@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { ArrowRight } from "@/components/siteIcons";
-import { ActionLink } from "@/components/site";
 
 export const metadata: Metadata = {
-  title: "B2B Business Development Operating System",
-  description: "Case study: a reusable BD operating system for account qualification, stakeholder mapping, discovery, pipeline and follow-up discipline.",
+  title: "Personal Business Development Operating System",
+  description: "Case study: the BD operating system Ahmed Gamal uses to run business development for account qualification, stakeholder mapping, discovery, pipeline and follow-up discipline.",
 };
 
 const CORE = [
@@ -23,18 +21,10 @@ export default function BdOsCaseStudy() {
   return (
     <article className="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">Proof of work · Case study</p>
-      <h1 className="mt-3 font-serif text-4xl leading-tight tracking-tight text-ink-900 sm:text-5xl">B2B Business Development Operating System</h1>
+      <h1 className="mt-3 font-serif text-4xl leading-tight tracking-tight text-ink-900 sm:text-5xl">Personal Business Development Operating System</h1>
       <p className="mt-5 text-lg leading-relaxed text-stone-600">
-        A working product I designed and built to run business development systematically: decide which accounts matter, understand who decides, form and test hypotheses, and never lose a follow-up.
+        The system I designed and use to run my own business development: decide which accounts matter, reach the people who decide, test hypotheses through consultative discovery, and never lose a follow-up — with every step measured.
       </p>
-      <div className="mt-8 flex flex-wrap gap-3">
-        <ActionLink href="/workspace/demo">
-          Open the live demo <ArrowRight />
-        </ActionLink>
-        <ActionLink href="/workspace" variant="secondary">
-          Go to the workspace
-        </ActionLink>
-      </div>
 
       <Block title="The problem">
         <p>
@@ -58,7 +48,7 @@ export default function BdOsCaseStudy() {
           The core workflow — accounts, contacts, qualification, stakeholders, discovery, opportunities, pipeline, activities, follow-ups, next best action and analytics — is industry-neutral. A <em>workspace profile</em> configures it for one company: markets, ideal customer profile, buyer roles, qualification weights, needs catalogue, terminology and optional industry modules.
         </p>
         <p className="mt-3">
-          <strong className="text-ink-900">First use case — a corporate-training business in the UAE and Saudi Arabia.</strong> Its profile turns the generic Opportunity Mapper into a <em>Training Opportunity Mapper</em> (business problem → learning / capability gap → programme → expected business outcome), with fictional, clearly labelled demo data. A second, generic B2B profile starts empty and proves the core runs without any industry-specific code.
+          The same core runs my own BD across employers and markets: each engagement gets its own profile, so accounts, pipeline and results stay separate while the method stays consistent. Demonstrations use fictional sample data only.
         </p>
       </Block>
 
@@ -75,7 +65,7 @@ export default function BdOsCaseStudy() {
 
       <Block title="What it demonstrates">
         <p>
-          Account targeting and qualification, stakeholder management, consultative discovery, pipeline management, follow-up discipline and commercial analytics — the same fundamentals I have applied in pharmaceutical sales leadership — translated into a working tool.
+          Account targeting and qualification, stakeholder management, consultative discovery, pipeline management, follow-up discipline and commercial analytics — the fundamentals I have applied through years of pharmaceutical sales leadership — turned into a working system that produces measurable BD performance data.
         </p>
       </Block>
 

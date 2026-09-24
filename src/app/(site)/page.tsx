@@ -44,7 +44,7 @@ export default function HomePage() {
       </Section>
 
       <Section id="track-record" eyebrow="Track record" title="Where I create commercial value" tone="muted">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {trackRecord.map((t) => (
             <article key={t.title} className="rounded-lg border border-stone-200 bg-white p-6">
               <h3 className="font-serif text-xl text-ink-900">{t.title}</h3>
@@ -126,7 +126,7 @@ export default function HomePage() {
       <Section id="projects" eyebrow="Projects" title="Proof of work" tone="muted">
         <div className="grid gap-6 lg:grid-cols-5">
           {projects.map((p, i) => (
-            <article key={p.slug} className={`flex flex-col rounded-lg border border-stone-200 bg-white p-6 ${i === 0 ? "lg:col-span-3" : "lg:col-span-2"}`}>
+            <article key={p.slug} className={`flex flex-col rounded-lg border border-stone-200 bg-white p-6 ${projects.length === 1 ? "lg:col-span-5" : i === 0 ? "lg:col-span-3" : "lg:col-span-2"}`}>
               <p className="text-xs font-semibold uppercase tracking-wide text-gold-700">{p.kicker}</p>
               <h3 className="mt-1 font-serif text-2xl text-ink-900">{p.title}</h3>
               <p className="mt-3 text-stone-600">{p.summary}</p>

@@ -6,7 +6,7 @@ import type { Database, User } from "../types";
 /** Bump when the stored shape changes; older local data is replaced with a fresh workspace. */
 export const SCHEMA_VERSION = 2;
 
-export const DEFAULT_USERS = (): User[] => [{ id: "u-me", name: "Me", role: "Business Development", createdAt: nowStamp(), updatedAt: nowStamp() }];
+export const DEFAULT_USERS = (): User[] => [{ id: "u-me", name: "Ahmed Gamal", role: "International Business Development", createdAt: nowStamp(), updatedAt: nowStamp() }];
 
 /** A fresh, empty workspace for a profile: its starter offerings and default weights only. */
 export function emptyDatabase(profile: WorkspaceProfile, users: User[] = DEFAULT_USERS()): Database {
