@@ -2,6 +2,7 @@ import { overdue } from "../analytics";
 import { todayISO } from "../dates";
 import type { Account, Activity, Contact } from "../types";
 import { isHrContact } from "../scoring";
+import { firstName } from "./outreach";
 
 export interface NextAction {
   action: string;
@@ -13,9 +14,10 @@ export function recommendNextAction(account: Account, contacts: Contact[], activ
   const late = overdue(activities.filter((a) => a.accountId === account.id), today)[0];
   if (late) return { action: `Complete the overdue action: ${late.summary}`, reason: "A committed follow-up is past due — momentum and credibility are at risk." };
 
-  const hr = contacts.find(isHrContact);
+  // Prefer the working-level L&D champion over senior sponsors for day-to-day actions.
+  const hr = contacts.find((c) => c.role === "Champion" && isHrContact(c)) ?? contacts.find((c) => c.role === "Champion") ?? contacts.find(isHrContact);
   const dm = contacts.find((c) => c.role === "Decision Maker");
-  const lead = hr?.name.split(" ")[0] ?? "the HR / L&D lead";
+  const lead = hr ? firstName(hr.name) : "the HR / L&D lead";
 
   if (contacts.length === 0 && !["Won", "Lost"].includes(account.stage)) {
     return { action: "Map the buying group: identify the HR / L&D lead and the budget holder.", reason: "No stakeholders are recorded, so outreach would be untargeted." };

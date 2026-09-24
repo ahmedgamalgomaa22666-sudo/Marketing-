@@ -39,8 +39,17 @@ export const CTA_OPTIONS = [
 /** Phrases the drafts must never contain. Used by the template and to check AI output. */
 export const BANNED_PHRASES = ["hope this message finds you well", "hope you are well", "i came across your profile", "i was impressed", "synergy", "revolutionary", "game-changer", "act now", "limited time"];
 
+const HONORIFICS = /^(dr|eng|mr|mrs|ms|prof|sheikh|sheikha|h\.?e)\.?$/i;
+
+/** First name for a greeting, skipping honorifics ("Dr. Layla Haddad" → "Layla"). */
 export function firstName(name: string): string {
-  return name.trim().split(/\s+/)[0] || "there";
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return parts.find((p) => !HONORIFICS.test(p)) ?? parts[0] ?? "there";
+}
+
+/** "UAE" reads naturally as "the UAE" in a sentence. */
+export function countryPhrase(country: string): string {
+  return country === "UAE" ? "the UAE" : country;
 }
 
 /** Deterministic drafts: short, specific, consultative — for human review, never auto-sent. */
@@ -54,7 +63,7 @@ export function templateDraft(i: OutreachInput): OutreachDraft {
 
   switch (i.type) {
     case "linkedin":
-      body = `${hi} I work with HR and L&D leaders in ${i.country} on ${cap}. ${obs ? `I understand ${i.companyName} is ${obs} — ` : ""}I'm curious how you're approaching ${cap} as that happens. Open to ${i.cta}?`;
+      body = `${hi} I work with HR and L&D leaders in ${countryPhrase(i.country)} on ${cap}. ${obs ? `I understand ${i.companyName} is ${obs} — ` : ""}I'm curious how you're approaching ${cap} as that happens. Open to ${i.cta}?`;
       break;
     case "email":
       subject = `${capitalise(cap)} at ${i.companyName}`;
@@ -62,7 +71,7 @@ export function templateDraft(i: OutreachInput): OutreachDraft {
         hi,
         obs
           ? `I understand ${i.companyName} is ${obs}. In organisations going through that, we often see ${cap} become a pressure point for managers.`
-          : `I'm reaching out because ${cap} is a recurring priority for ${i.contactTitle ? `${i.contactTitle}s` : "HR and L&D leaders"} we speak with in ${i.country}.`,
+          : `I'm reaching out because ${cap} is a recurring priority for ${i.contactTitle ? `${i.contactTitle}s` : "HR and L&D leaders"} we speak with in ${countryPhrase(i.country)}.`,
         "I don't know yet whether that's true for you — which is why I'd value your perspective.",
         `Would you be open to ${i.cta}?`,
         `Best regards,\n${sign}\nBloom Business School`,

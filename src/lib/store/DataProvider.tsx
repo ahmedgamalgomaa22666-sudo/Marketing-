@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { furthestStage } from "../analytics";
 import type { ScoreDimension } from "../config";
 import { nowStamp, todayISO } from "../dates";
@@ -52,25 +52,23 @@ function advanceAccount(db: Database, accountId: string, stage: AccountStage): D
 }
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const storeRef = useRef<DataStore | null>(null);
+  // The store only touches browser storage inside its async methods, so creating it during render is safe.
+  const [store] = useState<DataStore>(createStore);
   const [db, setDb] = useState<Database | null>(null);
-  const [mode, setMode] = useState<DataStore["mode"]>("local-demo");
+  const mode = store.mode;
 
   useEffect(() => {
-    const store = createStore();
-    storeRef.current = store;
-    setMode(store.mode);
     store.load().then(setDb);
-  }, []);
+  }, [store]);
 
   const commit = useCallback((updater: (prev: Database) => Database) => {
     setDb((prev) => {
       if (!prev) return prev;
       const next = updater(prev);
-      void storeRef.current?.save(next);
+      void store.save(next);
       return next;
     });
-  }, []);
+  }, [store]);
 
   const upsert = useCallback(
     <C extends CollectionName>(collection: C, item: Draft<C>): Item<C> => {
@@ -160,8 +158,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   );
 
   const resetDemo = useCallback(async () => {
-    if (storeRef.current) setDb(await storeRef.current.reset());
-  }, []);
+    setDb(await store.reset());
+  }, [store]);
 
   const clearWorkspace = useCallback(() => commit((prev) => emptyDatabase(prev.programmes, prev.users)), [commit]);
 

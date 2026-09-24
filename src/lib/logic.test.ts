@@ -148,3 +148,15 @@ describe("Brief, deal coach and outreach", () => {
     }
   });
 });
+
+describe("Personalisation helpers", () => {
+  it("greets by first name, skipping honorifics, and prefers the champion", async () => {
+    const { firstName } = await import("./intelligence/outreach");
+    const { recommendNextAction } = await import("./intelligence/nextAction");
+    expect(firstName("Dr. Layla Haddad")).toBe("Layla");
+    expect(firstName("Omar Farouk")).toBe("Omar");
+    const account = db.accounts.find((a) => a.id === HERO_ACCOUNT_ID)!;
+    const next = recommendNextAction({ ...account, stage: "Engaged" }, db.contacts.filter((c) => c.accountId === account.id), [], TODAY);
+    expect(next.action).toContain("Omar");
+  });
+});
