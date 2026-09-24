@@ -52,7 +52,7 @@ export const resultsEmployer = "Apex Pharma";
 export const about = {
   title: "A commercial career built on results in the field",
   paragraphs: [
-    "My commercial foundation was built in pharmaceutical sales, one of the most competitive and relationship-driven B2B environments: since 2010 I have launched products, built market position territory by territory, and turned around products that were losing ground.",
+    "My commercial foundation was built in pharmaceutical sales, a highly competitive and relationship-driven commercial environment: since 2010 I have launched products, built market position territory by territory, and turned around products that were losing ground.",
     "Over 15 years at Sigma Pharmaceutical Company and Apex Pharma that work grew into leadership. At Apex Pharma I progressed from Medical Representative to Senior Medical Representative and, in 2024, to Acting District Supervisor — and was recognised as the company's Best Acting Supervisor that year.",
     "In 2026 I began applying the same commercial discipline to B2B business development, working remotely from Egypt with Pella Nova / Pella Group and Bloom Business School on the UAE, Saudi Arabia and wider GCC markets. It is a new chapter, approached the way I approached every territory: a clear method, disciplined follow-up and honest measurement.",
   ],
