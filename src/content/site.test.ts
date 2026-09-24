@@ -19,7 +19,8 @@ describe("public content guardrails", () => {
 
   it("never presents 15+ years as business development experience", () => {
     expect(allText).not.toMatch(/15\+ years (of |in )?(b2b )?business development/);
-    expect(site.person.intro).toMatch(/15\+ years in pharmaceutical commercial sales/);
+    expect(site.person.intro).toMatch(/15\+ years of sales, market development and leadership experience/);
+    expect(site.person.intro).not.toMatch(/15\+ years[^,]*business development/);
   });
 
   it("publishes no placeholder text — missing fields are null and hidden", () => {

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, Download, Linkedin, Mail, MapPin } from "@/components/siteIcons";
 import { ActionLink, Section } from "@/components/site";
@@ -9,6 +8,7 @@ import {
   certifications,
   education,
   experience,
+  languages,
   has,
   lab,
   person,
@@ -44,9 +44,9 @@ export default function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">Selected commercial results</p>
             <dl className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-stone-200 bg-stone-200 lg:grid-cols-5">
               {results.map((r) => (
-                <div key={r.id} className="bg-[#fbfaf7] px-5 py-5">
-                  <dt className="font-serif text-3xl text-ink-900">{r.value}</dt>
-                  <dd className="mt-1 text-sm leading-snug text-stone-600">{r.label}</dd>
+                <div key={r.id} className="bg-[#fbfaf7] px-5 py-5 last:col-span-2 lg:last:col-span-1">
+                  <dt className={r.stripValue.length > 6 ? "font-serif text-lg uppercase leading-tight tracking-wide text-ink-900" : "font-serif text-3xl text-ink-900"}>{r.stripValue}</dt>
+                  <dd className="mt-1 text-sm leading-snug text-stone-600">{r.stripLabel}</dd>
                 </div>
               ))}
             </dl>
@@ -62,7 +62,7 @@ export default function HomePage() {
             ))}
           </div>
           <dl className="space-y-4 border-l border-stone-200 pl-6">
-            {about.facts.map((f) => (
+            {[...about.facts, { label: "Languages", value: languages.map((l) => `${l.name} — ${l.level}`).join(" · ") }].map((f) => (
               <div key={f.label}>
                 <dt className="text-xs uppercase tracking-wide text-stone-500">{f.label}</dt>
                 <dd className="mt-0.5 text-ink-900">{f.value}</dd>
@@ -180,7 +180,7 @@ export default function HomePage() {
                   })}
                 </dl>
               )}
-              <p className="mt-auto pt-4 text-xs text-stone-500">{resultsEmployer}</p>
+              <p className="mt-auto pt-4 text-xs text-stone-500">{c.context}</p>
             </article>
           ))}
         </div>
@@ -278,11 +278,6 @@ export default function HomePage() {
             </ContactRow>
           </ul>
         </div>
-        <p className="mt-10 text-xs text-stone-400">
-          <Link href="/workspace" className="underline underline-offset-2 hover:text-stone-600">
-            Private workspace
-          </Link>
-        </p>
       </Section>
     </>
   );

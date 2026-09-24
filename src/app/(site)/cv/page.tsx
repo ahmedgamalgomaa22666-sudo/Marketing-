@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { PrintButton } from "@/components/PrintButton";
-import { certifications, education, experience, has, lab, person, results, skills } from "@/content/site";
+import { certifications, education, experience, has, lab, languages, person, results, skills } from "@/content/site";
 
 export const metadata: Metadata = { title: "CV" };
 
@@ -84,6 +84,10 @@ export default function CvPage() {
               </li>
             ))}
           </ul>
+        </CvSection>
+
+        <CvSection title="Languages">
+          <p className="text-sm text-stone-700">{languages.map((l) => `${l.name} — ${l.level}`).join(" · ")}</p>
         </CvSection>
 
         <CvSection title="Proof of work">

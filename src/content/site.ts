@@ -23,11 +23,11 @@ export function has(value: Maybe | undefined): value is string {
 export const person = {
   name: "Ahmed Gamal El-Din Gomaa",
   brand: "Ahmed Gamal",
-  brandLine: "Commercial & Business Development",
-  headline: "Commercial Sales Leadership · Business Development · B2B Consultative Selling · GCC Markets",
+  brandLine: "Commercial Growth & Business Development",
+  headline: "Commercial Growth · Business Development · B2B Consultative Selling · GCC Markets",
   /** One-sentence answer to "Who is Ahmed?" */
   intro:
-    "15+ years in pharmaceutical commercial sales — from medical representative to acting district supervisor — now working remotely in B2B business development for businesses in the UAE and GCC.",
+    "Commercial professional with 15+ years of sales, market development and leadership experience, now expanding into B2B business development across the UAE, Saudi Arabia and wider GCC.",
   location: "Egypt · Open to UAE & GCC Opportunities",
   /** UNPUBLISHED until provided. */
   email: null as Maybe,
@@ -41,25 +41,26 @@ export const person = {
 
 /** Verified commercial results — all achieved at Apex Pharma. Do not strengthen the wording. */
 export const results = [
-  { id: "launch", value: "400%", label: "of target on a pharmaceutical product launch", statement: "Achieved 400% of target on a pharmaceutical product launch." },
-  { id: "eraloner", value: "#1", label: "market position for Eraloner in Minya and Fayoum within 24 months", statement: "Built Eraloner to the #1 market position in Minya and Fayoum within 24 months." },
-  { id: "decancit", value: "+240%", label: "growth delivered on Decancit", statement: "Delivered +240% growth on Decancit." },
-  { id: "ezapril", value: "~5×", label: "Ezapril Co. monthly volume, from 5,000 to 25,000 packs", statement: "Increased Ezapril Co. monthly volume approximately 5x, from 5,000 to 25,000 packs." },
-  { id: "award", value: "2024", label: "Best Acting Supervisor, company-wide at Apex Pharma", statement: "Recognised as Best Acting Supervisor 2024 company-wide at Apex Pharma." },
+  { id: "launch", stripValue: "400%", stripLabel: "Launch target achievement", value: "400%", label: "of target on a pharmaceutical product launch", statement: "Achieved 400% of target on a pharmaceutical product launch." },
+  { id: "eraloner", stripValue: "#1", stripLabel: "Market position within 24 months", value: "#1", label: "market position for Eraloner in Minya and Fayoum within 24 months", statement: "Built Eraloner to the #1 market position in Minya and Fayoum within 24 months." },
+  { id: "decancit", stripValue: "+240%", stripLabel: "Product turnaround growth", value: "+240%", label: "growth delivered on Decancit", statement: "Delivered +240% growth on Decancit." },
+  { id: "ezapril", stripValue: "5×", stripLabel: "Monthly volume growth", value: "~5×", label: "Ezapril Co. monthly volume, from 5,000 to 25,000 packs", statement: "Increased Ezapril Co. monthly volume approximately 5x, from 5,000 to 25,000 packs." },
+  { id: "award", stripValue: "Best Acting Supervisor", stripLabel: "Company-wide recognition · 2024", value: "2024", label: "Best Acting Supervisor, company-wide at Apex Pharma", statement: "Recognised as Best Acting Supervisor 2024 company-wide at Apex Pharma." },
 ];
 export const resultsEmployer = "Apex Pharma";
 
 export const about = {
   title: "A commercial career built on results in the field",
   paragraphs: [
-    "I started in pharmaceutical sales in 2010 and have worked in commercial roles ever since. At Apex Pharma I progressed from Medical Representative to Senior Medical Representative and, since 2024, Acting District Supervisor — launching products, building market position territory by territory, turning around products that were losing ground, and leading a field team.",
-    "In 2026 I began applying that experience to B2B business development, working remotely from Egypt: as a Remote Sales Specialist for Pella Nova / Pella Group, and as a Freelance Business Developer for Bloom Business School. It is a new chapter, and I approach it the way I approached every territory — a clear method, disciplined follow-up and honest measurement.",
+    "My commercial foundation was built in pharmaceutical sales, one of the most competitive and relationship-driven B2B environments: since 2010 I have launched products, built market position territory by territory, and turned around products that were losing ground.",
+    "Over 15 years at Sigma Pharmaceutical Company and Apex Pharma that work grew into leadership. At Apex Pharma I progressed from Medical Representative to Senior Medical Representative and, in 2024, to Acting District Supervisor — and was recognised as the company's Best Acting Supervisor that year.",
+    "In 2026 I began applying the same commercial discipline to B2B business development, working remotely from Egypt with Pella Nova / Pella Group and Bloom Business School on the UAE, Saudi Arabia and wider GCC markets. It is a new chapter, approached the way I approached every territory: a clear method, disciplined follow-up and honest measurement.",
   ],
   facts: [
-    { label: "Commercial sales experience", value: "15+ years (since 2010)" },
-    { label: "Current role", value: "Acting District Supervisor, Apex Pharma" },
+    { label: "Commercial experience", value: "15+ years (since 2010)" },
     { label: "Business development", value: "Since 2026 — remote, UAE / GCC B2B" },
     { label: "Location", value: "Egypt · Open to UAE & GCC opportunities" },
+    { label: "Current role", value: "Acting District Supervisor, Apex Pharma" },
     { label: "Education", value: "B.Sc. Pharmaceutical Sciences, Minia University" },
   ],
 };
@@ -158,9 +159,9 @@ export const businessDevelopment = {
  * UNPUBLISHED (null) until Ahmed provides them — do not write fictional details.
  */
 export const caseStudies = [
-  { id: "launch", tag: "Product launch", title: "A pharmaceutical product launch", result: "400% of target", situation: null as Maybe, actions: null as Maybe, lessons: null as Maybe },
-  { id: "eraloner", tag: "Market development", title: "Eraloner in Minya and Fayoum", result: "#1 market position within 24 months", situation: null as Maybe, actions: null as Maybe, lessons: null as Maybe },
-  { id: "decancit", tag: "Product turnaround", title: "Decancit", result: "+240% growth", situation: null as Maybe, actions: null as Maybe, lessons: null as Maybe },
+  { id: "launch", tag: "Product launch", title: "Exceeding a launch target", result: "400% of target", context: "Pharmaceutical product launch · Apex Pharma", situation: null as Maybe, actions: null as Maybe, lessons: null as Maybe },
+  { id: "eraloner", tag: "Market development", title: "Building a product to market leadership", result: "#1 within 24 months", context: "Eraloner · #1 market position in Minya and Fayoum · Apex Pharma", situation: null as Maybe, actions: null as Maybe, lessons: null as Maybe },
+  { id: "decancit", tag: "Product turnaround", title: "Restoring growth", result: "+240% growth", context: "Decancit · Apex Pharma", situation: null as Maybe, actions: null as Maybe, lessons: null as Maybe },
 ];
 
 /** Commercial Lab — proof of work. */
@@ -185,6 +186,12 @@ export const skills = [
   { group: "Leadership", items: ["Field team supervision & coaching", "Performance follow-up", "Strategic leadership & management (certified)"] },
   { group: "Business development", items: ["B2B outbound prospecting", "Account research & prioritisation", "Stakeholder mapping", "Discovery & qualification"] },
   { group: "Analytics & marketing", items: ["Data analytics (Google certificate)", "Sales & funnel analysis", "Marketing (professional diploma)"] },
+];
+
+/** Languages — edit freely. */
+export const languages = [
+  { name: "Arabic", level: "Native" },
+  { name: "English", level: "Professional working proficiency" },
 ];
 
 /** `issuer` / `year` are UNPUBLISHED (null) until verified. */
