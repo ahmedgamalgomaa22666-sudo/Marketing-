@@ -3,20 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import { ArrowUpRight, BookOpen, Building2, CalendarCheck, Compass, LayoutDashboard, Menu, MessageSquareText, Settings, Target, X } from "lucide-react";
+import { ArrowUpRight, Award, Building2, CalendarCheck, Compass, LayoutDashboard, Menu, MessageSquareText, Settings, Target, X } from "lucide-react";
 import { todayISO } from "@/lib/dates";
 import { useData } from "@/lib/store/DataProvider";
 import { cx } from "./ui";
 
+// Offerings (/workspace/offerings) stays in the code but is intentionally not in the menu.
 const NAV = [
-  { href: "/workspace", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/workspace/accounts", label: "Accounts", icon: Building2 },
-  { href: "/workspace/opportunities", label: "Opportunities", icon: Target },
-  { href: "/workspace/activities", label: "Follow-ups", icon: CalendarCheck },
-  { href: "/workspace/mapper", label: "Opportunity Mapper", icon: Compass, mapper: true },
-  { href: "/workspace/outreach", label: "Outreach Prep", icon: MessageSquareText },
-  { href: "/workspace/offerings", label: "Offerings", icon: BookOpen, offerings: true },
-  { href: "/workspace/settings", label: "Settings", icon: Settings },
+  { href: "/workspace", label: "Career Evidence", icon: Award, group: "" },
+  { href: "/workspace/pipeline", label: "Pipeline overview", icon: LayoutDashboard, group: "BD Toolkit" },
+  { href: "/workspace/accounts", label: "Accounts", icon: Building2, group: "BD Toolkit" },
+  { href: "/workspace/opportunities", label: "Opportunities", icon: Target, group: "BD Toolkit" },
+  { href: "/workspace/activities", label: "Follow-ups", icon: CalendarCheck, group: "BD Toolkit" },
+  { href: "/workspace/mapper", label: "Opportunity Mapper", icon: Compass, group: "BD Toolkit", mapper: true },
+  { href: "/workspace/outreach", label: "Outreach Prep", icon: MessageSquareText, group: "BD Toolkit" },
+  { href: "/workspace/settings", label: "Settings", icon: Settings, group: " " },
 ];
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
@@ -25,12 +26,14 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const overdue = db.activities.filter((a) => a.status === "planned" && a.date < todayISO()).length;
   return (
     <nav className="flex flex-col gap-0.5">
-      {NAV.map(({ href, label: coreLabel, icon: Icon, ...flags }) => {
-        const label = "mapper" in flags ? profile.modules.opportunityMapper.title : "offerings" in flags ? profile.terminology.offerings : coreLabel;
+      {NAV.map(({ href, label: coreLabel, icon: Icon, group, ...flags }, i) => {
+        const label = "mapper" in flags ? profile.modules.opportunityMapper.title : coreLabel;
+        const header = group !== (NAV[i - 1]?.group ?? "") ? group.trim() : null;
         const active = href === "/workspace" ? pathname === "/workspace" : pathname.startsWith(href);
         return (
+          <div key={href}>
+            {header !== null && <div className={cx("mt-4 px-2.5 pb-1 text-[10px] font-semibold uppercase tracking-wider text-brand-100/50", !header && "mt-3 pb-0")}>{header}</div>}
           <Link
-            key={href}
             href={href}
             onClick={onNavigate}
             className={cx(
@@ -42,6 +45,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             <span className="flex-1">{label}</span>
             {href === "/workspace/activities" && overdue > 0 && <span className="rounded bg-amber-400/90 px-1.5 text-[11px] font-semibold text-slate-900">{overdue}</span>}
           </Link>
+          </div>
         );
       })}
     </nav>

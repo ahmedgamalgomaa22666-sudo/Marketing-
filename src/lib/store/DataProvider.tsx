@@ -24,6 +24,8 @@ interface DataContextValue {
   setWeights: (weights: Record<ScoreDimension, number>) => void;
   resetDemo: () => Promise<void>;
   clearWorkspace: () => void;
+  /** Replaces Career Evidence (restore from backup). Workspace data is untouched. */
+  replaceCareerData: (careerContexts: Database["careerContexts"], evidence: Database["evidence"]) => void;
   scoreFor: (accountId: string) => FitScore | null;
 }
 
@@ -42,6 +44,8 @@ const PREFIX: Record<CollectionName, string> = {
   activities: "act",
   programmes: "prog",
   recommendations: "rec",
+  careerContexts: "ctx",
+  evidence: "ev",
 };
 
 /** Opportunity stages map onto account stages; winning or advancing a deal moves the account. */
@@ -176,12 +180,27 @@ export function DataProvider({ children }: { children: ReactNode }) {
   );
 
   const resetDemo = useCallback(async () => {
-    if (profile) setDb(await store.reset(profile));
-  }, [store, profile]);
+    if (!profile) return;
+    // Career Evidence is never wiped by a workspace reset.
+    const next = await store.reset(profile);
+    const kept = db ? { ...next, careerContexts: db.careerContexts, evidence: db.evidence } : next;
+    await store.save(kept);
+    setDb(kept);
+  }, [store, profile, db]);
 
   const clearWorkspace = useCallback(() => {
-    if (profile) void store.clear(profile).then(setDb);
-  }, [store, profile]);
+    if (!profile) return;
+    void store.clear(profile).then(async (next) => {
+      const kept = db ? { ...next, careerContexts: db.careerContexts, evidence: db.evidence } : next;
+      await store.save(kept);
+      setDb(kept);
+    });
+  }, [store, profile, db]);
+
+  const replaceCareerData = useCallback(
+    (careerContexts: Database["careerContexts"], evidence: Database["evidence"]) => commit((prev) => ({ ...prev, careerContexts, evidence })),
+    [commit],
+  );
 
   const scoreFor = useCallback(
     (accountId: string) => {
@@ -201,8 +220,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => (db && profile ? { db, profile, switchProfile, mode, upsert, remove, setAccountStage, setWeights, resetDemo, clearWorkspace, scoreFor } : null),
-    [db, profile, switchProfile, mode, upsert, remove, setAccountStage, setWeights, resetDemo, clearWorkspace, scoreFor],
+    () => (db && profile ? { db, profile, switchProfile, mode, upsert, remove, setAccountStage, setWeights, resetDemo, clearWorkspace, replaceCareerData, scoreFor } : null),
+    [db, profile, switchProfile, mode, upsert, remove, setAccountStage, setWeights, resetDemo, clearWorkspace, replaceCareerData, scoreFor],
   );
 
   if (!value) {

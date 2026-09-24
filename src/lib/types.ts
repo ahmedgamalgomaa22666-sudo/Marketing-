@@ -148,6 +148,53 @@ export interface Settings {
 
 export type Offering = Programme;
 
+/* ---------------------------------------------------------------- Career Evidence */
+
+export type EvidenceTier = "Activity" | "Output" | "Outcome" | "Achievement";
+export type EvidenceStatus = "Self-recorded" | "Needs verification" | "Supported" | "Verified";
+export type Confidentiality = "Private" | "Internal" | "Confidential";
+export type RoleType = "Individual contributor" | "Leadership" | "Business development";
+
+/** An employer or professional engagement. Roles live inside it — no separate history table. */
+export interface CareerContext extends Base {
+  name: string;
+  /** Neutral label for any external use, e.g. "Pharmaceutical company, Egypt". */
+  publicLabel: string;
+  industry: string;
+  markets: string[];
+  startYear: string;
+  /** null = ongoing */
+  endYear: string | null;
+  archived: boolean;
+  roles: { title: string; type: RoleType; start: string; end: string | null }[];
+}
+
+export interface EvidenceEntry extends Base {
+  /** "YYYY", "YYYY-MM" or "YYYY-MM-DD"; null when not recorded. */
+  date: string | null;
+  contextId: string;
+  /** Role title within the context; "" when not recorded. */
+  role: string;
+  market: string;
+  industry: string;
+  tier: EvidenceTier;
+  category: string;
+  /** Standard BD metric key (enables funnel ratios) or null for a custom metric. */
+  metricKey: string | null;
+  metric: string;
+  value: number | null;
+  result: string;
+  context: string;
+  contribution: string;
+  capabilities: string[];
+  status: EvidenceStatus;
+  verificationSource: string;
+  confidentiality: Confidentiality;
+  publicVersion: string;
+  approvedForPublic: boolean;
+  star: { situation: string; action: string; result: string; lesson: string };
+}
+
 export interface Database {
   version: number;
   profileId: string;
@@ -160,6 +207,9 @@ export interface Database {
   activities: Activity[];
   programmes: Programme[];
   recommendations: OpportunityRecommendation[];
+  /** Career Evidence — personal, company-independent, never published automatically. */
+  careerContexts: CareerContext[];
+  evidence: EvidenceEntry[];
   settings: Settings;
 }
 

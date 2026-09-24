@@ -1,5 +1,6 @@
 import type { WorkspaceProfile } from "../profile/types";
 import type { Database } from "../types";
+import { starterContexts, starterEvidence } from "../evidence/seed";
 import { emptyDatabase, SCHEMA_VERSION } from "./empty";
 
 /**
@@ -27,6 +28,12 @@ export class LocalStore implements DataStore {
       if (raw) {
         const db = JSON.parse(raw) as Database;
         if (db.version === SCHEMA_VERSION && db.profileId === profile.id) return db;
+        // v2 → v3: add Career Evidence without touching existing workspace data.
+        if (db.version === 2 && db.profileId === profile.id) {
+          const migrated: Database = { ...db, version: SCHEMA_VERSION, careerContexts: starterContexts(), evidence: starterEvidence() };
+          await this.save(migrated);
+          return migrated;
+        }
       }
     } catch {
       // Storage unavailable or corrupt — fall through to a fresh workspace.

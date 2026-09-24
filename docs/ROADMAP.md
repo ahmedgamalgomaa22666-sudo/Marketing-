@@ -32,7 +32,7 @@ PRIVATE BD INTELLIGENCE ──(manual · anonymised · approved)──▶ PUBLIC
 | 1 | Public platform with verified content — positioning, track record, experience, BD approach, case studies, Commercial Lab, skills, certifications, CV, contact | Public | **Built** — awaiting remaining details (see `docs/PUBLICATION_CHECKLIST.md`) |
 | 2 | Deploy on a personal domain; align LinkedIn with the site | Public | Next, after step 1 details |
 | 3 | Company Context — editable current company, industry, markets, products/services, ICP, buyer personas, segments, methodology, qualification criteria; industry templates (Training, SaaS, Healthcare, Pharma, Medical Devices, Consulting); archive contexts on employer change; privacy defaults | Private | Planned |
-| 4 | Evidence Log + career analytics (private detail + public-safe version + approval flag) | Bridge | Planned |
+| 4 | **Career Evidence MVP** — evidence log (activity / output / outcome / achievement), career contexts with roles, strength indicators, analytics, CV-ready gaps, interview stories, JSON backup | Bridge | **Built** |
 | 5 | Learning layer — win/loss learning, objection library, commercial notes, market research | Private | Planned |
 | 6 | Light methodology — Consultative Selling (default), SPIN, BANT, MEDDICC, Challenger, Custom as discovery/qualification prompts only | Private | Planned |
 | 7 | Case studies completed from approved evidence | Public | Planned |

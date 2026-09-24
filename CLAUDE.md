@@ -32,6 +32,13 @@ Next.js 16 App Router + TypeScript + Tailwind v4. `DataProvider` → `DataStore`
 (LocalStore, per-profile localStorage keys; Supabase schema in `supabase/`). AI optional via
 `AIProvider` (templates by default; Claude only with `ANTHROPIC_API_KEY`, server-side).
 
+## Career Evidence (workspace home, `/workspace`)
+`CareerContext` (employer/engagement with roles inside) + `EvidenceEntry` (tier, status,
+confidentiality, public-safe version, approval, STAR). Logic in `src/lib/evidence`. Strength =
+tier × status × measurability — never quantity, never an overall score. Defaults: Self-recorded,
+Private, not approved; Verified needs a source; approval needs a public-safe version. Never
+invent numbers, scope, dates or outcomes; show what is missing. Workspace resets never wipe it.
+
 ## Public/private rule
 Public content comes only from `src/content/site.ts`, never from workspace data. Only
 verified, anonymised, manually approved Evidence Log entries may become public. No CRM import
