@@ -1,127 +1,91 @@
-# Bloom GCC Corporate Growth Engine
+# Ahmed Gamal El-Din Gomaa — Professional Site & BD Operating System
 
-An internal **Business Development operating system** for Bloom Business School's corporate
-learning and executive education sales in the **UAE and Saudi Arabia**.
+Two layers in one Next.js app:
 
-It helps a BD team answer, account by account: *Which companies should we prioritise? Who
-decides? What problem might exist? What should we ask? Which Bloom solution fits? What is the
-next best action — and how is BD performing?*
+1. **Public professional website** (`/`) — Pharmaceutical Sales Leadership · Business
+   Development · B2B Consultative Selling · GCC Markets. Home, about, track record,
+   experience, skills, case studies, projects, certifications, printable CV and contact.
+2. **Private BD Operating System** (`/workspace`) — a reusable B2B business development
+   workspace: accounts → contacts → qualification → stakeholder mapping → discovery →
+   opportunities → pipeline → activities → follow-ups → next best action → analytics.
+   **Bloom Business School** is the first configured use case and ships as a polished demo.
 
-> **Demo data — not actual Bloom customer information.** All companies, people and activities
-> are fictional. Programmes are labelled `DEMO —` placeholders. No monetary values are
-> invented.
-
-It is deliberately **not** a generic CRM, a chatbot, a scraper or a mass-messaging tool.
-
-## Features
-
-| Module | What it does |
-|---|---|
-| Executive Dashboard | Pipeline KPIs, funnel conversion, pipeline by stage and market, today's priorities, overdue follow-ups, high-priority accounts with no next action, recent activity, commercial metrics |
-| Target Accounts | Search, filter (market, industry, stage, priority), sort, create/edit/delete |
-| Account Fit Score | Transparent 0–100 score over six weighted dimensions, with reasons and risks; weights configurable |
-| Stakeholder Map | Buying group by role (decision maker, champion, influencer, procurement…) with coverage gaps |
-| Account Intelligence Brief | Context, hypotheses, capability gaps, sales angle, discovery questions, objections, next action, solution match — printable |
-| Training Opportunity Mapper | Business situation → capability gap → programme match → business case, with explicit human validation |
-| Deal Coach | Known vs unknown, risks, 5 discovery + 3 follow-up questions, 3 objections with approaches, next step |
-| Outreach Preparation | LinkedIn, email, follow-up, meeting follow-up and re-engagement drafts for human review — never sent |
-| Opportunities | Stage board and detail pages; value/probability optional |
-| Follow-ups | Overdue / today / upcoming / completed; log activity and schedule the next action in one step |
-| Programmes & Settings | Editable catalogue, score weights, demo reset, empty workspace |
+> Public site content lives in `src/content/site.ts`. Anything in **[square brackets]** is a
+> placeholder, shown visibly as one — replace it with verified information before sharing.
+> No achievements, logos or testimonials are invented.
 
 ## Quick start
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev          # http://localhost:3000  (site)  ·  /workspace  (BD system)
 ```
 
-No environment variables, database or API key are needed. The app runs in **local demo
-mode**: data is seeded into the browser's localStorage and each browser is its own sandbox.
-
-Quality checks:
+No environment variables, database or API key required.
 
 ```bash
-npm run lint
-npm run typecheck
-npm test           # unit tests for scoring, funnel, mapper, brief, deal coach, outreach
-npm run build
+npm run lint && npm run typecheck && npm test && npm run build
 ```
 
-## 5-Minute Executive Demo
+## Editing your public profile
 
-Open **Executive demo** in the sidebar (`/demo`) for a clickable version of this script.
-Click **Reset demo data first** so "today" and "overdue" are fresh.
+| What | Where |
+|---|---|
+| Name, headline, summary, contact | `person` in `src/content/site.ts` |
+| Track record, experience, skills, case studies, certifications | same file |
+| Projects (incl. the BD Operating System) | `projects` in the same file |
+| CV | generated at `/cv` from the same content — Print / Save as PDF |
 
-1. **Dashboard** (`/`) — "This is how the BD team starts every day." Point to the KPI row and
-   *Today's priorities* (overdue follow-ups are highlighted).
-2. **GCC pipeline** — *Funnel conversion*, *Pipeline by stage* and *Pipeline by market*. Rates
-   show "—" when there is no data; nothing is fabricated.
-3. **Open a high-potential company** — click **Meridian Gulf Healthcare** in *Highest-priority
-   target accounts*.
-4. **Why it scores highly** — *Overview & score*: six dimensions, "Why it scores" and "Risks &
-   unknowns" (procurement unknown, decision maker not yet engaged).
-5. **Stakeholder map** — decision maker, champion, influencer; the coverage gap is flagged.
-6. **Intelligence brief** — every inferred need is labelled *Hypothesis*; discovery questions,
-   objections, next action and solution match.
-7. **Run the Training Opportunity Mapper** — click **Map opportunity**. Step 1 is pre-filled
-   from the account's signals → **Next**: capability gaps.
-8. **Match to a Bloom capability** — Step 3 shows programme fit (DEMO placeholders) → Step 4
-   business case. Tick *I have reviewed this recommendation*.
-9. **Outreach preparation** — (optional detour) *Prepare outreach from this case* shows a short,
-   human LinkedIn draft and the "Before you send" checklist. Nothing is sent.
-10. **Create the opportunity** — back in Step 4 click **Create opportunity → Save**. You land on
-    the **Deal Coach** for the new deal; the account moves to *Qualified*.
-11. **Next action in the dashboard** — the dated next step is now in **Follow-ups → Upcoming**
-    and the account no longer lacks a next action.
+## BD Operating System: core + workspace profiles
 
-Closing line: *"The technology supports the commercial process — prioritise, map, validate,
-follow up, measure."*
+The core is industry-neutral. A **workspace profile** (`src/lib/profile/<id>`) configures it
+for one company: markets, industries, ideal customer profile, buyer roles, qualification
+labels and weights, needs catalogue, signals, playbooks, terminology, outreach audience and
+optional module labels (e.g. Bloom's *Training Opportunity Mapper*).
 
-## Architecture
+| Profile | Purpose |
+|---|---|
+| `bloom` — Bloom Business School | First use case: corporate training / executive education, UAE & KSA. Fictional demo data, DEMO programmes. |
+| `generic` — My BD Workspace | Any B2B company. Starts empty; use it for your own BD work. |
 
-- **Next.js 16 (App Router) + TypeScript + Tailwind v4**, no component or chart library.
-- **Pure business logic** in `src/lib` (scoring, analytics, intelligence), unit-tested.
-- **`DataStore` interface** — `LocalStore` (localStorage) today; `supabase/schema.sql` is ready
-  for a `SupabaseStore` adapter.
-- **`AIProvider`** — deterministic templates by default (free). If `ANTHROPIC_API_KEY` is set,
-  the server route `/api/ai/outreach` can draft outreach with Claude; failures fall back to
-  templates. Keys never reach the browser.
+Switch profiles in **Workspace → Settings**. Each profile keeps its own data (browser
+localStorage). Add a company by copying `profiles/generic` and registering it in
+`src/lib/profile/index.ts`. See `docs/ARCHITECTURE.md`.
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/PRODUCT_SPEC.md`](docs/PRODUCT_SPEC.md)
-and [`docs/ROADMAP.md`](docs/ROADMAP.md).
+## 5-Minute Executive Demo (Bloom use case)
+
+Open `/workspace/demo` (sidebar → **Guided demo**) and click **Reset demo data first**.
+
+1. **Dashboard** — pipeline KPIs and *Today's priorities* (overdue follow-ups highlighted).
+2. **Pipeline** — funnel conversion, pipeline by stage and by market ("—" = no data, never faked).
+3. **Open Meridian Gulf Healthcare** from *Highest-priority target accounts*.
+4. **Why it scores highly** — six dimensions with reasons and risks.
+5. **Stakeholder map** — decision maker, champion, influencer; procurement gap flagged.
+6. **Intelligence brief** — needs labelled *Hypothesis*; questions, objections, next action.
+7. **Training Opportunity Mapper** — Step 1 pre-filled from the account's signals.
+8. **Match to a Bloom programme** — fit %, then the business case; tick *I have reviewed…*.
+9. **Outreach preparation** — short human drafts; nothing is ever sent.
+10. **Create opportunity → Save** — lands on the Deal Coach; account moves to *Qualified*.
+11. **Dashboard / Follow-ups** — the dated next step is now tracked.
 
 ## Configuration
 
-Copy `.env.example` to `.env.local` (never commit it). All variables are optional:
-
-| Variable | Purpose |
-|---|---|
-| `ANTHROPIC_API_KEY` | Enables "Draft with Claude" on the outreach page |
-| `ANTHROPIC_MODEL` | Optional model override (default `claude-opus-5`) |
-| `NEXT_PUBLIC_SUPABASE_*` | Reserved for the Phase 2 Supabase adapter |
-
-Pipeline stages, industries, signals, capabilities, market attractiveness and default score
-weights live in `src/lib/config.ts`.
+`.env.example` (all optional): `ANTHROPIC_API_KEY` enables "Draft with Claude" on the
+outreach page (server-side only; falls back to templates); `ANTHROPIC_MODEL` overrides the
+model; `NEXT_PUBLIC_SUPABASE_*` are reserved for the Supabase adapter.
 
 ## Deployment (Vercel)
 
-1. Push the repository to GitHub.
-2. In Vercel: **Add New → Project**, import the repo. Framework preset: Next.js (defaults are
-   fine).
-3. Optionally add `ANTHROPIC_API_KEY` under **Settings → Environment Variables**.
-4. Deploy. Each visitor's browser holds its own demo workspace.
+Import the GitHub repo in Vercel (Next.js preset, default settings) → Deploy. Optionally add
+`ANTHROPIC_API_KEY`. Any Node 20+ host works: `npm run build && npm start`.
 
-Any Node 20+ host works: `npm run build && npm start`.
+## Privacy
 
-## Privacy & security
+`/workspace` is `noindex` and, in local mode, stores data only in your browser — it is private
+per device, not password-protected. Move to the Supabase adapter (auth + RLS) before storing
+real client data. No scraping, bulk messaging or credential handling anywhere.
 
-- Store only legitimately obtained business contact details; contacts can be edited or deleted.
-- No LinkedIn scraping, email harvesting, credential collection or automated sending.
-- Local mode keeps data in the browser. Move to the authenticated Supabase adapter before
-  storing real client data.
+## Docs
 
-## Other content
-
-`public/marketing-site/` holds the earlier static marketing pages (including the Bloom
-marketing plan), served unchanged at `/marketing-site/index.html`.
+`docs/PRODUCT_SPEC.md` (Bloom use-case spec) · `docs/ARCHITECTURE.md` · `docs/ROADMAP.md` ·
+`CLAUDE.md` · earlier sample work in `public/marketing-site/`.

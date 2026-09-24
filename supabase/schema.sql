@@ -1,4 +1,4 @@
--- Bloom GCC Corporate Growth Engine — relational schema for the future SupabaseStore adapter.
+-- BD Operating System — relational schema for the future SupabaseStore adapter.
 -- Not used by the MVP (local demo mode). Mirrors src/lib/types.ts.
 -- Enable Supabase Auth and add row-level security policies per team before storing real data.
 
@@ -12,8 +12,9 @@ create table users (
 
 create table accounts (
   id uuid primary key default gen_random_uuid(),
+  profile_id text not null, -- workspace profile (e.g. 'bloom', 'generic')
   name text not null,
-  country text not null check (country in ('UAE', 'Saudi Arabia')),
+  country text not null,
   city text not null,
   industry text not null,
   size_band text not null,
@@ -22,7 +23,7 @@ create table accounts (
   stage text not null default 'Target',
   highest_stage text not null default 'Target',
   priority text not null default 'Medium',
-  training_potential text not null default 'Medium',
+  potential text not null default 'Medium',
   signals text[] not null default '{}',
   tags text[] not null default '{}',
   notes text not null default '',
@@ -36,7 +37,7 @@ create table accounts (
 create table account_scores (
   id uuid primary key default gen_random_uuid(),
   account_id uuid not null unique references accounts(id) on delete cascade,
-  training_need smallint not null default 0 check (training_need between 0 and 5),
+  need_strength smallint not null default 0 check (need_strength between 0 and 5),
   strategic_relevance smallint not null default 0 check (strategic_relevance between 0 and 5),
   evidence text not null default '',
   created_at timestamptz not null default now(),

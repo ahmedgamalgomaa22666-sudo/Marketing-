@@ -1,87 +1,73 @@
 # Architecture
 
-## Overview
+## Two layers
 
 ```
-Next.js App Router (client pages)
-        │
-        ▼
-DataProvider (React context)  ── actions: upsert / remove per collection
-        │
-        ▼
-DataStore interface ──► LocalStore (localStorage, seeded with demo data)   ← MVP
-                    └─► SupabaseStore (schema in supabase/schema.sql)       ← roadmap
+/                         PUBLIC PROFESSIONAL WEBSITE   src/app/(site)
+  /cv                     printable CV (same content source)
+  /projects/bd-operating-system   proof-of-work case study
+  content: src/content/site.ts    (verified facts + [placeholders])
 
-Pure domain logic (src/lib/*, unit-tested, no React):
-  scoring.ts · analytics.ts · intelligence/{brief,mapper,dealCoach,outreach,nextAction}.ts
-
-AI (optional):
-  /api/ai/outreach (server route) → AIProvider
-      ├─ TemplateProvider   (deterministic, default, free)
-      └─ AnthropicProvider  (only when ANTHROPIC_API_KEY is set)
+/workspace/*              PRIVATE BD OPERATING SYSTEM   src/app/workspace (noindex)
+  dashboard · accounts · opportunities · follow-ups · opportunity mapper ·
+  outreach · offerings · settings · guided demo
 ```
 
-### Key decisions
+## BD Operating System: core + profiles
 
-| Decision | Why |
-|---|---|
-| Local-first `DataStore` | App runs with zero configuration, is Vercel-deployable, and the owner demo never depends on a database. Each browser is its own sandbox. |
-| Pure functions for all business logic | Scoring, funnel and mapper logic are testable, explainable and reusable on a server later. |
-| Rule-based intelligence | Industry playbooks + business signals + capability map produce credible, transparent output at zero runtime cost. AI is an optional enhancer, never a dependency. |
-| Keys stay server-side | The Anthropic key is read only in the API route; the client never sees it. If the route fails, the client falls back to templates. |
-| No component/chart library | A handful of Tailwind primitives and CSS bars are enough and keep the bundle and maintenance small. |
-| Stages as config | `src/lib/config.ts` is the single place to rename or reorder pipeline stages, industries and weights. |
+```
+            ┌──────────────────── CORE (industry-neutral) ────────────────────┐
+            │ config.ts   size bands, pipeline stages, stakeholder roles,     │
+            │             activity types, qualification dimensions & weights  │
+            │ scoring.ts  Account Fit Score (0–100, reasons + risks)          │
+            │ analytics   funnel, conversion, commercial metrics              │
+            │ intelligence/ brief · mapper · dealCoach · outreach · nextAction│
+            │ store/      DataStore (LocalStore) · DataProvider · empty.ts    │
+            └───────────────▲─────────────────────────────────────────────────┘
+                            │ profile passed in (pure functions) / useData().profile (UI)
+            ┌───────────────┴───────── WorkspaceProfile ──────────────────────┐
+            │ company · markets · industries · ICP · buyer roles & function   │
+            │ needs catalogue · signals · playbooks · challenges              │
+            │ market attractiveness · qualification labels/weights            │
+            │ terminology · outreach · modules.opportunityMapper labels       │
+            │ starterOfferings · createDemoData? · demoGuide?                 │
+            └─────────────────────────────────────────────────────────────────┘
+              profiles/bloom   — Bloom Business School (first use case, demo data)
+              profiles/generic — any B2B company (starts empty)
+```
+
+**Example — Opportunity Mapper.** Core flow: business problem → need → potential solution →
+business outcome → discovery questions → next action. The Bloom profile relabels it as the
+*Training Opportunity Mapper*: business problem → learning / capability gap → Bloom programme
+→ expected business outcome.
+
+Adding a company = adding a profile folder and registering it in `src/lib/profile/index.ts`.
 
 ## Data model
 
 ```
 User 1─* Account 1─* Contact
-             │  1─1 AccountScore (ratings + evidence)
-             │  1─* Opportunity *─* Programme (programmeIds)
-             │  1─* Activity (optionally linked to Opportunity / Contact)
-             └─ 1─* OpportunityRecommendation (mapper output, optionally → Opportunity)
+             │  1─1 AccountScore (ratings.needStrength, ratings.strategicRelevance)
+             │  1─* Opportunity *─* Offering (stored as `programmes`)
+             │  1─* Activity (type Note = notes)
+             └─ 1─* OpportunityRecommendation (mapper output)
+Database { version, profileId, … }  — one per profile (localStorage key bdos:db:<profileId>)
 ```
 
-| Entity | Purpose | Notable fields |
-|---|---|---|
-| User | Account owner | name, role |
-| Account | Target company | country, city, industry, sizeBand, stage, highestStage, priority, trainingPotential, signals[], tags[], nextFollowUpAt |
-| AccountScore | BD judgement inputs for the fit score | ratings.trainingNeed (0–5), ratings.strategicRelevance (0–5), evidence |
-| Contact | Stakeholder | title, department, seniority, role (Decision Maker…Unknown), linkedinUrl, email, phone, nextAction |
-| Opportunity | Commercial deal | stage, programmeIds[], primaryContactId, contactIds[], estimatedValue? (optional), probability?, businessProblem, nextStep, nextStepDate |
-| Activity | Timeline + follow-ups | type (Call, LinkedIn, Email, WhatsApp, Meeting, Proposal, Follow-up, Note), status (planned/done), dueDate, outcome |
-| Programme | Editable catalogue | isDemo, capabilities[], levels[], format |
-| OpportunityRecommendation | Saved mapper result | inputs, gaps[], programmeIds[], businessCase, validated |
+Schema version 2 renamed `trainingNeed → needStrength` and `trainingPotential → potential`;
+older local data is replaced with a fresh workspace on load.
 
-**Notes** are Activities of type `Note` — no separate table. The fit score itself is always
-computed, never stored, so it can't go stale.
+## Key decisions
 
-All entities carry `id`, `createdAt`, `updatedAt`. Deleting an account cascades to its
-contacts, opportunities, activities, score and recommendations.
-
-## Folder layout
-
-```
-src/
-  app/                 routes (dashboard, accounts, opportunities, mapper, outreach,
-                       activities, programmes, settings, demo, api/ai/outreach)
-  components/          ui primitives + feature components
-  lib/
-    types.ts           domain types
-    config.ts          stages, industries, weights, labels
-    store/             DataStore interface, LocalStore, DataProvider
-    demo/seed.ts       fictional demo dataset (relative dates)
-    scoring.ts         Account Fit Score
-    analytics.ts       funnel + commercial metrics
-    intelligence/      brief, mapper, deal coach, outreach, next action, playbooks
-    ai/                AIProvider, TemplateProvider, AnthropicProvider
-supabase/schema.sql    relational schema for the future adapter
-```
+| Decision | Why |
+|---|---|
+| Profiles in code, not a DB table | Zero config, type-checked, versioned in git; no multi-tenancy needed yet |
+| Per-profile local storage | Workspaces never mix data; switching profile is instant |
+| Pure functions with `profile` param | Testable; tests cover both profiles |
+| Public site is static server components | Fast, SEO-friendly, no client JS beyond the print button |
+| `/workspace` noindex, local-first | Private per browser today; real auth arrives with Supabase |
 
 ## Security & privacy
-
-- No secrets in git (`.env*` ignored; `.env.example` documents variables).
-- No scraping, credential handling or automated sending anywhere in the codebase.
-- Local mode stores data in the user's browser only. Before storing real contact data, move
-  to the Supabase adapter with authentication and row-level security.
-- Outreach drafts are displayed for copy/paste; there is no send capability.
+No secrets in git; AI key server-side only; no scraping, credential handling or automated
+sending; contacts editable/deletable. Move to the Supabase adapter with auth + RLS before
+storing real client data.

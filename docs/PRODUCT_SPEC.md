@@ -1,4 +1,8 @@
-# Product Spec — Bloom GCC Corporate Growth Engine
+# Product Spec — BD Operating System: Bloom Business School use case
+
+> The BD Operating System core is industry-neutral (see ARCHITECTURE.md). This spec describes
+> its first configured use case, Bloom Business School. Module names such as "Training
+> Opportunity Mapper" are the Bloom profile's labels for core modules.
 
 ## 1. Problem
 

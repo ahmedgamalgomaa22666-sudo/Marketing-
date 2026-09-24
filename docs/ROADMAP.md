@@ -1,36 +1,27 @@
 # Roadmap
 
-## Phase 1 — MVP (this release)
+## Done
+- **BD Operating System core**: dashboard, accounts, fit score, stakeholder map, brief,
+  opportunity mapper, deal coach, outreach prep, opportunities, follow-ups, analytics.
+- **Profile layer**: Bloom Business School (first use case, polished demo) + Generic B2B.
+- **Public professional website**: home, about, track record, experience, skills, case
+  studies, projects, certifications, CV (printable), contact.
 
-Dashboard, account database, fit score, stakeholder map, account brief, training
-opportunity mapper, deal coach, outreach preparation, opportunities, activities &
-follow-ups, programme catalogue, settings, guided executive demo. Local demo mode.
+## Next (highest value first)
+1. **Replace site placeholders with verified facts** — employers, dates, results,
+   certifications, contact details (`src/content/site.ts`). Optionally add `public/cv.pdf`.
+2. **Deploy** to Vercel with a custom domain.
+3. **Supabase adapter + login** — make the private workspace truly private and synced across
+   devices (schema ready in `supabase/schema.sql`).
+4. **Personal profile** — a profile for your own BD target market (e.g. pharma / healthcare
+   B2B), built by copying `profiles/generic`.
+5. **CSV import** of accounts and contacts (with source/provenance field).
 
-## Phase 2 — Make it real (highest value next)
-
-1. **Real Bloom programme catalogue** — replace DEMO programmes; map capabilities.
-2. **Supabase adapter + authentication** — implement `SupabaseStore` against
-   `supabase/schema.sql`, email login, row-level security per team.
-3. **Import** — CSV import of real target accounts and contacts (with source field for
-   GDPR/PDPL-style provenance).
-4. **Team features** — account ownership, manager view by owner, weekly BD review page.
-
-## Phase 3 — Productivity
-
-- Email/calendar integration (log meetings, not send campaigns).
-- Optional Claude assistance for account briefs and meeting summaries (via `AIProvider`).
-- Arabic / RTL interface.
-- Proposal tracking with document links.
-
-## Phase 4 — Intelligence
-
-- Company intelligence APIs for firmographics (licensed sources only).
-- Win/loss analysis and score calibration against actual outcomes.
-- Advanced analytics: cycle time, stage ageing, cohort conversion, forecast (once real
-  values exist).
-- GCC expansion: Qatar, Kuwait, Bahrain, Oman market tables.
+## Later
+- Profile-level pipeline stage labels; Arabic / RTL.
+- Email/calendar logging (not sending); optional Claude-assisted briefs.
+- Win/loss analysis and score calibration; forecast once real values exist.
+- Bloom: real programme catalogue (paused until Bloom engagement resumes).
 
 ## Explicitly not planned
-
-LinkedIn scraping or automation, bulk email tools, purchased contact lists, and any
-feature that sends messages without a human.
+Scraping, bulk messaging, purchased contact lists, fake testimonials/logos, multi-tenant SaaS.
