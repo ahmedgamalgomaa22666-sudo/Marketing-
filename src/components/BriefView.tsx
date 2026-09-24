@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { Printer } from "lucide-react";
-import { CAPABILITIES } from "@/lib/config";
 import type { AccountBrief } from "@/lib/intelligence/brief";
+import { useData } from "@/lib/store/DataProvider";
 import { Badge, Button, ButtonLink, Card, Hypothesis } from "./ui";
 
 export function BriefView({ brief, accountId }: { brief: AccountBrief; accountId: string }) {
+  const { profile } = useData();
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-900">
@@ -41,7 +42,7 @@ export function BriefView({ brief, accountId }: { brief: AccountBrief; accountId
           <ul className="space-y-2">{brief.priorities.map((p) => <Hypothesis key={p}>{p}</Hypothesis>)}</ul>
         </Card>
 
-        <Card title="Potential learning / capability gaps">
+        <Card title={`Potential ${profile.terminology.need.toLowerCase()}s`}>
           <ul className="space-y-2">{brief.gaps.map((g) => <Hypothesis key={g.capability}>{g.hypothesis}</Hypothesis>)}</ul>
         </Card>
 
@@ -85,23 +86,23 @@ export function BriefView({ brief, accountId }: { brief: AccountBrief; accountId
           <p className="mt-1 text-sm text-slate-500">{brief.nextAction.reason}</p>
         </Card>
 
-        <Card title="Bloom solution match" action={<ButtonLink href={`/mapper?account=${accountId}`} className="no-print">Run mapper</ButtonLink>}>
+        <Card title={`${profile.company.name} solution match`} action={<ButtonLink href={`/workspace/mapper?account=${accountId}`} className="no-print">Run mapper</ButtonLink>}>
           {brief.solutions.length === 0 ? (
-            <p className="text-sm text-slate-500">No programme in the catalogue covers these gaps yet.</p>
+            <p className="text-sm text-slate-500">{`No ${profile.terminology.offering.toLowerCase()} in the catalogue covers these needs yet.`}</p>
           ) : (
             <ul className="space-y-3">
               {brief.solutions.map((m) => (
                 <li key={m.programme.id}>
                   <div className="flex items-center justify-between gap-2">
-                    <Link href="/programmes" className="text-sm font-medium text-slate-900 hover:text-brand-700">{m.programme.name}</Link>
+                    <Link href="/workspace/offerings" className="text-sm font-medium text-slate-900 hover:text-brand-700">{m.programme.name}</Link>
                     <span className="text-xs tabular-nums text-slate-500">{m.fit}% coverage</span>
                   </div>
-                  <p className="text-xs text-slate-500">Covers: {m.covered.map((c) => CAPABILITIES[c]).join(", ")}</p>
+                  <p className="text-xs text-slate-500">Covers: {m.covered.map((c) => profile.needs[c] ?? c).join(", ")}</p>
                 </li>
               ))}
             </ul>
           )}
-          <p className="mt-3 text-xs text-slate-400">DEMO programmes are placeholders until Bloom&apos;s real catalogue is added.</p>
+          {brief.solutions.some((m) => m.programme.isDemo) && <p className="mt-3 text-xs text-slate-400">Placeholder {profile.terminology.offerings.toLowerCase()} are marked DEMO / PLACEHOLDER until the real catalogue is added.</p>}
         </Card>
       </div>
     </div>

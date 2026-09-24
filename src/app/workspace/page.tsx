@@ -11,7 +11,7 @@ import { recommendNextAction } from "@/lib/intelligence/nextAction";
 import { useData } from "@/lib/store/DataProvider";
 
 export default function DashboardPage() {
-  const { db, scoreFor } = useData();
+  const { db, profile, scoreFor } = useData();
   const today = todayISO();
 
   const data = useMemo(() => {
@@ -22,26 +22,26 @@ export default function DashboardPage() {
       conversions: funnelConversions(db.accounts),
       metrics: commercialMetrics(db.accounts, db.activities, today),
       stages: stageDistribution(db.accounts),
-      countries: countryDistribution(db.accounts),
+      countries: countryDistribution(db.accounts, profile.markets),
       overdue: overdue(db.activities, today),
       today: dueToday(db.activities, today),
       noNextAction: open.filter((s) => s.account.priority === "High" && !hasNextAction(s.account, db.activities, today)).sort((a, b) => b.score - a.score),
       top: [...open].sort((a, b) => b.score - a.score).slice(0, 6),
       recent: db.activities.filter((a) => a.status === "done").sort((a, b) => b.date.localeCompare(a.date) || b.updatedAt.localeCompare(a.updatedAt)).slice(0, 6),
     };
-  }, [db, scoreFor, today]);
+  }, [db, profile, scoreFor, today]);
 
   if (db.accounts.length === 0) {
     return (
       <>
-        <PageHeader title="GCC Corporate Pipeline" subtitle="UAE & Saudi Arabia" />
+        <PageHeader title="Pipeline overview" subtitle={profile.markets.join(" · ")} />
         <Card>
           <div className="py-8 text-center">
             <p className="text-sm font-medium text-slate-700">No target accounts yet</p>
             <p className="mx-auto mt-1 max-w-md text-sm text-slate-500">Add your first target account to start building the pipeline, or restore the demo dataset from Settings.</p>
             <div className="mt-4 flex justify-center gap-2">
-              <ButtonLink href="/accounts?new=1" variant="primary">Add account</ButtonLink>
-              <ButtonLink href="/settings">Settings</ButtonLink>
+              <ButtonLink href="/workspace/accounts?new=1" variant="primary">Add account</ButtonLink>
+              <ButtonLink href="/workspace/settings">Settings</ButtonLink>
             </div>
           </div>
         </Card>
@@ -56,25 +56,25 @@ export default function DashboardPage() {
   return (
     <>
       <PageHeader
-        title="GCC Corporate Pipeline"
-        subtitle={`UAE & Saudi Arabia · ${formatDate(today)}`}
+        title="Pipeline overview"
+        subtitle={`${profile.company.name} · ${profile.markets.join(" · ")} · ${formatDate(today)}`}
         actions={
           <>
-            <ButtonLink href="/activities">Follow-ups</ButtonLink>
-            <ButtonLink href="/accounts" variant="primary">Target accounts</ButtonLink>
+            <ButtonLink href="/workspace/activities">Follow-ups</ButtonLink>
+            <ButtonLink href="/workspace/accounts" variant="primary">Target accounts</ButtonLink>
           </>
         }
       />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8">
-        <Stat label="Target accounts" value={kpis.total} href="/accounts" />
+        <Stat label="Target accounts" value={kpis.total} href="/workspace/accounts" />
         <Stat label="Contacted" value={kpis.contacted} sub="reached stage" />
         <Stat label="Engaged" value={kpis.engaged} sub="reached stage" />
         <Stat label="Qualified" value={kpis.qualified} sub="reached stage" />
         <Stat label="Meetings" value={kpis.meetings} sub="reached stage" />
         <Stat label="Proposals" value={kpis.proposals} sub="reached stage" />
-        <Stat label="Won" value={kpis.won} href="/accounts?stage=Won" />
-        <Stat label="Lost" value={kpis.lost} href="/accounts?stage=Lost" />
+        <Stat label="Won" value={kpis.won} href="/workspace/accounts?stage=Won" />
+        <Stat label="Lost" value={kpis.lost} href="/workspace/accounts?stage=Lost" />
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
@@ -91,10 +91,10 @@ export default function DashboardPage() {
           ) : (
             <ul className="space-y-3">
               {data.noNextAction.map(({ account, score }) => {
-                const next = recommendNextAction(account, db.contacts.filter((c) => c.accountId === account.id), db.activities, today);
+                const next = recommendNextAction(profile, account, db.contacts.filter((c) => c.accountId === account.id), db.activities, today);
                 return (
                   <li key={account.id}>
-                    <Link href={`/accounts/${account.id}`} className="group block">
+                    <Link href={`/workspace/accounts/${account.id}`} className="group block">
                       <div className="flex items-center gap-2">
                         <ScorePill score={score} />
                         <span className="text-sm font-medium text-slate-800 group-hover:text-brand-700">{account.name}</span>
@@ -131,7 +131,7 @@ export default function DashboardPage() {
 
         <Card title="Pipeline by stage">
           {data.stages.map((s) => (
-            <BarRow key={s.stage} label={s.stage} value={s.count} max={maxStage} href={`/accounts?stage=${encodeURIComponent(s.stage)}`} />
+            <BarRow key={s.stage} label={s.stage} value={s.count} max={maxStage} href={`/workspace/accounts?stage=${encodeURIComponent(s.stage)}`} />
           ))}
         </Card>
 
@@ -139,7 +139,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             {data.countries.map((c) => (
               <div key={c.country}>
-                <BarRow label={c.country} value={c.total} max={maxCountry} href={`/accounts?country=${encodeURIComponent(c.country)}`} />
+                <BarRow label={c.country} value={c.total} max={maxCountry} href={`/workspace/accounts?country=${encodeURIComponent(c.country)}`} />
                 <p className="pl-[8.25rem] text-xs text-slate-500">
                   {c.active} active · {c.won} won
                 </p>
@@ -160,7 +160,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
-        <Card title="Highest-priority target accounts" action={<Link href="/accounts" className="text-xs font-medium text-brand-700 hover:underline">All accounts</Link>} className="lg:col-span-2">
+        <Card title="Highest-priority target accounts" action={<Link href="/workspace/accounts" className="text-xs font-medium text-brand-700 hover:underline">All accounts</Link>} className="lg:col-span-2">
           <div className="-mx-4 overflow-x-auto">
             <table className="w-full min-w-[520px] text-sm">
               <thead>
@@ -179,7 +179,7 @@ export default function DashboardPage() {
                       <ScorePill score={score} />
                     </td>
                     <td className="py-2">
-                      <Link href={`/accounts/${account.id}`} className="font-medium text-slate-800 hover:text-brand-700">
+                      <Link href={`/workspace/accounts/${account.id}`} className="font-medium text-slate-800 hover:text-brand-700">
                         {account.name}
                       </Link>
                       <div className="text-xs text-slate-500">

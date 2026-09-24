@@ -4,28 +4,28 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { Check, Copy, RotateCcw, Sparkles } from "lucide-react";
 import { Badge, Button, Card, EmptyState, Field, Input, PageHeader, Select, Textarea, ButtonLink } from "@/components/ui";
-import { CAPABILITIES } from "@/lib/config";
 import { todayISO } from "@/lib/dates";
 import { CTA_OPTIONS, MESSAGE_TYPES, reviewChecks, templateDraft, type MessageType, type OutreachDraft } from "@/lib/intelligence/outreach";
-import { SIGNAL_INSIGHTS } from "@/lib/intelligence/playbooks";
 import { useData } from "@/lib/store/DataProvider";
 import type { CapabilityKey } from "@/lib/types";
 
 function OutreachView() {
   const params = useSearchParams();
-  const { db, upsert } = useData();
+  const { db, profile, upsert } = useData();
+  const NEEDS = profile.needs;
+  const firstNeed = Object.keys(NEEDS)[0] ?? "";
   const [accountId, setAccountId] = useState(params.get("account") ?? db.accounts[0]?.id ?? "");
   const account = db.accounts.find((a) => a.id === accountId);
   const contacts = db.contacts.filter((c) => c.accountId === accountId);
   const [contactId, setContactId] = useState(params.get("contact") ?? "");
   const contact = contacts.find((c) => c.id === contactId) ?? contacts.find((c) => c.role === "Champion") ?? contacts[0];
 
-  const observations = useMemo(() => (account?.signals ?? []).map((s) => SIGNAL_INSIGHTS[s].observation), [account]);
-  const defaultCapability = (params.get("capability") as CapabilityKey) || (account ? SIGNAL_INSIGHTS[account.signals[0]]?.capabilities[0] : undefined) || "people-management";
+  const observations = useMemo(() => (account?.signals ?? []).map((s) => profile.signals[s]?.observation).filter((o): o is string => !!o), [account, profile]);
+  const defaultCapability = (params.get("capability") as CapabilityKey) || (account ? profile.signals[account.signals[0]]?.needs[0] : undefined) || firstNeed;
 
   const [type, setType] = useState<MessageType>((MESSAGE_TYPES.find((t) => t.key === params.get("type"))?.key ?? "linkedin") as MessageType);
   const [observation, setObservation] = useState(observations[0] ?? "");
-  const [capability, setCapability] = useState<CapabilityKey>(defaultCapability in CAPABILITIES ? defaultCapability : "people-management");
+  const [capability, setCapability] = useState<CapabilityKey>(defaultCapability in NEEDS ? defaultCapability : firstNeed);
   const [cta, setCta] = useState(CTA_OPTIONS[0]);
   const [sender, setSender] = useState("");
   const [aiDraft, setAiDraft] = useState<OutreachDraft | null>(null);
@@ -49,10 +49,12 @@ function OutreachView() {
     contactName: contact?.name ?? "",
     contactTitle: contact?.title ?? "",
     observation,
-    capability: CAPABILITIES[capability],
+    capability: NEEDS[capability] ?? capability,
     stage: account?.stage ?? "",
     cta,
     senderName: sender,
+    senderOrg: profile.outreach.signature ?? "",
+    audience: profile.outreach.audience,
   };
   const template = templateDraft(input);
   const draft = aiDraft ?? template;
@@ -100,7 +102,7 @@ function OutreachView() {
       type: type === "linkedin" ? "LinkedIn" : type === "follow-up" || type === "re-engagement" ? "Follow-up" : "Email",
       status: "done",
       date: todayISO(),
-      summary: `${MESSAGE_TYPES.find((t) => t.key === type)?.label} sent to ${contact?.name ?? "stakeholder"} (${CAPABILITIES[capability].toLowerCase()})`,
+      summary: `${MESSAGE_TYPES.find((t) => t.key === type)?.label} sent to ${contact?.name ?? "stakeholder"} (${(NEEDS[capability] ?? capability).toLowerCase()})`,
       outcome: null,
     });
     if (account.stage === "Target" || account.stage === "Researching") upsert("accounts", { ...account, stage: "Contacted", highestStage: account.highestStage === "Target" || account.highestStage === "Researching" ? "Contacted" : account.highestStage });
@@ -108,7 +110,7 @@ function OutreachView() {
   };
 
   if (db.accounts.length === 0) {
-    return <EmptyState title="No accounts yet" description="Add an account and a stakeholder to prepare outreach." action={<ButtonLink href="/accounts?new=1" variant="primary">Add account</ButtonLink>} />;
+    return <EmptyState title="No accounts yet" description="Add an account and a stakeholder to prepare outreach." action={<ButtonLink href="/workspace/accounts?new=1" variant="primary">Add account</ButtonLink>} />;
   }
 
   return (
@@ -124,7 +126,7 @@ function OutreachView() {
                   const next = db.accounts.find((a) => a.id === e.target.value);
                   setAccountId(e.target.value);
                   setContactId("");
-                  setObservation(next?.signals[0] ? SIGNAL_INSIGHTS[next.signals[0]].observation : "");
+                  setObservation(next?.signals[0] ? (profile.signals[next.signals[0]]?.observation ?? "") : "");
                   resetDraft();
                 }}
                 options={db.accounts.map((a) => ({ value: a.id, label: a.name }))}
@@ -145,7 +147,7 @@ function OutreachView() {
               <datalist id="observations">{observations.map((o) => <option key={o} value={o} />)}</datalist>
             </Field>
             <Field label="Relevant Bloom capability">
-              <Select value={capability} onChange={(e) => { setCapability(e.target.value as CapabilityKey); resetDraft(); }} options={Object.entries(CAPABILITIES).map(([value, label]) => ({ value, label }))} />
+              <Select value={capability} onChange={(e) => { setCapability(e.target.value as CapabilityKey); resetDraft(); }} options={Object.entries(NEEDS).map(([value, label]) => ({ value, label }))} />
             </Field>
             <Field label="Call to action">
               <Select value={cta} onChange={(e) => { setCta(e.target.value); resetDraft(); }} options={CTA_OPTIONS} />

@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { commercialMetrics, funnelConversions, furthestStage, overdue, pipelineKpis, rate } from "./analytics";
 import { DEFAULT_WEIGHTS } from "./config";
-import { createDemoDatabase, HERO_ACCOUNT_ID } from "./demo/seed";
+import { bloomProfile as profile } from "./profile/bloom";
+import { HERO_ACCOUNT_ID } from "./profile/bloom/seed";
+import { genericProfile } from "./profile/generic";
+import { emptyDatabase } from "./store/empty";
 import { buildAccountBrief } from "./intelligence/brief";
 import { coachDeal } from "./intelligence/dealCoach";
 import { buildBusinessCase, capabilityGaps, matchProgrammes } from "./intelligence/mapper";
@@ -10,7 +13,7 @@ import { computeFitScore } from "./scoring";
 import type { Account } from "./types";
 
 const TODAY = "2026-09-24";
-const db = createDemoDatabase(TODAY);
+const db = profile.createDemoData!(TODAY);
 const scoreFor = (id: string, weights = DEFAULT_WEIGHTS) => {
   const account = db.accounts.find((a) => a.id === id)!;
   return computeFitScore({
@@ -19,6 +22,7 @@ const scoreFor = (id: string, weights = DEFAULT_WEIGHTS) => {
     contacts: db.contacts.filter((c) => c.accountId === id),
     activities: db.activities.filter((a) => a.accountId === id),
     weights,
+    profile,
     today: TODAY,
   });
 };
@@ -38,7 +42,7 @@ describe("Account Fit Score", () => {
     expect(s.total).toBeGreaterThanOrEqual(75);
     expect(s.band).toBe("High fit");
     expect(s.strengths).toContain("Identified HR / L&D stakeholder");
-    expect(s.strengths).toContain("GCC expansion — potential multi-country programme");
+    expect(s.strengths.some((x) => x.startsWith("Expanding across the GCC"))).toBe(true);
   });
 
   it("flags risks for an account with no stakeholders or engagement", () => {
@@ -92,24 +96,24 @@ describe("Funnel analytics", () => {
 
 describe("Training Opportunity Mapper", () => {
   it("translates new-manager promotion into people-management gaps", () => {
-    const gaps = capabilityGaps(["new-managers"]);
+    const gaps = capabilityGaps(profile, ["new-managers"]);
     expect(gaps[0].capability).toBe("people-management");
     expect(gaps.map((g) => g.capability)).toEqual(expect.arrayContaining(["coaching", "delegation"]));
   });
 
   it("matches sales underperformance to the selling programme", () => {
-    const matches = matchProgrammes(capabilityGaps(["sales-underperformance"]), db.programmes, "Individual contributors");
+    const matches = matchProgrammes(capabilityGaps(profile, ["sales-underperformance"]), db.programmes, "Individual contributors");
     expect(matches[0].programme.id).toBe("prog-sell");
     expect(matches[0].fit).toBeGreaterThan(0);
     expect(matches.length).toBeLessThanOrEqual(3);
   });
 
   it("labels the gap as a hypothesis and flags DEMO programmes", () => {
-    const inputs = { industry: "Healthcare", sizeBand: "1000-4999", growthStage: "Rapid growth", challenges: ["new-managers"], targetGroup: "New clinic managers", leadershipLevel: "Frontline", desiredOutcome: "", urgency: "High", knownGaps: "" } as const;
-    const gaps = capabilityGaps([...inputs.challenges]);
-    const bc = buildBusinessCase({ ...inputs, challenges: [...inputs.challenges] }, gaps, matchProgrammes(gaps, db.programmes, inputs.leadershipLevel));
+    const inputs = { industry: "Healthcare", sizeBand: "1000-4999", growthStage: "Rapid growth", challenges: ["new-managers"], targetGroup: "New clinic managers", audienceLevel: "Frontline", desiredOutcome: "", urgency: "High", knownGaps: "" } as const;
+    const gaps = capabilityGaps(profile, [...inputs.challenges]);
+    const bc = buildBusinessCase(profile, { ...inputs, challenges: [...inputs.challenges] }, gaps, matchProgrammes(gaps, db.programmes, inputs.audienceLevel));
     expect(bc.capabilityGap.startsWith("Hypothesis:")).toBe(true);
-    expect(bc.suggestedSolution).toContain("DEMO");
+    expect(bc.suggestedSolution).toContain("placeholder");
     expect(bc.discoveryQuestions.length).toBeGreaterThan(0);
     expect(bc.validationQuestions.length).toBeGreaterThan(0);
   });
@@ -122,7 +126,7 @@ describe("Training Opportunity Mapper", () => {
 describe("Brief, deal coach and outreach", () => {
   it("labels every inferred priority and gap as a hypothesis", () => {
     const account = db.accounts.find((a) => a.id === HERO_ACCOUNT_ID)!;
-    const brief = buildAccountBrief(account, db.contacts.filter((c) => c.accountId === account.id), db.activities, db.programmes, scoreFor(account.id), TODAY);
+    const brief = buildAccountBrief(profile, account, db.contacts.filter((c) => c.accountId === account.id), db.activities, db.programmes, scoreFor(account.id), TODAY);
     expect(brief.priorities.every((p) => p.startsWith("Hypothesis:"))).toBe(true);
     expect(brief.gaps.every((g) => g.hypothesis.startsWith("Hypothesis:"))).toBe(true);
     expect(brief.solutions.length).toBeGreaterThan(0);
@@ -131,7 +135,7 @@ describe("Brief, deal coach and outreach", () => {
   it("produces 5 discovery, 3 follow-up questions and 3 objections", () => {
     const opp = db.opportunities.find((o) => o.id === "opp-sahra")!;
     const account = db.accounts.find((a) => a.id === opp.accountId)!;
-    const c = coachDeal(opp, account, db.contacts.filter((x) => x.accountId === account.id), db.activities, scoreFor(account.id), TODAY);
+    const c = coachDeal(profile, opp, account, db.contacts.filter((x) => x.accountId === account.id), db.activities, scoreFor(account.id), TODAY);
     expect(c.discoveryQuestions).toHaveLength(5);
     expect(c.followUpQuestions).toHaveLength(3);
     expect(c.objections).toHaveLength(3);
@@ -140,7 +144,7 @@ describe("Brief, deal coach and outreach", () => {
 
   it("keeps drafts short and free of banned phrasing", () => {
     for (const type of ["linkedin", "email", "follow-up", "meeting-follow-up", "re-engagement"] as const) {
-      const draft = templateDraft({ type, companyName: "Meridian Gulf Healthcare", country: "UAE", contactName: "Omar Farouk", contactTitle: "Head of L&D", observation: "expanding into new GCC markets", capability: "People management", stage: "Engaged", cta: "a 20-minute conversation", senderName: "Sam" });
+      const draft = templateDraft({ type, companyName: "Meridian Gulf Healthcare", country: "UAE", contactName: "Omar Farouk", contactTitle: "Head of L&D", observation: "expanding into new GCC markets", capability: "People management", stage: "Engaged", cta: "a 20-minute conversation", senderName: "Sam", senderOrg: "", audience: profile.outreach.audience });
       const lower = draft.body.toLowerCase();
       expect(BANNED_PHRASES.some((p) => lower.includes(p))).toBe(false);
       expect(draft.body).toContain("Omar");
@@ -156,7 +160,22 @@ describe("Personalisation helpers", () => {
     expect(firstName("Dr. Layla Haddad")).toBe("Layla");
     expect(firstName("Omar Farouk")).toBe("Omar");
     const account = db.accounts.find((a) => a.id === HERO_ACCOUNT_ID)!;
-    const next = recommendNextAction({ ...account, stage: "Engaged" }, db.contacts.filter((c) => c.accountId === account.id), [], TODAY);
+    const next = recommendNextAction(profile, { ...account, stage: "Engaged" }, db.contacts.filter((c) => c.accountId === account.id), [], TODAY);
     expect(next.action).toContain("Omar");
+  });
+});
+
+describe("Reusable core (Generic B2B profile)", () => {
+  it("runs scoring, mapping and next actions with no Bloom configuration", () => {
+    const g = emptyDatabase(genericProfile);
+    expect(g.accounts).toHaveLength(0);
+    expect(g.programmes.every((p) => p.isDemo)).toBe(true);
+    const account = { ...db.accounts[0], industry: "Pharmaceuticals", country: "Egypt", signals: ["expansion", "regulation"] };
+    const score = computeFitScore({ account, contacts: [], activities: [], profile: genericProfile, today: TODAY });
+    expect(score.total).toBeGreaterThan(0);
+    expect(score.strengths.join(" ")).not.toMatch(/Bloom|L&D|training/i);
+    const gaps = capabilityGaps(genericProfile, ["growth"]);
+    expect(gaps[0].label).toBe("Revenue growth");
+    expect(matchProgrammes(gaps, g.programmes)[0].programme.id).toBe("off-a");
   });
 });

@@ -37,6 +37,8 @@ function describe(i: OutreachInput): string {
     `Sales stage: ${i.stage}`,
     `Call to action: ${i.cta}`,
     `Sender name: ${i.senderName || "[Your name]"}`,
+    `Sender organisation: ${i.senderOrg || "not specified"}`,
+    `Typical audience: ${i.audience || "business leaders"}`,
   ].join("\n");
 }
 

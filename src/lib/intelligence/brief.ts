@@ -1,9 +1,9 @@
-import { CAPABILITIES, SIGNALS, SIZE_BANDS, STAKEHOLDER_ROLES } from "../config";
+import { SIZE_BANDS, STAKEHOLDER_ROLES } from "../config";
+import type { WorkspaceProfile } from "../profile/types";
 import type { FitScore } from "../scoring";
-import type { Account, Activity, CapabilityKey, Contact, LeadershipLevel, Programme, StakeholderRole } from "../types";
+import type { Account, Activity, CapabilityKey, Contact, Programme, StakeholderRole } from "../types";
 import { capabilityGaps, matchProgrammes, type ProgrammeMatch } from "./mapper";
 import { recommendNextAction, type NextAction } from "./nextAction";
-import { PLAYBOOKS, SIGNAL_INSIGHTS } from "./playbooks";
 
 export interface AccountBrief {
   overview: { label: string; value: string }[];
@@ -21,6 +21,7 @@ export interface AccountBrief {
 }
 
 export function buildAccountBrief(
+  profile: WorkspaceProfile,
   account: Account,
   contacts: Contact[],
   activities: Activity[],
@@ -28,21 +29,22 @@ export function buildAccountBrief(
   score: FitScore,
   today?: string,
 ): AccountBrief {
-  const playbook = PLAYBOOKS[account.industry];
-  const insights = account.signals.map((s) => SIGNAL_INSIGHTS[s]);
+  const playbook = profile.playbooks[account.industry] ?? profile.defaultPlaybook;
+  const insights = account.signals.map((s) => profile.signals[s]).filter(Boolean);
+  const needLabel = (c: string) => profile.needs[c] ?? c;
 
   const priorities = [...insights.map((i) => i.hypothesis), ...playbook.priorities].slice(0, 5).map((p) => `Hypothesis: ${capitalise(p)}.`);
 
   // Signal capabilities count double: they come from observations about this account.
-  const signalCaps = insights.flatMap((i) => i.capabilities);
+  const signalCaps = insights.flatMap((i) => i.needs);
   const weights = new Map<CapabilityKey, number>();
   signalCaps.forEach((c) => weights.set(c, (weights.get(c) ?? 0) + 2));
-  playbook.gaps.forEach((c) => weights.set(c, (weights.get(c) ?? 0) + 1));
+  playbook.needs.forEach((c) => weights.set(c, (weights.get(c) ?? 0) + 1));
   const rankedCaps = [...weights.entries()].sort((a, b) => b[1] - a[1]).map(([c]) => c).slice(0, 4);
   const gaps = rankedCaps.map((capability) => ({
     capability,
-    label: CAPABILITIES[capability],
-    hypothesis: `Hypothesis: ${CAPABILITIES[capability].toLowerCase()} may be a development need — validate with HR / L&D.`,
+    label: needLabel(capability),
+    hypothesis: `Hypothesis: ${needLabel(capability).toLowerCase()} may be a priority need — validate with the ${profile.buyerFunction.label} stakeholder.`,
   }));
 
   const stakeholders = STAKEHOLDER_ROLES.map((role) => ({ role, contacts: contacts.filter((c) => c.role === role) })).filter((g) => g.contacts.length > 0);
@@ -53,14 +55,12 @@ export function buildAccountBrief(
 
   const leadInsight = insights[0];
   const salesAngle = leadInsight
-    ? `${playbook.angle} Lead with the observation that ${account.name} is ${leadInsight.observation}, and ask how it affects their managers.`
+    ? `${playbook.angle} Lead with the observation that ${account.name} is ${leadInsight.observation}, and ask how it affects their priorities.`
     : playbook.angle;
 
-  const level: LeadershipLevel = account.signals.includes("leadership-succession") ? "Senior leaders" : account.signals.includes("new-managers") || account.signals.includes("rapid-growth") ? "Frontline" : "Middle management";
   const solutions = matchProgrammes(
-    capabilityGaps([], rankedCaps).map((g, i) => ({ ...g, weight: rankedCaps.length - i })),
+    capabilityGaps(profile, [], rankedCaps).map((g, i) => ({ ...g, weight: rankedCaps.length - i })),
     programmes,
-    level,
   );
 
   const band = SIZE_BANDS.find((b) => b.id === account.sizeBand);
@@ -74,7 +74,7 @@ export function buildAccountBrief(
       { label: "Fit score", value: `${score.total} / 100 (${score.band})` },
     ],
     context: playbook.context,
-    recordedSignals: account.signals.map((s) => SIGNALS[s]),
+    recordedSignals: account.signals.map((s) => profile.signals[s]?.label ?? s),
     priorities,
     gaps,
     stakeholders,
@@ -82,7 +82,7 @@ export function buildAccountBrief(
     salesAngle,
     discoveryQuestions: [...new Set([...insights.map((i) => i.question), ...playbook.questions, "How is learning investment decided and measured today?"])].slice(0, 6),
     objections: playbook.objections,
-    nextAction: recommendNextAction(account, contacts, activities, today),
+    nextAction: recommendNextAction(profile, account, contacts, activities, today),
     solutions,
   };
 }

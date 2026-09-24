@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { ACCOUNT_STAGES, ACTIVITY_TYPES, COUNTRIES, CURRENCIES, INDUSTRIES, OPPORTUNITY_STAGES, SIGNALS, SIZE_BANDS, STAKEHOLDER_ROLES } from "@/lib/config";
+import { ACCOUNT_STAGES, ACTIVITY_TYPES, CURRENCIES, OPPORTUNITY_STAGES, SIZE_BANDS, STAKEHOLDER_ROLES } from "@/lib/config";
 import { addDays, todayISO } from "@/lib/dates";
 import { useData } from "@/lib/store/DataProvider";
 import type { Account, Activity, Contact, Opportunity, SignalKey } from "@/lib/types";
@@ -28,24 +28,26 @@ function FormFooter({ onClose, formId, label = "Save" }: { onClose: () => void; 
 /* ---------------------------------------------------------------- Account */
 
 export function AccountForm({ account, onClose, onSaved }: { account?: Account; onClose: () => void; onSaved?: (id: string) => void }) {
-  const { db, upsert } = useData();
+  const { db, profile, upsert } = useData();
+  const withCurrent = (list: string[], v?: string) => (v && !list.includes(v) ? [v, ...list] : list);
+  const needLabel = profile.qualification.labels.needStrength?.label ?? "Need strength";
   const score = account ? db.accountScores.find((s) => s.accountId === account.id) : undefined;
   const [f, setF] = useState({
     name: account?.name ?? "",
-    country: account?.country ?? COUNTRIES[0],
+    country: account?.country ?? profile.markets[0] ?? "",
     city: account?.city ?? "",
-    industry: account?.industry ?? INDUSTRIES[0],
+    industry: account?.industry ?? profile.industries[0] ?? "",
     sizeBand: account?.sizeBand ?? SIZE_BANDS[1].id,
     website: account?.website ?? "",
     ownerId: account?.ownerId ?? db.users[0]?.id ?? "",
     stage: account?.stage ?? "Target",
     priority: account?.priority ?? "Medium",
-    trainingPotential: account?.trainingPotential ?? "Medium",
+    potential: account?.potential ?? "Medium",
     signals: account?.signals ?? ([] as SignalKey[]),
     tags: account?.tags.join(", ") ?? "",
     notes: account?.notes ?? "",
     nextFollowUpAt: account?.nextFollowUpAt ?? "",
-    trainingNeed: score?.ratings.trainingNeed ?? 3,
+    needStrength: score?.ratings.needStrength ?? 3,
     strategicRelevance: score?.ratings.strategicRelevance ?? 3,
     evidence: score?.evidence ?? "",
   });
@@ -74,7 +76,7 @@ export function AccountForm({ account, onClose, onSaved }: { account?: Account; 
       stage: f.stage,
       highestStage: account ? account.highestStage : f.stage,
       priority: f.priority,
-      trainingPotential: f.trainingPotential,
+      potential: f.potential,
       signals: f.signals,
       tags: f.tags.split(",").map((t) => t.trim()).filter(Boolean),
       notes: f.notes,
@@ -85,7 +87,7 @@ export function AccountForm({ account, onClose, onSaved }: { account?: Account; 
     upsert("accountScores", {
       id: score?.id,
       accountId: saved.id,
-      ratings: { trainingNeed: Number(f.trainingNeed), strategicRelevance: Number(f.strategicRelevance) },
+      ratings: { needStrength: Number(f.needStrength), strategicRelevance: Number(f.strategicRelevance) },
       evidence: f.evidence,
     });
     onSaved?.(saved.id);
@@ -99,13 +101,13 @@ export function AccountForm({ account, onClose, onSaved }: { account?: Account; 
           <Input value={f.name} onChange={(e) => set("name", e.target.value)} autoFocus />
         </Field>
         <Field label="Country">
-          <Select value={f.country} onChange={(e) => set("country", e.target.value as Account["country"])} options={COUNTRIES} />
+          <Select value={f.country} onChange={(e) => set("country", e.target.value as Account["country"])} options={withCurrent(profile.markets, account?.country)} />
         </Field>
         <Field label="City *" error={errors.city}>
           <Input value={f.city} onChange={(e) => set("city", e.target.value)} />
         </Field>
         <Field label="Industry">
-          <Select value={f.industry} onChange={(e) => set("industry", e.target.value as Account["industry"])} options={INDUSTRIES} />
+          <Select value={f.industry} onChange={(e) => set("industry", e.target.value as Account["industry"])} options={withCurrent(profile.industries, account?.industry)} />
         </Field>
         <Field label="Company size">
           <Select value={f.sizeBand} onChange={(e) => set("sizeBand", e.target.value as Account["sizeBand"])} options={SIZE_BANDS.map((b) => ({ value: b.id, label: b.label }))} />
@@ -122,8 +124,8 @@ export function AccountForm({ account, onClose, onSaved }: { account?: Account; 
         <Field label="Strategic priority">
           <Select value={f.priority} onChange={(e) => set("priority", e.target.value as Account["priority"])} options={LEVELS} />
         </Field>
-        <Field label="Estimated training potential">
-          <Select value={f.trainingPotential} onChange={(e) => set("trainingPotential", e.target.value as Account["trainingPotential"])} options={LEVELS} />
+        <Field label={profile.terminology.potential}>
+          <Select value={f.potential} onChange={(e) => set("potential", e.target.value as Account["potential"])} options={LEVELS} />
         </Field>
         <Field label="Next follow-up">
           <Input type="date" value={f.nextFollowUpAt} onChange={(e) => set("nextFollowUpAt", e.target.value)} />
@@ -131,7 +133,7 @@ export function AccountForm({ account, onClose, onSaved }: { account?: Account; 
         <fieldset className="sm:col-span-2">
           <legend className="mb-1 text-xs font-medium text-slate-600">Observed business signals (only record what you have evidence for)</legend>
           <div className="grid gap-1 sm:grid-cols-2">
-            {(Object.keys(SIGNALS) as SignalKey[]).map((s) => (
+            {(Object.keys(profile.signals) as SignalKey[]).map((s) => (
               <label key={s} className="flex items-center gap-2 text-sm text-slate-700">
                 <input
                   type="checkbox"
@@ -139,13 +141,13 @@ export function AccountForm({ account, onClose, onSaved }: { account?: Account; 
                   checked={f.signals.includes(s)}
                   onChange={(e) => set("signals", e.target.checked ? [...f.signals, s] : f.signals.filter((x) => x !== s))}
                 />
-                {SIGNALS[s]}
+                {profile.signals[s].label}
               </label>
             ))}
           </div>
         </fieldset>
-        <Field label="Training need rating (0–5)" hint="BD judgement based on evidence">
-          <Input type="number" min={0} max={5} value={f.trainingNeed} onChange={(e) => set("trainingNeed", Math.max(0, Math.min(5, Number(e.target.value))))} />
+        <Field label={`${needLabel} rating (0–5)`} hint="BD judgement based on evidence">
+          <Input type="number" min={0} max={5} value={f.needStrength} onChange={(e) => set("needStrength", Math.max(0, Math.min(5, Number(e.target.value))))} />
         </Field>
         <Field label="Strategic relevance rating (0–5)" hint="Flagship, reference or expansion value">
           <Input type="number" min={0} max={5} value={f.strategicRelevance} onChange={(e) => set("strategicRelevance", Math.max(0, Math.min(5, Number(e.target.value))))} />

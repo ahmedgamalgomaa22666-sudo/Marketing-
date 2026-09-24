@@ -43,7 +43,7 @@ export function ActivityList({ activities, showAccount = true, empty = "Nothing 
                 <p className="text-sm text-slate-800">{a.summary}</p>
                 <p className="mt-0.5 text-xs text-slate-500">
                   {showAccount && account && (
-                    <Link href={`/accounts/${account.id}`} className="font-medium text-slate-600 hover:text-brand-700">
+                    <Link href={`/workspace/accounts/${account.id}`} className="font-medium text-slate-600 hover:text-brand-700">
                       {account.name}
                     </Link>
                   )}

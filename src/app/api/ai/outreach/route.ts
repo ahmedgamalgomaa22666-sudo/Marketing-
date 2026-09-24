@@ -3,7 +3,7 @@ import { getServerProvider } from "@/lib/ai/anthropic";
 import { TemplateProvider } from "@/lib/ai/provider";
 import { MESSAGE_TYPES, type OutreachInput } from "@/lib/intelligence/outreach";
 
-const FIELDS = ["companyName", "country", "contactName", "contactTitle", "observation", "capability", "stage", "cta", "senderName"] as const;
+const FIELDS = ["companyName", "country", "contactName", "contactTitle", "observation", "capability", "stage", "cta", "senderName", "senderOrg", "audience"] as const;
 
 function parse(body: unknown): OutreachInput | null {
   if (!body || typeof body !== "object") return null;

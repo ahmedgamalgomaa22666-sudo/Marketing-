@@ -10,7 +10,7 @@ import { AccountForm, ActivityForm, OpportunityForm } from "@/components/forms";
 import { ScoreCard } from "@/components/ScoreCard";
 import { StakeholderMap } from "@/components/StakeholderMap";
 import { Badge, Button, ButtonLink, Card, EmptyState, PriorityBadge, ScorePill, Select, StageBadge, Tabs } from "@/components/ui";
-import { ACCOUNT_STAGES, SIGNALS, SIZE_BANDS } from "@/lib/config";
+import { ACCOUNT_STAGES, SIZE_BANDS } from "@/lib/config";
 import { formatDate, relativeDay } from "@/lib/dates";
 import { buildAccountBrief } from "@/lib/intelligence/brief";
 import { useData } from "@/lib/store/DataProvider";
@@ -29,7 +29,7 @@ function AccountView() {
   const { id } = useParams<{ id: string }>();
   const params = useSearchParams();
   const router = useRouter();
-  const { db, scoreFor, setAccountStage, remove } = useData();
+  const { db, profile, scoreFor, setAccountStage, remove } = useData();
   const initialTab = (TABS.find((t) => t.key === params.get("tab"))?.key ?? "overview") as Tab;
   const [tab, setTab] = useState<Tab>(initialTab);
   const [modal, setModal] = useState<"edit" | "opp" | "log" | "plan" | null>(null);
@@ -40,12 +40,12 @@ function AccountView() {
   const activities = useMemo(() => db.activities.filter((a) => a.accountId === id).sort((a, b) => b.date.localeCompare(a.date)), [db.activities, id]);
   const opps = db.opportunities.filter((o) => o.accountId === id);
   const brief = useMemo(
-    () => (account && score ? buildAccountBrief(account, contacts, activities, db.programmes, score) : null),
-    [account, score, contacts, activities, db.programmes],
+    () => (account && score ? buildAccountBrief(profile, account, contacts, activities, db.programmes, score) : null),
+    [profile, account, score, contacts, activities, db.programmes],
   );
 
   if (!account || !score || !brief) {
-    return <EmptyState title="Account not found" description="It may have been deleted." action={<ButtonLink href="/accounts">Back to accounts</ButtonLink>} />;
+    return <EmptyState title="Account not found" description="It may have been deleted." action={<ButtonLink href="/workspace/accounts">Back to accounts</ButtonLink>} />;
   }
 
   const owner = db.users.find((u) => u.id === account.ownerId);
@@ -54,12 +54,12 @@ function AccountView() {
 
   const changeTab = (t: Tab) => {
     setTab(t);
-    router.replace(`/accounts/${id}?tab=${t}`, { scroll: false });
+    router.replace(`/workspace/accounts/${id}?tab=${t}`, { scroll: false });
   };
 
   return (
     <>
-      <Link href="/accounts" className="mb-3 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800">
+      <Link href="/workspace/accounts" className="mb-3 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800">
         <ArrowLeft size={14} /> Accounts
       </Link>
 
@@ -81,10 +81,10 @@ function AccountView() {
             Stage
             <Select className="w-36" value={account.stage} onChange={(e) => setAccountStage(account.id, e.target.value as AccountStage)} options={ACCOUNT_STAGES} />
           </label>
-          <ButtonLink href={`/mapper?account=${account.id}`}>
+          <ButtonLink href={`/workspace/mapper?account=${account.id}`}>
             <Compass size={15} /> Map opportunity
           </ButtonLink>
-          <ButtonLink href={`/outreach?account=${account.id}`}>
+          <ButtonLink href={`/workspace/outreach?account=${account.id}`}>
             <MessageSquareText size={15} /> Outreach
           </ButtonLink>
           <Button onClick={() => setModal("edit")} aria-label="Edit account">
@@ -118,7 +118,7 @@ function AccountView() {
             </Card>
             <Card title="Account details">
               <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm">
-                <Detail label="Training potential" value={account.trainingPotential} />
+                <Detail label={profile.terminology.potential} value={account.potential} />
                 <Detail label="Last contacted" value={formatDate(account.lastContactedAt)} />
                 <Detail label="Next follow-up" value={formatDate(account.nextFollowUpAt)} />
                 <Detail label="Created" value={formatDate(account.createdAt)} />
@@ -136,7 +136,7 @@ function AccountView() {
                 </div>
                 <div className="col-span-2">
                   <dt className="text-xs text-slate-500">Signals</dt>
-                  <dd className="mt-1 flex flex-wrap gap-1">{account.signals.length ? account.signals.map((s) => <Badge key={s} tone="brand">{SIGNALS[s]}</Badge>) : "—"}</dd>
+                  <dd className="mt-1 flex flex-wrap gap-1">{account.signals.length ? account.signals.map((s) => <Badge key={s} tone="brand">{profile.signals[s]?.label ?? s}</Badge>) : "—"}</dd>
                 </div>
                 <div className="col-span-2">
                   <dt className="text-xs text-slate-500">Tags</dt>
@@ -155,7 +155,7 @@ function AccountView() {
               onClick={() => {
                 if (confirm(`Delete ${account.name} and all its contacts, opportunities and activities?`)) {
                   remove("accounts", account.id);
-                  router.push("/accounts");
+                  router.push("/workspace/accounts");
                 }
               }}
             >
@@ -172,13 +172,13 @@ function AccountView() {
       {tab === "opportunities" && (
         <Card title="Opportunities" action={<Button variant="primary" onClick={() => setModal("opp")}><Plus size={15} /> New opportunity</Button>}>
           {opps.length === 0 ? (
-            <EmptyState title="No opportunities yet" description="Run the Training Opportunity Mapper to shape a validated opportunity, or create one directly." action={<ButtonLink href={`/mapper?account=${account.id}`} variant="primary">Run mapper</ButtonLink>} />
+            <EmptyState title="No opportunities yet" description="Run the Training Opportunity Mapper to shape a validated opportunity, or create one directly." action={<ButtonLink href={`/workspace/mapper?account=${account.id}`} variant="primary">Run mapper</ButtonLink>} />
           ) : (
             <ul className="divide-y divide-slate-100">
               {opps.map((o) => (
                 <li key={o.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
                   <div>
-                    <Link href={`/opportunities/${o.id}`} className="font-medium text-slate-900 hover:text-brand-700">{o.name}</Link>
+                    <Link href={`/workspace/opportunities/${o.id}`} className="font-medium text-slate-900 hover:text-brand-700">{o.name}</Link>
                     <p className="text-xs text-slate-500">Next: {o.nextStep || "—"} {o.nextStepDate && `· ${formatDate(o.nextStepDate)}`}</p>
                   </div>
                   <StageBadge stage={o.stage} />
@@ -201,7 +201,7 @@ function AccountView() {
       )}
 
       {modal === "edit" && <AccountForm account={account} onClose={() => setModal(null)} />}
-      {modal === "opp" && <OpportunityForm accountId={account.id} onClose={() => setModal(null)} onSaved={(oid) => router.push(`/opportunities/${oid}`)} />}
+      {modal === "opp" && <OpportunityForm accountId={account.id} onClose={() => setModal(null)} onSaved={(oid) => router.push(`/workspace/opportunities/${oid}`)} />}
       {modal === "log" && <ActivityForm accountId={account.id} onClose={() => setModal(null)} />}
       {modal === "plan" && <ActivityForm accountId={account.id} defaultStatus="planned" onClose={() => setModal(null)} />}
     </>

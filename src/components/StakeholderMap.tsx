@@ -104,7 +104,7 @@ export function StakeholderMap({ accountId }: { accountId: string }) {
                     <td className="py-2 text-slate-600">{c.nextAction || "—"}</td>
                     <td className="px-4 py-2">
                       <div className="flex justify-end gap-1">
-                        <Link href={`/outreach?account=${accountId}&contact=${c.id}`} className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-brand-700" title="Prepare outreach" aria-label={`Prepare outreach to ${c.name}`}>
+                        <Link href={`/workspace/outreach?account=${accountId}&contact=${c.id}`} className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-brand-700" title="Prepare outreach" aria-label={`Prepare outreach to ${c.name}`}>
                           <MessageSquareText size={15} />
                         </Link>
                         <button type="button" onClick={() => setEditing(c)} className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label={`Edit ${c.name}`}>

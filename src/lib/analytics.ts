@@ -1,4 +1,4 @@
-import { ACCOUNT_STAGES, COUNTRIES, FUNNEL_STAGES, OUTBOUND_TYPES } from "./config";
+import { ACCOUNT_STAGES, FUNNEL_STAGES, OUTBOUND_TYPES } from "./config";
 import { daysBetween, todayISO } from "./dates";
 import type { Account, AccountStage, Activity } from "./types";
 
@@ -67,8 +67,10 @@ export function stageDistribution(accounts: Account[]) {
   return ACCOUNT_STAGES.map((stage) => ({ stage, count: accounts.filter((a) => a.stage === stage).length }));
 }
 
-export function countryDistribution(accounts: Account[]) {
-  return COUNTRIES.map((country) => {
+/** Accounts per market; markets come from the active profile plus any found in the data. */
+export function countryDistribution(accounts: Account[], markets: string[]) {
+  const all = [...new Set([...markets, ...accounts.map((a) => a.country)])];
+  return all.map((country) => {
     const inCountry = accounts.filter((a) => a.country === country);
     return {
       country,

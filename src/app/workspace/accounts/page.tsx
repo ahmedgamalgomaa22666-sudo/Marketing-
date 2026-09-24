@@ -6,7 +6,7 @@ import { Suspense, useMemo, useState } from "react";
 import { Plus, Search } from "lucide-react";
 import { AccountForm } from "@/components/forms";
 import { Badge, Button, EmptyState, Input, PageHeader, PriorityBadge, ScorePill, Select, StageBadge } from "@/components/ui";
-import { ACCOUNT_STAGES, COUNTRIES, INDUSTRIES } from "@/lib/config";
+import { ACCOUNT_STAGES } from "@/lib/config";
 import { formatDate, relativeDay, todayISO } from "@/lib/dates";
 import { useData } from "@/lib/store/DataProvider";
 
@@ -20,7 +20,7 @@ const SORTS = [
 function AccountsView() {
   const params = useSearchParams();
   const router = useRouter();
-  const { db, scoreFor } = useData();
+  const { db, profile, scoreFor } = useData();
   const [q, setQ] = useState("");
   const [country, setCountry] = useState(params.get("country") ?? "");
   const [industry, setIndustry] = useState("");
@@ -69,8 +69,8 @@ function AccountsView() {
           <Search size={16} className="pointer-events-none absolute left-2.5 top-2 text-slate-400" />
           <Input className="pl-8" placeholder="Search company, city, tag…" value={q} onChange={(e) => setQ(e.target.value)} />
         </label>
-        <Select aria-label="Country" value={country} onChange={(e) => setCountry(e.target.value)} options={[{ value: "", label: "All markets" }, ...COUNTRIES]} />
-        <Select aria-label="Industry" value={industry} onChange={(e) => setIndustry(e.target.value)} options={[{ value: "", label: "All industries" }, ...INDUSTRIES]} />
+        <Select aria-label="Country" value={country} onChange={(e) => setCountry(e.target.value)} options={[{ value: "", label: "All markets" }, ...profile.markets]} />
+        <Select aria-label="Industry" value={industry} onChange={(e) => setIndustry(e.target.value)} options={[{ value: "", label: "All industries" }, ...profile.industries]} />
         <Select aria-label="Stage" value={stage} onChange={(e) => setStage(e.target.value)} options={[{ value: "", label: "All stages" }, ...ACCOUNT_STAGES]} />
         <Select aria-label="Priority" value={priority} onChange={(e) => setPriority(e.target.value)} options={[{ value: "", label: "All priorities" }, "High", "Medium", "Low"]} />
         <div className="flex items-center gap-2 sm:col-span-3 lg:col-span-6">
@@ -88,7 +88,7 @@ function AccountsView() {
                   setIndustry("");
                   setStage("");
                   setPriority("");
-                  router.replace("/accounts");
+                  router.replace("/workspace/accounts");
                 }}
               >
                 Clear filters
@@ -123,12 +123,12 @@ function AccountsView() {
               {rows.map(({ account: a, score }) => {
                 const late = a.nextFollowUpAt && a.nextFollowUpAt < today && !["Won", "Lost"].includes(a.stage);
                 return (
-                  <tr key={a.id} className="cursor-pointer hover:bg-slate-50" onClick={() => router.push(`/accounts/${a.id}`)}>
+                  <tr key={a.id} className="cursor-pointer hover:bg-slate-50" onClick={() => router.push(`/workspace/accounts/${a.id}`)}>
                     <td className="px-4 py-2.5">
                       <ScorePill score={score} />
                     </td>
                     <td className="py-2.5">
-                      <Link href={`/accounts/${a.id}`} className="font-medium text-slate-900 hover:text-brand-700" onClick={(e) => e.stopPropagation()}>
+                      <Link href={`/workspace/accounts/${a.id}`} className="font-medium text-slate-900 hover:text-brand-700" onClick={(e) => e.stopPropagation()}>
                         {a.name}
                       </Link>
                       <div className="text-xs text-slate-500">
@@ -156,7 +156,7 @@ function AccountsView() {
         </div>
       )}
 
-      {creating && <AccountForm onClose={() => setCreating(false)} onSaved={(id) => router.push(`/accounts/${id}`)} />}
+      {creating && <AccountForm onClose={() => setCreating(false)} onSaved={(id) => router.push(`/workspace/accounts/${id}`)} />}
     </>
   );
 }

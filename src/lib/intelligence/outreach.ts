@@ -20,6 +20,9 @@ export interface OutreachInput {
   stage: string;
   cta: string;
   senderName: string;
+  /** From the workspace profile, e.g. "Bloom Business School" / "HR and L&D leaders". */
+  senderOrg: string;
+  audience: string;
 }
 
 export interface OutreachDraft {
@@ -63,7 +66,7 @@ export function templateDraft(i: OutreachInput): OutreachDraft {
 
   switch (i.type) {
     case "linkedin":
-      body = `${hi} I work with HR and L&D leaders in ${countryPhrase(i.country)} on ${cap}. ${obs ? `I understand ${i.companyName} is ${obs} — ` : ""}I'm curious how you're approaching ${cap} as that happens. Open to ${i.cta}?`;
+      body = `${hi} I work with ${i.audience || "business leaders"} in ${countryPhrase(i.country)} on ${cap}. ${obs ? `I understand ${i.companyName} is ${obs} — ` : ""}I'm curious how you're approaching ${cap} as that happens. Open to ${i.cta}?`;
       break;
     case "email":
       subject = `${capitalise(cap)} at ${i.companyName}`;
@@ -71,10 +74,10 @@ export function templateDraft(i: OutreachInput): OutreachDraft {
         hi,
         obs
           ? `I understand ${i.companyName} is ${obs}. In organisations going through that, we often see ${cap} become a pressure point for managers.`
-          : `I'm reaching out because ${cap} is a recurring priority for ${i.contactTitle ? `${i.contactTitle}s` : "HR and L&D leaders"} we speak with in ${countryPhrase(i.country)}.`,
+          : `I'm reaching out because ${cap} is a recurring priority for ${i.contactTitle ? `${i.contactTitle}s` : i.audience || "business leaders"} we speak with in ${countryPhrase(i.country)}.`,
         "I don't know yet whether that's true for you — which is why I'd value your perspective.",
         `Would you be open to ${i.cta}?`,
-        `Best regards,\n${sign}\nBloom Business School`,
+        `Best regards,\n${sign}${i.senderOrg ? `\n${i.senderOrg}` : ""}`,
       ].join("\n\n");
       break;
     case "follow-up":

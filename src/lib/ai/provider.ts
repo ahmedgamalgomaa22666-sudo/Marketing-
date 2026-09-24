@@ -17,7 +17,7 @@ export class TemplateProvider implements AIProvider {
   }
 }
 
-export const OUTREACH_SYSTEM_PROMPT = `You draft short B2B outreach messages for a business development professional at Bloom Business School, which offers corporate learning and executive education in the UAE and Saudi Arabia. A human will review and edit every draft before anything is sent.
+export const OUTREACH_SYSTEM_PROMPT = `You draft short B2B outreach messages for a business development professional. The sender's organisation and target audience are given in the request. A human will review and edit every draft before anything is sent.
 
 Write like a thoughtful consultant, not a marketer:
 - Lead with a clear, specific business reason for reaching out, then a genuine question.

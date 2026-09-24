@@ -1,5 +1,6 @@
-import { createDemoDatabase, SCHEMA_VERSION } from "../demo/seed";
+import type { WorkspaceProfile } from "../profile/types";
 import type { Database } from "../types";
+import { emptyDatabase, SCHEMA_VERSION } from "./empty";
 
 /**
  * Persistence boundary. The MVP ships LocalStore; a SupabaseStore implementing the same
@@ -7,39 +8,49 @@ import type { Database } from "../types";
  */
 export interface DataStore {
   readonly mode: "local-demo" | "supabase";
-  load(): Promise<Database>;
+  load(profile: WorkspaceProfile): Promise<Database>;
   save(db: Database): Promise<void>;
-  reset(): Promise<Database>;
+  /** Restores the profile's sample data, or an empty workspace when it has none. */
+  reset(profile: WorkspaceProfile): Promise<Database>;
+  clear(profile: WorkspaceProfile): Promise<Database>;
 }
 
-const KEY = "bloom-gcc-engine:db";
+const PREFIX = "bdos:db:";
+const PROFILE_KEY = "bdos:profile";
 
 export class LocalStore implements DataStore {
   readonly mode = "local-demo" as const;
 
-  async load(): Promise<Database> {
+  async load(profile: WorkspaceProfile): Promise<Database> {
     try {
-      const raw = window.localStorage.getItem(KEY);
+      const raw = window.localStorage.getItem(PREFIX + profile.id);
       if (raw) {
         const db = JSON.parse(raw) as Database;
-        if (db.version === SCHEMA_VERSION) return db;
+        if (db.version === SCHEMA_VERSION && db.profileId === profile.id) return db;
       }
     } catch {
-      // Storage unavailable or corrupt — fall through to a fresh demo dataset.
+      // Storage unavailable or corrupt — fall through to a fresh workspace.
     }
-    return this.reset();
+    return this.reset(profile);
   }
 
   async save(db: Database): Promise<void> {
     try {
-      window.localStorage.setItem(KEY, JSON.stringify(db));
+      window.localStorage.setItem(PREFIX + db.profileId, JSON.stringify(db));
     } catch {
       // Private mode / quota: the session keeps working in memory.
     }
   }
 
-  async reset(): Promise<Database> {
-    const db = createDemoDatabase();
+  async reset(profile: WorkspaceProfile): Promise<Database> {
+    const { todayISO } = await import("../dates");
+    const db = profile.createDemoData ? profile.createDemoData(todayISO()) : emptyDatabase(profile);
+    await this.save(db);
+    return db;
+  }
+
+  async clear(profile: WorkspaceProfile): Promise<Database> {
+    const db = emptyDatabase(profile);
     await this.save(db);
     return db;
   }
@@ -47,4 +58,20 @@ export class LocalStore implements DataStore {
 
 export function createStore(): DataStore {
   return new LocalStore();
+}
+
+export function readActiveProfileId(): string | null {
+  try {
+    return window.localStorage.getItem(PROFILE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function writeActiveProfileId(id: string): void {
+  try {
+    window.localStorage.setItem(PROFILE_KEY, id);
+  } catch {
+    // Non-critical: falls back to the default profile next time.
+  }
 }

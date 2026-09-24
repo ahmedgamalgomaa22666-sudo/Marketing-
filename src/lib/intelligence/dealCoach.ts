@@ -1,7 +1,7 @@
 import { daysBetween, todayISO } from "../dates";
 import type { FitScore } from "../scoring";
 import type { Account, Activity, Contact, Opportunity, OpportunityStage } from "../types";
-import { PLAYBOOKS } from "./playbooks";
+import type { WorkspaceProfile } from "../profile/types";
 
 export interface DealCoaching {
   known: string[];
@@ -18,10 +18,10 @@ export interface DealCoaching {
 const DISCOVERY: Record<OpportunityStage, string[]> = {
   Qualified: [
     "Consider exploring what triggered interest in this now — what changed?",
-    "Validate whether the problem is felt by the business sponsor, not only by HR.",
+    "Validate whether the problem is felt by the business sponsor, not only by the functional buyer.",
     "Consider asking how the target group is developed today and what has not worked.",
-    "Validate who else must agree before a programme goes ahead.",
-    "Consider exploring how success would be measured six months after the programme.",
+    "Validate who else must agree before a purchase goes ahead.",
+    "Consider exploring how success would be measured six months after implementation.",
   ],
   Meeting: [
     "Consider asking the decision maker how this initiative links to this year's business priorities.",
@@ -63,7 +63,7 @@ const DISCOVERY: Record<OpportunityStage, string[]> = {
 const FOLLOW_UPS = [
   "You mentioned [their point] — can you say more about how it shows up day to day?",
   "What would happen if nothing changes in the next 12 months?",
-  "Who would be most affected — positively or negatively — by this programme?",
+  "Who would be most affected — positively or negatively — by this initiative?",
 ];
 
 const GENERIC_OBJECTIONS = [
@@ -71,7 +71,7 @@ const GENERIC_OBJECTIONS = [
   { objection: "We can do this in-house.", approach: "Acknowledge internal strengths; explore capacity, external perspective and whether a blended model helps." },
 ];
 
-export function coachDeal(opp: Opportunity, account: Account, contacts: Contact[], activities: Activity[], score: FitScore, today: string = todayISO()): DealCoaching {
+export function coachDeal(profile: WorkspaceProfile, opp: Opportunity, account: Account, contacts: Contact[], activities: Activity[], score: FitScore, today: string = todayISO()): DealCoaching {
   const oppContacts = contacts.filter((c) => opp.contactIds.includes(c.id) || c.id === opp.primaryContactId);
   const acts = activities.filter((a) => a.opportunityId === opp.id || (a.accountId === account.id && !a.opportunityId));
   const done = acts.filter((a) => a.status === "done").sort((a, b) => b.date.localeCompare(a.date));
@@ -114,7 +114,7 @@ export function coachDeal(opp: Opportunity, account: Account, contacts: Contact[
     risks: [...new Set(risks)],
     discoveryQuestions: DISCOVERY[opp.stage],
     followUpQuestions: FOLLOW_UPS,
-    objections: [PLAYBOOKS[account.industry].objections[0], ...GENERIC_OBJECTIONS].slice(0, 3),
+    objections: [(profile.playbooks[account.industry] ?? profile.defaultPlaybook).objections[0], ...GENERIC_OBJECTIONS].slice(0, 3),
     nextAction,
     lastInteraction: last,
     nextScheduled: planned[0] ?? null,

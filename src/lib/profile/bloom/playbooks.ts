@@ -1,27 +1,18 @@
-import type { CapabilityKey, Industry, SignalKey } from "../types";
+import type { ChallengeDef, IndustryPlaybook, SignalDef } from "../types";
 
 /**
  * Industry and signal knowledge used to build hypotheses. Written as general market
  * patterns, never as facts about a specific company. Edit freely as Bloom learns.
  */
 
-export interface IndustryPlaybook {
-  context: string;
-  priorities: string[];
-  gaps: CapabilityKey[];
-  angle: string;
-  objections: { objection: string; approach: string }[];
-  questions: string[];
-}
-
-export const PLAYBOOKS: Record<Industry, IndustryPlaybook> = {
+export const PLAYBOOKS: Record<string, IndustryPlaybook> = {
   Healthcare: {
     context: "GCC healthcare is expanding capacity quickly, with pressure on clinical-to-management transitions, patient experience and workforce nationalisation.",
     priorities: [
       "clinicians promoted into unit or department management may lack people-leadership preparation",
       "patient-experience consistency across new facilities may be a board-level concern",
     ],
-    gaps: ["people-management", "coaching", "customer-experience", "change-leadership"],
+    needs: ["people-management", "coaching", "customer-experience", "change-leadership"],
     angle: "Help clinical leaders lead teams, not just treat patients — protecting patient experience while the network grows.",
     objections: [
       { objection: "Our clinicians have no time away from the floor.", approach: "Explore modular, short-format sessions scheduled around shift patterns; ask what format has worked before." },
@@ -35,7 +26,7 @@ export const PLAYBOOKS: Record<Industry, IndustryPlaybook> = {
       "fast-promoted engineering and product managers may need people-management foundations",
       "retention of high performers may depend on the quality of first-line managers",
     ],
-    gaps: ["people-management", "delegation", "collaboration", "communication"],
+    needs: ["people-management", "delegation", "collaboration", "communication"],
     angle: "Turn strong technical contributors into managers people want to stay for.",
     objections: [
       { objection: "We prefer online, self-paced learning.", approach: "Ask about completion and behaviour change from current platforms; explore blended cohorts with applied projects." },
@@ -49,7 +40,7 @@ export const PLAYBOOKS: Record<Industry, IndustryPlaybook> = {
       "store and area manager capability may explain performance variance between locations",
       "frontline customer experience and conversion may be key commercial levers",
     ],
-    gaps: ["customer-experience", "coaching", "people-management", "sales-leadership"],
+    needs: ["customer-experience", "coaching", "people-management", "sales-leadership"],
     angle: "Close the gap between best- and worst-performing stores by developing the managers who run them.",
     objections: [
       { objection: "Staff turnover is too high to invest in training.", approach: "Explore whether manager quality is itself a driver of turnover; focus investment on store managers who stay." },
@@ -63,7 +54,7 @@ export const PLAYBOOKS: Record<Industry, IndustryPlaybook> = {
       "new property openings may require a pipeline of ready supervisors and department heads",
       "service consistency and guest experience may depend on frontline leadership",
     ],
-    gaps: ["customer-experience", "people-management", "coaching", "communication"],
+    needs: ["customer-experience", "people-management", "coaching", "communication"],
     angle: "Build a bench of service leaders ready for every new opening.",
     objections: [
       { objection: "We have an internal academy.", approach: "Explore where the academy's scope ends — often leadership and management above supervisor level — and how Bloom could complement it." },
@@ -77,7 +68,7 @@ export const PLAYBOOKS: Record<Industry, IndustryPlaybook> = {
       "digital transformation may require leaders who can drive change and data-led decisions",
       "relationship managers may need to move from product-push to consultative advice",
     ],
-    gaps: ["change-leadership", "consultative-selling", "data-decisions", "strategic-leadership"],
+    needs: ["change-leadership", "consultative-selling", "data-decisions", "strategic-leadership"],
     angle: "Equip leaders and relationship teams for a digital, advice-led market.",
     objections: [
       { objection: "Everything must go through a formal procurement panel.", approach: "Ask about panel timing, vendor registration requirements and who sponsors new suppliers." },
@@ -91,7 +82,7 @@ export const PLAYBOOKS: Record<Industry, IndustryPlaybook> = {
       "senior consultants moving to manager may struggle to balance delivery, people and business development",
       "growth may depend on partners and managers selling more consultatively",
     ],
-    gaps: ["consultative-selling", "people-management", "communication", "business-acumen"],
+    needs: ["consultative-selling", "people-management", "communication", "business-acumen"],
     angle: "Develop the player-managers who win and deliver the work.",
     objections: [
       { objection: "Billable hours make training time expensive.", approach: "Frame in terms of revenue per manager and client retention; explore compact formats." },
@@ -105,7 +96,7 @@ export const PLAYBOOKS: Record<Industry, IndustryPlaybook> = {
       "localisation and new plants may require developing national supervisors quickly",
       "operational excellence initiatives may stall without capable frontline leaders",
     ],
-    gaps: ["people-management", "change-leadership", "data-decisions", "communication"],
+    needs: ["people-management", "change-leadership", "data-decisions", "communication"],
     angle: "Build the frontline and plant leadership that localisation and growth depend on.",
     objections: [
       { objection: "Technical training is our priority.", approach: "Explore how supervisors' people skills affect safety, quality and retention alongside technical training." },
@@ -115,72 +106,92 @@ export const PLAYBOOKS: Record<Industry, IndustryPlaybook> = {
   },
 };
 
-export interface SignalInsight {
-  hypothesis: string;
-  observation: string;
-  capabilities: CapabilityKey[];
-  question: string;
-}
-
-export const SIGNAL_INSIGHTS: Record<SignalKey, SignalInsight> = {
+export const SIGNALS: Record<string, SignalDef> = {
   "rapid-growth": {
+    label: "Rapid headcount growth",
     hypothesis: "rapid team growth may create first-line manager development needs",
     observation: "growing the team quickly",
-    capabilities: ["people-management", "delegation", "coaching"],
+    needs: ["people-management", "delegation", "coaching"],
     question: "As the team grows, where are managers feeling the strain first?",
   },
   "gcc-expansion": {
+    kind: "strategic",
+    label: "Expanding across the GCC",
     hypothesis: "GCC expansion may require leaders who can build and run teams in new markets",
     observation: "expanding into new GCC markets",
-    capabilities: ["strategic-leadership", "collaboration", "business-acumen"],
+    needs: ["strategic-leadership", "collaboration", "business-acumen"],
     question: "What leadership capability will the new-market teams need in their first year?",
   },
   "new-managers": {
+    label: "Many newly promoted managers",
     hypothesis: "a wave of newly promoted managers may need structured transition support",
     observation: "promoting many people into first-time manager roles",
-    capabilities: ["people-management", "coaching", "delegation"],
+    needs: ["people-management", "coaching", "delegation"],
     question: "How are newly promoted managers supported in their first 90 days?",
   },
   nationalisation: {
+    label: "Emiratisation / Saudisation targets",
     hypothesis: "nationalisation targets may require accelerated development of national talent into leadership roles",
     observation: "investing in national talent development",
-    capabilities: ["people-management", "business-acumen", "communication"],
+    needs: ["people-management", "business-acumen", "communication"],
     question: "How are national hires being prepared for leadership roles?",
   },
   "digital-transformation": {
+    label: "Digital transformation programme",
     hypothesis: "digital transformation may depend on leaders who can lead change and use data in decisions",
     observation: "running a digital transformation programme",
-    capabilities: ["change-leadership", "data-decisions"],
+    needs: ["change-leadership", "data-decisions"],
     question: "Which leadership behaviours will make or break the transformation?",
   },
   restructuring: {
+    label: "Merger or restructuring",
     hypothesis: "a merger or restructuring may create alignment and change-leadership needs",
     observation: "bringing teams together through a restructure",
-    capabilities: ["change-leadership", "collaboration", "communication"],
+    needs: ["change-leadership", "collaboration", "communication"],
     question: "Where is alignment between the combined teams hardest right now?",
   },
   "sales-pressure": {
+    label: "Commercial / sales growth pressure",
     hypothesis: "commercial growth targets may expose consultative selling and sales leadership gaps",
     observation: "pushing for commercial growth",
-    capabilities: ["consultative-selling", "negotiation", "sales-leadership"],
+    needs: ["consultative-selling", "negotiation", "sales-leadership"],
     question: "What is holding back conversion — pipeline volume, sales conversations or sales management?",
   },
   "customer-experience": {
+    label: "Customer experience focus",
     hypothesis: "a customer-experience focus may require frontline leaders who coach service behaviours",
     observation: "focusing on customer experience",
-    capabilities: ["customer-experience", "coaching", "communication"],
+    needs: ["customer-experience", "coaching", "communication"],
     question: "Where does customer experience vary most, and who owns fixing it?",
   },
   "leadership-succession": {
+    kind: "both",
+    label: "Leadership succession planning",
     hypothesis: "succession planning may reveal gaps in the senior leadership pipeline",
     observation: "strengthening the leadership pipeline",
-    capabilities: ["strategic-leadership", "change-leadership", "coaching"],
+    needs: ["strategic-leadership", "change-leadership", "coaching"],
     question: "How ready are successors for your critical leadership roles?",
   },
   "new-l&d-leader": {
+    kind: "context",
+    label: "New HR / L&D leader appointed",
     hypothesis: "a newly appointed HR/L&D leader may be reviewing the learning strategy and provider mix",
     observation: "setting a new learning agenda",
-    capabilities: ["strategic-leadership"],
+    needs: ["strategic-leadership"],
     question: "What would a successful first year look like for the learning function?",
   },
 };
+
+/** Business challenges a BD can select in the (Training) Opportunity Mapper. */
+export const CHALLENGES: ChallengeDef[] = [
+  { key: "new-managers", label: "Rapid promotion of new managers", needs: ["people-management", "coaching", "delegation"], outcome: "Faster, more confident transition into management and fewer escalations", question: "How are new managers supported during their first 90 days?" },
+  { key: "sales-underperformance", label: "Sales underperformance", needs: ["consultative-selling", "negotiation", "sales-leadership"], outcome: "Higher conversion and deal quality", question: "Where in the sales process are deals being lost?" },
+  { key: "cross-functional-friction", label: "Cross-functional friction", needs: ["collaboration", "communication", "people-management"], outcome: "Faster decisions and fewer hand-off failures between teams", question: "Which hand-offs between teams cause the most delay or rework?" },
+  { key: "leadership-pipeline", label: "Weak leadership pipeline / succession", needs: ["strategic-leadership", "change-leadership", "coaching"], outcome: "Ready-now successors for critical roles", question: "Which critical roles have no ready successor today?" },
+  { key: "transformation", label: "Transformation or restructuring", needs: ["change-leadership", "communication", "strategic-leadership"], outcome: "Leaders who sustain adoption of the change", question: "What do leaders need to do differently for the change to stick?" },
+  { key: "customer-experience", label: "Inconsistent customer experience", needs: ["customer-experience", "coaching", "communication"], outcome: "More consistent service standards across teams and sites", question: "Where is customer experience most inconsistent, and why?" },
+  { key: "national-talent", label: "Developing national talent", needs: ["people-management", "business-acumen", "communication"], outcome: "Accelerated readiness of national talent for leadership roles", question: "What stops national hires progressing into leadership roles faster?" },
+  { key: "market-expansion", label: "Scaling into new GCC markets", needs: ["strategic-leadership", "business-acumen", "collaboration"], outcome: "Leaders able to build and run teams in new markets", question: "What capabilities will leaders in new markets need in year one?" },
+  { key: "decision-quality", label: "Slow or intuition-led decisions", needs: ["data-decisions", "business-acumen"], outcome: "Faster, evidence-based management decisions", question: "Which recurring decisions would benefit most from better data use?" },
+  { key: "retention", label: "Low engagement / high attrition", needs: ["people-management", "coaching", "communication"], outcome: "Improved engagement and retention in target teams", question: "What do exit interviews say about managers?" },
+];

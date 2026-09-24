@@ -16,17 +16,17 @@ import type { OpportunityStage } from "@/lib/types";
 export default function OpportunityPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { db, scoreFor, upsert, remove } = useData();
+  const { db, profile, scoreFor, upsert, remove } = useData();
   const [modal, setModal] = useState<"edit" | "log" | "plan" | null>(null);
 
   const opp = db.opportunities.find((o) => o.id === id);
   const account = opp ? db.accounts.find((a) => a.id === opp.accountId) : undefined;
   const score = account ? scoreFor(account.id) : null;
   const contacts = useMemo(() => db.contacts.filter((c) => c.accountId === opp?.accountId), [db.contacts, opp?.accountId]);
-  const coach = useMemo(() => (opp && account && score ? coachDeal(opp, account, contacts, db.activities, score) : null), [opp, account, score, contacts, db.activities]);
+  const coach = useMemo(() => (opp && account && score ? coachDeal(profile, opp, account, contacts, db.activities, score) : null), [profile, opp, account, score, contacts, db.activities]);
 
   if (!opp || !account || !score || !coach) {
-    return <EmptyState title="Opportunity not found" action={<ButtonLink href="/opportunities">Back to opportunities</ButtonLink>} />;
+    return <EmptyState title="Opportunity not found" action={<ButtonLink href="/workspace/opportunities">Back to opportunities</ButtonLink>} />;
   }
 
   const primary = contacts.find((c) => c.id === opp.primaryContactId);
@@ -36,7 +36,7 @@ export default function OpportunityPage() {
 
   return (
     <>
-      <Link href="/opportunities" className="mb-3 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800">
+      <Link href="/workspace/opportunities" className="mb-3 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800">
         <ArrowLeft size={14} /> Opportunities
       </Link>
 
@@ -47,7 +47,7 @@ export default function OpportunityPage() {
             <StageBadge stage={opp.stage} />
           </div>
           <p className="mt-1 text-sm text-slate-500">
-            <Link href={`/accounts/${account.id}`} className="font-medium text-slate-700 hover:text-brand-700">{account.name}</Link> · {account.city}, {account.country}
+            <Link href={`/workspace/accounts/${account.id}`} className="font-medium text-slate-700 hover:text-brand-700">{account.name}</Link> · {account.city}, {account.country}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -55,7 +55,7 @@ export default function OpportunityPage() {
             Stage
             <Select className="w-36" value={opp.stage} onChange={(e) => upsert("opportunities", { ...opp, stage: e.target.value as OpportunityStage })} options={OPPORTUNITY_STAGES} />
           </label>
-          <ButtonLink href={`/outreach?account=${account.id}${primary ? `&contact=${primary.id}` : ""}&type=meeting-follow-up`}>
+          <ButtonLink href={`/workspace/outreach?account=${account.id}${primary ? `&contact=${primary.id}` : ""}&type=meeting-follow-up`}>
             <MessageSquareText size={15} /> Draft follow-up
           </ButtonLink>
           <Button onClick={() => setModal("edit")}>
@@ -131,7 +131,7 @@ export default function OpportunityPage() {
             onClick={() => {
               if (confirm(`Delete opportunity "${opp.name}"?`)) {
                 remove("opportunities", opp.id);
-                router.push("/opportunities");
+                router.push("/workspace/opportunities");
               }
             }}
           >

@@ -34,7 +34,7 @@ export default function OpportunitiesPage() {
       />
 
       {db.opportunities.length === 0 ? (
-        <EmptyState title="No opportunities yet" description="Qualify an account, then use the Training Opportunity Mapper to shape a validated opportunity." action={<ButtonLink href="/mapper" variant="primary">Open mapper</ButtonLink>} />
+        <EmptyState title="No opportunities yet" description="Qualify an account, then use the Training Opportunity Mapper to shape a validated opportunity." action={<ButtonLink href="/workspace/mapper" variant="primary">Open mapper</ButtonLink>} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {OPPORTUNITY_STAGES.map((stage) => {
@@ -52,7 +52,7 @@ export default function OpportunitiesPage() {
                     const late = o.nextStepDate && o.nextStepDate < today && !["Won", "Lost"].includes(o.stage);
                     return (
                       <li key={o.id}>
-                        <Link href={`/opportunities/${o.id}`} className="block rounded-md border border-slate-200 bg-white px-3 py-2.5 hover:border-brand-200">
+                        <Link href={`/workspace/opportunities/${o.id}`} className="block rounded-md border border-slate-200 bg-white px-3 py-2.5 hover:border-brand-200">
                           <div className="text-sm font-medium text-slate-900">{o.name}</div>
                           <div className="text-xs text-slate-500">{account?.name}</div>
                           {o.nextStep && (
@@ -75,7 +75,7 @@ export default function OpportunitiesPage() {
         </div>
       )}
 
-      {creating && <OpportunityForm onClose={() => setCreating(false)} onSaved={(id) => router.push(`/opportunities/${id}`)} />}
+      {creating && <OpportunityForm onClose={() => setCreating(false)} onSaved={(id) => router.push(`/workspace/opportunities/${id}`)} />}
     </>
   );
 }

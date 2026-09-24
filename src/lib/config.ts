@@ -1,19 +1,8 @@
 /**
- * Single place to configure the commercial model: markets, stages, roles, capabilities,
- * business signals and score weights. Rename or reorder here; the UI follows.
+ * Core, industry-neutral configuration of the BD Operating System: company size bands,
+ * the B2B pipeline, stakeholder roles, activity types and the qualification framework.
+ * Anything company- or industry-specific belongs in a WorkspaceProfile (src/lib/profile).
  */
-
-export const COUNTRIES = ["UAE", "Saudi Arabia"] as const;
-
-export const INDUSTRIES = [
-  "Healthcare",
-  "Technology",
-  "Retail",
-  "Hospitality",
-  "Financial Services",
-  "Professional Services",
-  "Manufacturing",
-] as const;
 
 export const SIZE_BANDS = [
   { id: "50-249", label: "50–249 employees", points: 0.35 },
@@ -65,49 +54,19 @@ export const STAKEHOLDER_ROLES = [
 export const ACTIVITY_TYPES = ["Call", "LinkedIn", "Email", "WhatsApp", "Meeting", "Proposal", "Follow-up", "Note"] as const;
 export const OUTBOUND_TYPES = ["Call", "LinkedIn", "Email", "WhatsApp", "Follow-up"] as const;
 
-export const CAPABILITIES = {
-  "people-management": "People management",
-  coaching: "Coaching & feedback",
-  delegation: "Delegation & accountability",
-  "strategic-leadership": "Strategic leadership",
-  "change-leadership": "Leading change",
-  "consultative-selling": "Consultative selling",
-  negotiation: "Negotiation",
-  "sales-leadership": "Sales leadership",
-  collaboration: "Cross-functional collaboration",
-  communication: "Communication & influence",
-  "customer-experience": "Customer experience",
-  "business-acumen": "Business & financial acumen",
-  "data-decisions": "Data-driven decision making",
-} as const;
-
-/** Observable business signals a BD can record on an account. Each drives hypotheses. */
-export const SIGNALS = {
-  "rapid-growth": "Rapid headcount growth",
-  "gcc-expansion": "Expanding across the GCC",
-  "new-managers": "Many newly promoted managers",
-  nationalisation: "Emiratisation / Saudisation targets",
-  "digital-transformation": "Digital transformation programme",
-  restructuring: "Merger or restructuring",
-  "sales-pressure": "Commercial / sales growth pressure",
-  "customer-experience": "Customer experience focus",
-  "leadership-succession": "Leadership succession planning",
-  "new-l&d-leader": "New HR / L&D leader appointed",
-} as const;
-
 export type ScoreDimension =
   | "marketFit"
   | "companyPotential"
-  | "trainingNeed"
+  | "needStrength"
   | "stakeholderAccess"
   | "strategicRelevance"
   | "engagement";
 
 export const SCORE_DIMENSIONS: { key: ScoreDimension; label: string; help: string }[] = [
-  { key: "marketFit", label: "Market Fit", help: "Country and industry attractiveness for corporate learning" },
-  { key: "companyPotential", label: "Company Potential", help: "Workforce size — the pool of learners" },
-  { key: "trainingNeed", label: "Training Need", help: "BD rating of evidence for a learning need, plus signals" },
-  { key: "stakeholderAccess", label: "Stakeholder Access", help: "Known HR/L&D buyer, decision maker and champion" },
+  { key: "marketFit", label: "Market Fit", help: "Market and industry attractiveness for the offering" },
+  { key: "companyPotential", label: "Company Potential", help: "Company size — the scale of the opportunity" },
+  { key: "needStrength", label: "Need Strength", help: "BD rating of evidence for a need, plus observed signals" },
+  { key: "stakeholderAccess", label: "Stakeholder Access", help: "Known functional buyer, decision maker and champion" },
   { key: "strategicRelevance", label: "Strategic Relevance", help: "BD rating of flagship / reference / expansion value" },
   { key: "engagement", label: "Engagement", help: "Pipeline progress and recent two-way activity" },
 ];
@@ -115,36 +74,10 @@ export const SCORE_DIMENSIONS: { key: ScoreDimension; label: string; help: strin
 export const DEFAULT_WEIGHTS: Record<ScoreDimension, number> = {
   marketFit: 20,
   companyPotential: 20,
-  trainingNeed: 20,
+  needStrength: 20,
   stakeholderAccess: 15,
   strategicRelevance: 15,
   engagement: 10,
 };
 
-/**
- * Relative attractiveness of each industry for corporate learning, per market (0–1).
- * Assumption-based starting point — calibrate with Bloom's real win data.
- */
-export const MARKET_ATTRACTIVENESS: Record<(typeof COUNTRIES)[number], Record<(typeof INDUSTRIES)[number], number>> = {
-  UAE: {
-    Healthcare: 0.9,
-    Technology: 0.8,
-    Retail: 0.75,
-    Hospitality: 0.85,
-    "Financial Services": 0.9,
-    "Professional Services": 0.8,
-    Manufacturing: 0.6,
-  },
-  "Saudi Arabia": {
-    Healthcare: 0.95,
-    Technology: 0.85,
-    Retail: 0.8,
-    Hospitality: 0.9,
-    "Financial Services": 0.9,
-    "Professional Services": 0.75,
-    Manufacturing: 0.8,
-  },
-};
-
-export const CURRENCIES = ["AED", "SAR", "USD"] as const;
-export const DEMO_NOTICE = "Demo data — not actual Bloom customer information.";
+export const CURRENCIES = ["AED", "SAR", "EGP", "USD", "EUR"] as const;

@@ -3,8 +3,9 @@
  * Not actual Bloom customer information. Programmes are DEMO placeholders.
  * Monetary values are intentionally left empty.
  */
-import { DEFAULT_WEIGHTS } from "../config";
-import { addDays, todayISO } from "../dates";
+import { DEFAULT_WEIGHTS } from "../../config";
+import { addDays, todayISO } from "../../dates";
+import { SCHEMA_VERSION } from "../../store/empty";
 import type {
   Account,
   AccountScore,
@@ -22,9 +23,8 @@ import type {
   SizeBand,
   StakeholderRole,
   User,
-} from "../types";
+} from "../../types";
 
-export const SCHEMA_VERSION = 1;
 export const HERO_ACCOUNT_ID = "acc-meridian";
 
 type AccountRow = [
@@ -151,7 +151,18 @@ const PROGRAMMES: [id: string, name: string, description: string, caps: Programm
   ["prog-sales-lead", "DEMO — Sales Leadership Programme", "Placeholder for sales manager coaching and pipeline leadership.", ["sales-leadership", "coaching", "negotiation", "data-decisions"], ["Frontline", "Middle management"], "Blended cohort (placeholder)"],
 ];
 
-export function createDemoDatabase(today: string = todayISO()): Database {
+/** Starter catalogue — DEMO placeholders until Bloom's real programmes are added. */
+export const BLOOM_OFFERINGS: Omit<Programme, "createdAt" | "updatedAt">[] = PROGRAMMES.map(([id, name, description, capabilities, levels, format]) => ({
+  id,
+  name,
+  isDemo: true,
+  description,
+  capabilities,
+  levels,
+  format,
+}));
+
+export function createBloomDemoData(today: string = todayISO()): Database {
   const stamp = new Date().toISOString();
   const base = { createdAt: stamp, updatedAt: stamp };
   const d = (n: number | null) => (n === null ? null : addDays(today, n));
@@ -162,7 +173,7 @@ export function createDemoDatabase(today: string = todayISO()): Database {
     { id: "u-3", name: "Demo BD Executive — KSA", role: "Business Development (demo)", ...base },
   ];
 
-  const accounts: Account[] = ACCOUNTS.map(([key, name, country, city, industry, sizeBand, stage, highestStage, priority, trainingPotential, signals, tags, , last, next, ownerId, notes], i) => ({
+  const accounts: Account[] = ACCOUNTS.map(([key, name, country, city, industry, sizeBand, stage, highestStage, priority, potential, signals, tags, , last, next, ownerId, notes], i) => ({
     id: `acc-${key}`,
     name,
     country,
@@ -174,7 +185,7 @@ export function createDemoDatabase(today: string = todayISO()): Database {
     stage,
     highestStage,
     priority,
-    trainingPotential,
+    potential,
     signals,
     tags,
     notes,
@@ -188,7 +199,7 @@ export function createDemoDatabase(today: string = todayISO()): Database {
   const accountScores: AccountScore[] = ACCOUNTS.map(([key, , , , , , , , , , , , [need, strategic]]) => ({
     id: `score-${key}`,
     accountId: `acc-${key}`,
-    ratings: { trainingNeed: need, strategicRelevance: strategic },
+    ratings: { needStrength: need, strategicRelevance: strategic },
     evidence: "Demo rating — replace with BD judgement based on real evidence.",
     ...base,
   }));
@@ -248,19 +259,11 @@ export function createDemoDatabase(today: string = todayISO()): Database {
     ...base,
   }));
 
-  const programmes: Programme[] = PROGRAMMES.map(([id, name, description, capabilities, levels, format]) => ({
-    id,
-    name,
-    isDemo: true,
-    description,
-    capabilities,
-    levels,
-    format,
-    ...base,
-  }));
+  const programmes: Programme[] = BLOOM_OFFERINGS.map((p) => ({ ...p, ...base }));
 
   return {
     version: SCHEMA_VERSION,
+    profileId: "bloom",
     seededAt: today,
     users,
     accounts,
@@ -274,18 +277,3 @@ export function createDemoDatabase(today: string = todayISO()): Database {
   };
 }
 
-export function emptyDatabase(programmes: Programme[] = [], users: User[] = []): Database {
-  return {
-    version: SCHEMA_VERSION,
-    seededAt: todayISO(),
-    users,
-    accounts: [],
-    accountScores: [],
-    contacts: [],
-    opportunities: [],
-    activities: [],
-    programmes,
-    recommendations: [],
-    settings: { weights: { ...DEFAULT_WEIGHTS } },
-  };
-}

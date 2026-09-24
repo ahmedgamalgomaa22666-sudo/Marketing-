@@ -4,16 +4,19 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { furthestStage } from "../analytics";
 import type { ScoreDimension } from "../config";
 import { nowStamp, todayISO } from "../dates";
-import { emptyDatabase } from "../demo/seed";
+import { getProfile } from "../profile";
+import type { WorkspaceProfile } from "../profile/types";
 import { computeFitScore, type FitScore } from "../scoring";
 import type { Account, AccountStage, CollectionName, Database } from "../types";
-import { createStore, type DataStore } from "./dataStore";
+import { createStore, readActiveProfileId, writeActiveProfileId, type DataStore } from "./dataStore";
 
 type Item<C extends CollectionName> = Database[C][number];
 type Draft<C extends CollectionName> = Omit<Item<C>, "id" | "createdAt" | "updatedAt"> & { id?: string };
 
 interface DataContextValue {
   db: Database;
+  profile: WorkspaceProfile;
+  switchProfile: (id: string) => Promise<void>;
   mode: DataStore["mode"];
   upsert: <C extends CollectionName>(collection: C, item: Draft<C>) => Item<C>;
   remove: (collection: CollectionName, id: string) => void;
@@ -55,11 +58,26 @@ export function DataProvider({ children }: { children: ReactNode }) {
   // The store only touches browser storage inside its async methods, so creating it during render is safe.
   const [store] = useState<DataStore>(createStore);
   const [db, setDb] = useState<Database | null>(null);
+  const [profile, setProfile] = useState<WorkspaceProfile | null>(null);
   const mode = store.mode;
 
   useEffect(() => {
-    store.load().then(setDb);
+    const active = getProfile(readActiveProfileId());
+    store.load(active).then((loaded) => {
+      setProfile(active);
+      setDb(loaded);
+    });
   }, [store]);
+
+  const switchProfile = useCallback(
+    async (id: string) => {
+      const next = getProfile(id);
+      writeActiveProfileId(next.id);
+      setDb(await store.load(next));
+      setProfile(next);
+    },
+    [store],
+  );
 
   const commit = useCallback((updater: (prev: Database) => Database) => {
     setDb((prev) => {
@@ -158,14 +176,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
   );
 
   const resetDemo = useCallback(async () => {
-    setDb(await store.reset());
-  }, [store]);
+    if (profile) setDb(await store.reset(profile));
+  }, [store, profile]);
 
-  const clearWorkspace = useCallback(() => commit((prev) => emptyDatabase(prev.programmes, prev.users)), [commit]);
+  const clearWorkspace = useCallback(() => {
+    if (profile) void store.clear(profile).then(setDb);
+  }, [store, profile]);
 
   const scoreFor = useCallback(
     (accountId: string) => {
-      if (!db) return null;
+      if (!db || !profile) return null;
       const account = db.accounts.find((a: Account) => a.id === accountId);
       if (!account) return null;
       return computeFitScore({
@@ -174,14 +194,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
         contacts: db.contacts.filter((c) => c.accountId === accountId),
         activities: db.activities.filter((a) => a.accountId === accountId),
         weights: db.settings.weights,
+        profile,
       });
     },
-    [db],
+    [db, profile],
   );
 
   const value = useMemo(
-    () => (db ? { db, mode, upsert, remove, setAccountStage, setWeights, resetDemo, clearWorkspace, scoreFor } : null),
-    [db, mode, upsert, remove, setAccountStage, setWeights, resetDemo, clearWorkspace, scoreFor],
+    () => (db && profile ? { db, profile, switchProfile, mode, upsert, remove, setAccountStage, setWeights, resetDemo, clearWorkspace, scoreFor } : null),
+    [db, profile, switchProfile, mode, upsert, remove, setAccountStage, setWeights, resetDemo, clearWorkspace, scoreFor],
   );
 
   if (!value) {

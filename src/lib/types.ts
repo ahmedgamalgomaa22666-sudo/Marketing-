@@ -1,27 +1,18 @@
-import type {
-  ACCOUNT_STAGES,
-  ACTIVITY_TYPES,
-  CAPABILITIES,
-  COUNTRIES,
-  INDUSTRIES,
-  OPPORTUNITY_STAGES,
-  SIGNALS,
-  SIZE_BANDS,
-  STAKEHOLDER_ROLES,
-} from "./config";
+import type { ACCOUNT_STAGES, ACTIVITY_TYPES, CURRENCIES, OPPORTUNITY_STAGES, SIZE_BANDS, STAKEHOLDER_ROLES } from "./config";
 
-export type Country = (typeof COUNTRIES)[number];
-export type Industry = (typeof INDUSTRIES)[number];
+/** Profile-defined values (see WorkspaceProfile): markets, industries, needs, signals, audience levels. */
+export type Country = string;
+export type Industry = string;
+export type CapabilityKey = string;
+export type SignalKey = string;
+export type LeadershipLevel = string;
 export type SizeBand = (typeof SIZE_BANDS)[number]["id"];
 export type AccountStage = (typeof ACCOUNT_STAGES)[number];
 export type OpportunityStage = (typeof OPPORTUNITY_STAGES)[number];
 export type StakeholderRole = (typeof STAKEHOLDER_ROLES)[number];
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
-export type CapabilityKey = keyof typeof CAPABILITIES;
-export type SignalKey = keyof typeof SIGNALS;
 export type Level = "Low" | "Medium" | "High";
 export type Seniority = "C-level" | "VP / Director" | "Head / Manager" | "Specialist";
-export type LeadershipLevel = "Frontline" | "Middle management" | "Senior leaders" | "Executives" | "Individual contributors";
 
 interface Base {
   id: string;
@@ -46,7 +37,8 @@ export interface Account extends Base {
   /** Furthest funnel stage ever reached — keeps conversion honest after Lost / Nurture. */
   highestStage: AccountStage;
   priority: Level;
-  trainingPotential: Level;
+  /** Estimated size of the opportunity for the active profile's offerings. */
+  potential: Level;
   signals: SignalKey[];
   tags: string[];
   notes: string;
@@ -58,7 +50,7 @@ export interface Account extends Base {
 export interface AccountScore extends Base {
   accountId: string;
   /** BD judgement 0–5, the only non-derived score inputs. */
-  ratings: { trainingNeed: number; strategicRelevance: number };
+  ratings: { needStrength: number; strategicRelevance: number };
   evidence: string;
 }
 
@@ -86,7 +78,7 @@ export interface Opportunity extends Base {
   contactIds: string[];
   /** Optional — never populated with invented figures. */
   estimatedValue: number | null;
-  currency: "AED" | "SAR" | "USD";
+  currency: (typeof CURRENCIES)[number];
   probability: number | null;
   targetCloseDate: string | null;
   businessProblem: string;
@@ -107,6 +99,7 @@ export interface Activity extends Base {
   outcome: "positive" | "neutral" | "no-response" | null;
 }
 
+/** An offering (product, service, programme…) from the workspace catalogue. */
 export interface Programme extends Base {
   name: string;
   isDemo: boolean;
@@ -122,7 +115,7 @@ export interface MapperInputs {
   growthStage: "Early growth" | "Rapid growth" | "Mature" | "Transformation";
   challenges: string[];
   targetGroup: string;
-  leadershipLevel: LeadershipLevel;
+  audienceLevel: LeadershipLevel;
   desiredOutcome: string;
   urgency: Level;
   knownGaps: string;
@@ -136,6 +129,7 @@ export interface BusinessCase {
   expectedOutcome: string;
   discoveryQuestions: string[];
   validationQuestions: string[];
+  nextAction: string;
 }
 
 export interface OpportunityRecommendation extends Base {
@@ -152,8 +146,11 @@ export interface Settings {
   weights: Record<import("./config").ScoreDimension, number>;
 }
 
+export type Offering = Programme;
+
 export interface Database {
   version: number;
+  profileId: string;
   seededAt: string;
   users: User[];
   accounts: Account[];
@@ -166,4 +163,4 @@ export interface Database {
   settings: Settings;
 }
 
-export type CollectionName = Exclude<keyof Database, "version" | "seededAt" | "settings">;
+export type CollectionName = Exclude<keyof Database, "version" | "profileId" | "seededAt" | "settings">;
