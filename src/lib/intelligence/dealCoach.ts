@@ -45,7 +45,7 @@ const DISCOVERY: Record<OpportunityStage, string[]> = {
     "Validate how impact will be reported to the sponsor.",
   ],
   Won: [
-    "Consider exploring what made them choose Bloom — useful for future positioning.",
+    "Consider exploring what made them choose us — useful for future positioning.",
     "Validate the success measures agreed for delivery.",
     "Consider asking which other teams face a similar challenge.",
     "Validate the reporting cadence the sponsor expects.",
@@ -54,7 +54,7 @@ const DISCOVERY: Record<OpportunityStage, string[]> = {
   Lost: [
     "Consider asking what the deciding factor was.",
     "Validate whether the need still exists and when it might be revisited.",
-    "Consider exploring what Bloom could have done differently.",
+    "Consider exploring what we could have done differently.",
     "Validate whether the relationship can continue through insight sharing.",
     "Consider asking who else in the organisation may have a related need.",
   ],

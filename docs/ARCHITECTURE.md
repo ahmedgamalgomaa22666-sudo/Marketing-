@@ -8,12 +8,15 @@
   /projects/bd-operating-system   proof-of-work case study
   content: src/content/site.ts    (verified facts + [placeholders])
 
-/workspace/*              PRIVATE BD OPERATING SYSTEM   src/app/workspace (noindex)
+/workspace/*              PERSONAL BD WORKSPACE         src/app/workspace (noindex)
   dashboard · accounts · opportunities · follow-ups · opportunity mapper ·
-  outreach · offerings · settings · guided demo
+  outreach · offerings · settings
+
+The workspace is a personal intelligence layer. It complements the employer's CRM
+(official records, team pipeline, reporting) and never replaces it.
 ```
 
-## BD Operating System: core + profiles
+## Workspace: core + profile
 
 ```
             ┌──────────────────── CORE (industry-neutral) ────────────────────┐
@@ -30,18 +33,15 @@
             │ needs catalogue · signals · playbooks · challenges              │
             │ market attractiveness · qualification labels/weights            │
             │ terminology · outreach · modules.opportunityMapper labels       │
-            │ starterOfferings · createDemoData? · demoGuide?                 │
+            │ starterOfferings · createDemoData?                              │
             └─────────────────────────────────────────────────────────────────┘
-              profiles/bloom   — Bloom Business School (first use case, demo data)
-              profiles/generic — any B2B company (starts empty)
+              profiles/personal — the owner's workspace (default, starts empty)
 ```
 
-**Example — Opportunity Mapper.** Core flow: business problem → need → potential solution →
-business outcome → discovery questions → next action. The Bloom profile relabels it as the
-*Training Opportunity Mapper*: business problem → learning / capability gap → Bloom programme
-→ expected business outcome.
+**Opportunity Mapper.** Business problem → need → potential solution → business outcome →
+discovery questions → next action; labels come from the profile.
 
-Adding a company = adding a profile folder and registering it in `src/lib/profile/index.ts`.
+A further profile (e.g. per employer or market) is a folder registered in `src/lib/profile/index.ts`.
 
 ## Data model
 

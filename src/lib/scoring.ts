@@ -35,7 +35,7 @@ export interface ScoreInput {
 /** Engagement credit by furthest funnel stage reached. */
 const STAGE_ENGAGEMENT = [0, 0.1, 0.3, 0.6, 0.75, 0.85, 1, 1, 1];
 
-/** True when the contact sits in the function that usually buys (e.g. HR / L&D for Bloom). */
+/** True when the contact sits in the function that usually buys (e.g. HR / L&D when selling training). */
 export function isBuyerFunction(c: Contact, profile: WorkspaceProfile): boolean {
   return profile.buyerFunction.pattern.test(c.department) || profile.buyerFunction.pattern.test(c.title);
 }

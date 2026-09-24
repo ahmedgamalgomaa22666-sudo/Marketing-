@@ -2,7 +2,7 @@ import { DEFAULT_WEIGHTS } from "../../config";
 import type { IndustryPlaybook, WorkspaceProfile } from "../types";
 
 /**
- * Industry-neutral starting profile for any B2B business development workspace.
+ * Ahmed Gamal's personal BD profile — industry-neutral, portable across employers.
  * Starts empty (no sample data) with placeholder offerings to replace.
  */
 const PLAYBOOK: IndustryPlaybook = {
@@ -20,13 +20,13 @@ const PLAYBOOK: IndustryPlaybook = {
   questions: ["What business outcome are you accountable for this year?", "What has already been tried, and what did it achieve?"],
 };
 
-export const genericProfile: WorkspaceProfile = {
-  id: "generic",
+export const personalProfile: WorkspaceProfile = {
+  id: "personal",
   company: { name: "Personal BD Workspace", industry: "B2B (any industry)", description: "Ahmed Gamal's personal business development workspace — portable across employers and markets." },
   demoNotice: null,
   markets: ["UAE", "Saudi Arabia", "Egypt"],
   industries: ["Healthcare", "Pharmaceuticals", "Technology", "Retail", "Financial Services", "Manufacturing", "Professional Services", "Government / Semi-government"],
-  idealCustomerProfile: ["Define your ideal customer profile in src/lib/profile/generic/index.ts"],
+  idealCustomerProfile: ["Define your ideal customer profile in src/lib/profile/personal/index.ts"],
   buyerRoles: ["Economic buyer / budget holder", "Functional head", "Operations leader", "Procurement"],
   buyerFunction: { label: "functional buyer", pattern: /\b(operations|commercial|procurement|finance|strategy|business|general manager)\b/i },
   needs: {

@@ -146,7 +146,7 @@ function OutreachView() {
               <Input list="observations" value={observation} onChange={(e) => { setObservation(e.target.value); resetDraft(); }} placeholder="e.g. expanding into new GCC markets" />
               <datalist id="observations">{observations.map((o) => <option key={o} value={o} />)}</datalist>
             </Field>
-            <Field label="Relevant Bloom capability">
+            <Field label="Relevant need / capability">
               <Select value={capability} onChange={(e) => { setCapability(e.target.value as CapabilityKey); resetDraft(); }} options={Object.entries(NEEDS).map(([value, label]) => ({ value, label }))} />
             </Field>
             <Field label="Call to action">

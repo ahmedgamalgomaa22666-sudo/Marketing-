@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, Download, Linkedin, Mail, MapPin } from "@/components/siteIcons";
 import { ActionLink, Section, T } from "@/components/site";
-import { about, caseStudies, certifications, experience, keyFacts, person, projects, skills, trackRecord } from "@/content/site";
+import { about, businessDevelopment, caseStudies, certifications, experience, keyFacts, person, projects, skills, trackRecord } from "@/content/site";
 
 export default function HomePage() {
   return (
@@ -43,7 +43,7 @@ export default function HomePage() {
         </div>
       </Section>
 
-      <Section id="track-record" eyebrow="Track record" title="Where I create commercial value" tone="muted">
+      <Section id="track-record" eyebrow="Commercial track record" title="Where I create commercial value" tone="muted">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {trackRecord.map((t) => (
             <article key={t.title} className="rounded-lg border border-stone-200 bg-white p-6">
@@ -85,21 +85,21 @@ export default function HomePage() {
         </ol>
       </Section>
 
-      <Section id="skills" eyebrow="Skills" title="Capabilities" tone="muted">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {skills.map((g) => (
-            <div key={g.group}>
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-900">{g.group}</h3>
-              <ul className="mt-3 space-y-2 text-stone-700">
-                {g.items.map((s) => (
-                  <li key={s} className="border-b border-stone-200 pb-2">
-                    <T>{s}</T>
-                  </li>
-                ))}
-              </ul>
+
+      <Section id="business-development" eyebrow="Business development" title="How I approach business development" tone="muted">
+        <p className="max-w-3xl text-[17px] leading-relaxed text-stone-700">{businessDevelopment.intro}</p>
+        <div className="mt-8 grid gap-px overflow-hidden rounded-lg border border-stone-200 bg-stone-200 sm:grid-cols-2 lg:grid-cols-4">
+          {businessDevelopment.pillars.map((p) => (
+            <div key={p.title} className="bg-white p-5">
+              <h3 className="font-serif text-lg text-ink-900">{p.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-stone-600">{p.body}</p>
             </div>
           ))}
         </div>
+        <p className="mt-6 text-sm text-stone-600">
+          <span className="font-semibold uppercase tracking-wide text-ink-900">Focus markets: </span>
+          {businessDevelopment.markets.join(" · ")}
+        </p>
       </Section>
 
       <Section id="case-studies" eyebrow="Case studies" title="How I approach commercial problems">
@@ -123,7 +123,7 @@ export default function HomePage() {
         </div>
       </Section>
 
-      <Section id="projects" eyebrow="Projects" title="Proof of work" tone="muted">
+      <Section id="projects" eyebrow="Commercial projects" title="Proof of work" tone="muted">
         <div className="grid gap-6 lg:grid-cols-5">
           {projects.map((p, i) => (
             <article key={p.slug} className={`flex flex-col rounded-lg border border-stone-200 bg-white p-6 ${projects.length === 1 ? "lg:col-span-5" : i === 0 ? "lg:col-span-3" : "lg:col-span-2"}`}>
@@ -146,6 +146,23 @@ export default function HomePage() {
                 ))}
               </div>
             </article>
+          ))}
+        </div>
+      </Section>
+
+      <Section id="skills" eyebrow="Skills" title="Capabilities">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {skills.map((g) => (
+            <div key={g.group}>
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-900">{g.group}</h3>
+              <ul className="mt-3 space-y-2 text-stone-700">
+                {g.items.map((s) => (
+                  <li key={s} className="border-b border-stone-200 pb-2">
+                    <T>{s}</T>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
         </div>
       </Section>
@@ -190,7 +207,7 @@ export default function HomePage() {
           </ul>
         </div>
         <p className="mt-10 text-xs text-stone-400">
-          Private workspace: <Link href="/workspace" className="underline underline-offset-2 hover:text-stone-600">BD Operating System</Link>
+          Private workspace: <Link href="/workspace" className="underline underline-offset-2 hover:text-stone-600">Personal BD Workspace</Link>
         </p>
       </Section>
     </>

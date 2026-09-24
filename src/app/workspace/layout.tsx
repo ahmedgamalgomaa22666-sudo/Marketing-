@@ -4,7 +4,7 @@ import { AppShell } from "@/components/AppShell";
 import { DataProvider } from "@/lib/store/DataProvider";
 
 export const metadata: Metadata = {
-  title: "BD Operating System",
+  title: "Personal BD Workspace",
   description: "Private business development workspace.",
   robots: { index: false, follow: false },
 };

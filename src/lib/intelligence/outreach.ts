@@ -20,7 +20,7 @@ export interface OutreachInput {
   stage: string;
   cta: string;
   senderName: string;
-  /** From the workspace profile, e.g. "Bloom Business School" / "HR and L&D leaders". */
+  /** From the workspace profile, e.g. current employer / "commercial leaders". */
   senderOrg: string;
   audience: string;
 }

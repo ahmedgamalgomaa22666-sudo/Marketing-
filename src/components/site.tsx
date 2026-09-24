@@ -51,7 +51,7 @@ export function SiteFooter() {
         <span>© {new Date().getFullYear()} {person.name}</span>
         <span className="flex gap-5">
           <Link href="/cv" className="hover:text-ink-900">CV</Link>
-          <Link href="/projects/bd-operating-system" className="hover:text-ink-900">BD Operating System</Link>
+          <Link href="/projects/bd-operating-system" className="hover:text-ink-900">BD Platform</Link>
           <Link href="/workspace" className="hover:text-ink-900">Workspace</Link>
         </span>
       </div>

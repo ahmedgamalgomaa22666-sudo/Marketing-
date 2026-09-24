@@ -12,7 +12,7 @@ create table users (
 
 create table accounts (
   id uuid primary key default gen_random_uuid(),
-  profile_id text not null, -- workspace profile (e.g. 'bloom', 'generic')
+  profile_id text not null, -- workspace profile (e.g. 'personal')
   name text not null,
   country text not null,
   city text not null,

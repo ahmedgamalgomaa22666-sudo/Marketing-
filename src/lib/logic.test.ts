@@ -1,23 +1,23 @@
 import { describe, expect, it } from "vitest";
 import { commercialMetrics, funnelConversions, furthestStage, overdue, pipelineKpis, rate } from "./analytics";
 import { DEFAULT_WEIGHTS } from "./config";
-import { bloomProfile as profile } from "./profile/bloom";
-import { HERO_ACCOUNT_ID } from "./profile/bloom/seed";
-import { genericProfile } from "./profile/generic";
-import { emptyDatabase } from "./store/empty";
 import { buildAccountBrief } from "./intelligence/brief";
 import { coachDeal } from "./intelligence/dealCoach";
 import { buildBusinessCase, capabilityGaps, matchProgrammes } from "./intelligence/mapper";
-import { BANNED_PHRASES, templateDraft } from "./intelligence/outreach";
+import { recommendNextAction } from "./intelligence/nextAction";
+import { BANNED_PHRASES, firstName, templateDraft } from "./intelligence/outreach";
+import { personalProfile as profile } from "./profile/personal";
 import { computeFitScore } from "./scoring";
+import { emptyDatabase } from "./store/empty";
+import { fixtureDb, HERO } from "./test/fixtures";
 import type { Account } from "./types";
 
 const TODAY = "2026-09-24";
-const db = profile.createDemoData!(TODAY);
-const scoreFor = (id: string, weights = DEFAULT_WEIGHTS) => {
-  const account = db.accounts.find((a) => a.id === id)!;
-  return computeFitScore({
-    account,
+const db = fixtureDb(profile, TODAY);
+const account = (id: string) => db.accounts.find((a) => a.id === id)!;
+const scoreFor = (id: string, weights = DEFAULT_WEIGHTS) =>
+  computeFitScore({
+    account: account(id),
     score: db.accountScores.find((s) => s.accountId === id),
     contacts: db.contacts.filter((c) => c.accountId === id),
     activities: db.activities.filter((a) => a.accountId === id),
@@ -25,7 +25,6 @@ const scoreFor = (id: string, weights = DEFAULT_WEIGHTS) => {
     profile,
     today: TODAY,
   });
-};
 
 describe("Account Fit Score", () => {
   it("stays within 0–100 and dimension points sum to the total", () => {
@@ -37,26 +36,30 @@ describe("Account Fit Score", () => {
     }
   });
 
-  it("scores the hero account highly and explains why", () => {
-    const s = scoreFor(HERO_ACCOUNT_ID);
-    expect(s.total).toBeGreaterThanOrEqual(75);
+  it("scores a well-mapped, engaged account highly and explains why", () => {
+    const s = scoreFor(HERO);
     expect(s.band).toBe("High fit");
-    expect(s.strengths).toContain("Identified HR / L&D stakeholder");
-    expect(s.strengths.some((x) => x.startsWith("Expanding across the GCC"))).toBe(true);
+    expect(s.strengths).toContain("Decision maker identified");
+    expect(s.strengths.some((x) => x.startsWith("Expanding into new markets"))).toBe(true);
+    expect(s.risks).toContain("Procurement structure unknown");
   });
 
   it("flags risks for an account with no stakeholders or engagement", () => {
-    const s = scoreFor("acc-dunehaven");
+    const s = scoreFor("acc-cold");
     expect(s.risks).toContain("No stakeholders mapped yet");
     expect(s.risks).toContain("No engagement yet");
-    expect(s.total).toBeLessThan(scoreFor(HERO_ACCOUNT_ID).total);
+    expect(s.total).toBeLessThan(scoreFor(HERO).total);
   });
 
   it("normalises custom weights to 100", () => {
-    const weights = { ...DEFAULT_WEIGHTS, marketFit: 40, engagement: 0 };
-    const s = scoreFor(HERO_ACCOUNT_ID, weights);
+    const s = scoreFor(HERO, { ...DEFAULT_WEIGHTS, marketFit: 40, engagement: 0 });
     expect(s.dimensions.reduce((t, d) => t + d.max, 0)).toBeCloseTo(100);
     expect(s.dimensions.find((d) => d.key === "engagement")!.max).toBe(0);
+  });
+
+  it("contains no employer- or industry-specific wording", () => {
+    const text = [...scoreFor(HERO).strengths, ...scoreFor(HERO).risks].join(" ");
+    expect(text).not.toMatch(/bloom|L&D|training/i);
   });
 });
 
@@ -81,6 +84,10 @@ describe("Funnel analytics", () => {
     expect(commercialMetrics(accounts, [], TODAY).winRate).toBeCloseTo(1 / 2);
   });
 
+  it("computes response rate only from outbound touches with a recorded outcome", () => {
+    expect(commercialMetrics(db.accounts, db.activities, TODAY).responseRate).toBeCloseTo(1 / 2);
+  });
+
   it("never moves the highest stage backwards", () => {
     expect(furthestStage("Proposal", "Contacted")).toBe("Proposal");
     expect(furthestStage("Contacted", "Meeting")).toBe("Meeting");
@@ -89,93 +96,72 @@ describe("Funnel analytics", () => {
 
   it("finds overdue planned activities only", () => {
     const late = overdue(db.activities, TODAY);
-    expect(late.length).toBeGreaterThan(0);
-    expect(late.every((a) => a.status === "planned" && a.date < TODAY)).toBe(true);
+    expect(late.map((a) => a.id)).toEqual(["a-late"]);
   });
 });
 
-describe("Training Opportunity Mapper", () => {
-  it("translates new-manager promotion into people-management gaps", () => {
-    const gaps = capabilityGaps(profile, ["new-managers"]);
-    expect(gaps[0].capability).toBe("people-management");
-    expect(gaps.map((g) => g.capability)).toEqual(expect.arrayContaining(["coaching", "delegation"]));
+describe("Opportunity Mapper", () => {
+  it("translates a business problem into ranked needs", () => {
+    const gaps = capabilityGaps(profile, ["efficiency"]);
+    expect(gaps[0].capability).toBe("process-efficiency");
+    expect(gaps.map((g) => g.capability)).toEqual(expect.arrayContaining(["cost-reduction", "digital-enablement"]));
   });
 
-  it("matches sales underperformance to the selling programme", () => {
-    const matches = matchProgrammes(capabilityGaps(profile, ["sales-underperformance"]), db.programmes, "Individual contributors");
-    expect(matches[0].programme.id).toBe("prog-sell");
-    expect(matches[0].fit).toBeGreaterThan(0);
+  it("matches needs to the best offering", () => {
+    const matches = matchProgrammes(capabilityGaps(profile, ["growth"]), db.programmes);
+    expect(matches[0].programme.id).toBe("off-a");
     expect(matches.length).toBeLessThanOrEqual(3);
+    expect(matchProgrammes([], db.programmes)).toEqual([]);
   });
 
-  it("labels the gap as a hypothesis and flags DEMO programmes", () => {
-    const inputs = { industry: "Healthcare", sizeBand: "1000-4999", growthStage: "Rapid growth", challenges: ["new-managers"], targetGroup: "New clinic managers", audienceLevel: "Frontline", desiredOutcome: "", urgency: "High", knownGaps: "" } as const;
+  it("labels the need as a hypothesis and flags placeholder offerings", () => {
+    const inputs = { industry: "Pharmaceuticals", sizeBand: "1000-4999", growthStage: "Rapid growth", challenges: ["efficiency"], targetGroup: "Operations managers", audienceLevel: "Managers", desiredOutcome: "", urgency: "High", knownGaps: "" } as const;
     const gaps = capabilityGaps(profile, [...inputs.challenges]);
     const bc = buildBusinessCase(profile, { ...inputs, challenges: [...inputs.challenges] }, gaps, matchProgrammes(gaps, db.programmes, inputs.audienceLevel));
     expect(bc.capabilityGap.startsWith("Hypothesis:")).toBe(true);
     expect(bc.suggestedSolution).toContain("placeholder");
     expect(bc.discoveryQuestions.length).toBeGreaterThan(0);
-    expect(bc.validationQuestions.length).toBeGreaterThan(0);
-  });
-
-  it("returns no matches when no gaps are selected", () => {
-    expect(matchProgrammes([], db.programmes)).toEqual([]);
+    expect(bc.nextAction).toBeTruthy();
   });
 });
 
-describe("Brief, deal coach and outreach", () => {
-  it("labels every inferred priority and gap as a hypothesis", () => {
-    const account = db.accounts.find((a) => a.id === HERO_ACCOUNT_ID)!;
-    const brief = buildAccountBrief(profile, account, db.contacts.filter((c) => c.accountId === account.id), db.activities, db.programmes, scoreFor(account.id), TODAY);
+describe("Brief, deal coach, next action and outreach", () => {
+  it("labels every inferred priority and need as a hypothesis", () => {
+    const brief = buildAccountBrief(profile, account(HERO), db.contacts, db.activities, db.programmes, scoreFor(HERO), TODAY);
     expect(brief.priorities.every((p) => p.startsWith("Hypothesis:"))).toBe(true);
     expect(brief.gaps.every((g) => g.hypothesis.startsWith("Hypothesis:"))).toBe(true);
-    expect(brief.solutions.length).toBeGreaterThan(0);
   });
 
-  it("produces 5 discovery, 3 follow-up questions and 3 objections", () => {
-    const opp = db.opportunities.find((o) => o.id === "opp-sahra")!;
-    const account = db.accounts.find((a) => a.id === opp.accountId)!;
-    const c = coachDeal(profile, opp, account, db.contacts.filter((x) => x.accountId === account.id), db.activities, scoreFor(account.id), TODAY);
+  it("produces 5 discovery, 3 follow-up questions and 3 objections, and flags overdue steps", () => {
+    const c = coachDeal(profile, db.opportunities[0], account(HERO), db.contacts, db.activities, scoreFor(HERO), TODAY);
     expect(c.discoveryQuestions).toHaveLength(5);
     expect(c.followUpQuestions).toHaveLength(3);
     expect(c.objections).toHaveLength(3);
     expect(c.risks.some((r) => r.includes("overdue"))).toBe(true);
   });
 
+  it("puts overdue actions first, then prefers the champion by first name", () => {
+    const contacts = db.contacts.filter((c) => c.accountId === HERO);
+    expect(recommendNextAction(profile, account(HERO), contacts, db.activities, TODAY).action).toMatch(/overdue/);
+    expect(recommendNextAction(profile, account(HERO), contacts, [], TODAY).action).toContain("Omar");
+    expect(firstName("Dr. Sara Nasser")).toBe("Sara");
+  });
+
   it("keeps drafts short and free of banned phrasing", () => {
     for (const type of ["linkedin", "email", "follow-up", "meeting-follow-up", "re-engagement"] as const) {
-      const draft = templateDraft({ type, companyName: "Meridian Gulf Healthcare", country: "UAE", contactName: "Omar Farouk", contactTitle: "Head of L&D", observation: "expanding into new GCC markets", capability: "People management", stage: "Engaged", cta: "a 20-minute conversation", senderName: "Sam", senderOrg: "", audience: profile.outreach.audience });
-      const lower = draft.body.toLowerCase();
-      expect(BANNED_PHRASES.some((p) => lower.includes(p))).toBe(false);
+      const draft = templateDraft({ type, companyName: "Example Co", country: "UAE", contactName: "Omar Farouk", contactTitle: "Head of Operations", observation: "expanding into new markets", capability: "Process efficiency", stage: "Engaged", cta: "a 20-minute conversation", senderName: "Ahmed", senderOrg: "", audience: profile.outreach.audience });
+      expect(BANNED_PHRASES.some((p) => draft.body.toLowerCase().includes(p))).toBe(false);
       expect(draft.body).toContain("Omar");
       if (type === "linkedin") expect(draft.body.length).toBeLessThanOrEqual(300);
     }
   });
 });
 
-describe("Personalisation helpers", () => {
-  it("greets by first name, skipping honorifics, and prefers the champion", async () => {
-    const { firstName } = await import("./intelligence/outreach");
-    const { recommendNextAction } = await import("./intelligence/nextAction");
-    expect(firstName("Dr. Layla Haddad")).toBe("Layla");
-    expect(firstName("Omar Farouk")).toBe("Omar");
-    const account = db.accounts.find((a) => a.id === HERO_ACCOUNT_ID)!;
-    const next = recommendNextAction(profile, { ...account, stage: "Engaged" }, db.contacts.filter((c) => c.accountId === account.id), [], TODAY);
-    expect(next.action).toContain("Omar");
-  });
-});
-
-describe("Reusable core (Generic B2B profile)", () => {
-  it("runs scoring, mapping and next actions with no Bloom configuration", () => {
-    const g = emptyDatabase(genericProfile);
-    expect(g.accounts).toHaveLength(0);
-    expect(g.programmes.every((p) => p.isDemo)).toBe(true);
-    const account = { ...db.accounts[0], industry: "Pharmaceuticals", country: "Egypt", signals: ["expansion", "regulation"] };
-    const score = computeFitScore({ account, contacts: [], activities: [], profile: genericProfile, today: TODAY });
-    expect(score.total).toBeGreaterThan(0);
-    expect(score.strengths.join(" ")).not.toMatch(/Bloom|L&D|training/i);
-    const gaps = capabilityGaps(genericProfile, ["growth"]);
-    expect(gaps[0].label).toBe("Revenue growth");
-    expect(matchProgrammes(gaps, g.programmes)[0].programme.id).toBe("off-a");
+describe("Workspace", () => {
+  it("starts empty with placeholder offerings only", () => {
+    const fresh = emptyDatabase(profile);
+    expect(fresh.accounts).toHaveLength(0);
+    expect(fresh.programmes.every((p) => p.isDemo)).toBe(true);
+    expect(fresh.users[0].name).toBe("Ahmed Gamal");
   });
 });

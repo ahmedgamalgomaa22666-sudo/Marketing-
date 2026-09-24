@@ -1,28 +1,28 @@
-# CLAUDE.md — AHMED GAMAL · International Business Development (personal platform)
+# CLAUDE.md — AHMED GAMAL · Personal Business Development Platform
 
 ## Product (two sides, owned by Ahmed Gamal El-Din Gomaa)
 Purpose: a long-term personal career asset — authentic commercial/BD identity (15+ years
 commercial sales, pharma sales leadership, launches, territory & market development, team
 leadership, B2B BD, consultative selling, C-level outreach, GCC markets, analytics). Never
-position him as a developer, AI engineer, founder, agency or consultant. Never depend on any
-employer/client (Bloom is only an optional sample profile).
+position him as a developer, AI engineer, founder, agency or consultant. Never depend on or
+name any employer/client. The workspace is a personal intelligence layer that complements the
+employer's CRM (Bitrix, HubSpot, Salesforce…) — never rebuild CRM features for their own sake.
 1. **Public professional website** (`src/app/(site)`) — executive profile, track record,
    experience, skills, case studies, projects, certifications, CV, contact. All content lives
    in `src/content/site.ts`. Only verified facts; unknowns stay as `[bracketed]` placeholders
    (rendered visibly by `<T>`). Never invent achievements, logos or testimonials.
-2. **Private BD Operating System** (`src/app/workspace`, noindex) — reusable B2B workflow:
-   accounts → contacts → qualification → stakeholders → discovery → opportunities →
-   pipeline → activities → follow-ups → next best action → analytics.
+2. **Personal BD Workspace** (`src/app/workspace`, noindex) — account strategy,
+   stakeholders, discovery/meeting prep, opportunity thinking, objections, next best action,
+   personal BD metrics. Company-independent.
 
 ## Core vs profile (the key rule)
 - Core code (`src/lib/*`, `src/components`, `src/app/workspace`) must stay industry-neutral.
 - Company/industry specifics live in a **WorkspaceProfile** (`src/lib/profile/<id>/`):
   markets, industries, ICP, buyer roles/function, needs catalogue, signals, playbooks,
   challenges, market attractiveness, qualification labels/weights, terminology, outreach
-  audience/signature, mapper module labels, starter offerings, optional demo data + guide.
-- Profiles: `generic` = Personal BD Workspace (default) and `bloom` = optional sample with
-  fictional data (no new Bloom features; never linked from the public site). Pure functions take `profile` as a parameter;
-  components read it from `useData()`.
+  audience/signature, mapper module labels, starter offerings, optional sample data.
+- Profile: `personal` (default, starts empty). Pure functions take `profile` as a parameter;
+  components read it from `useData()`. Tests use the neutral fixture in `src/lib/test`.
 - Internal names `Programme`/`programmes` = generic "offerings" (kept for storage compat).
 
 ## Architecture

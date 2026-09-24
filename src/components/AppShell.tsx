@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import { ArrowUpRight, BookOpen, Building2, CalendarCheck, Compass, LayoutDashboard, Menu, MessageSquareText, PlayCircle, Settings, Target, X } from "lucide-react";
+import { ArrowUpRight, BookOpen, Building2, CalendarCheck, Compass, LayoutDashboard, Menu, MessageSquareText, Settings, Target, X } from "lucide-react";
 import { todayISO } from "@/lib/dates";
 import { useData } from "@/lib/store/DataProvider";
 import { cx } from "./ui";
@@ -44,14 +44,6 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
           </Link>
         );
       })}
-      <Link
-        href="/workspace/demo"
-        onClick={onNavigate}
-        className={cx("mt-4 flex items-center gap-2.5 rounded-md border border-white/15 px-2.5 py-2 text-sm", pathname === "/workspace/demo" ? "bg-white/10 text-white" : "text-brand-100/80 hover:text-white")}
-      >
-        <PlayCircle size={16} strokeWidth={1.75} />
-        Guided demo
-      </Link>
     </nav>
   );
 }
@@ -61,8 +53,8 @@ function Brand() {
   return (
     <div className="px-2.5">
       <div className="text-sm font-semibold uppercase tracking-[0.12em] text-white">Ahmed Gamal</div>
-      <div className="text-[11px] text-brand-100/90">BD Operating System</div>
-      <div className="text-[11px] uppercase tracking-wider text-brand-100/70">{profile.company.name}</div>
+      <div className="text-[11px] text-brand-100/90">Personal BD Workspace</div>
+      {profile.company.name !== "Personal BD Workspace" && <div className="text-[11px] uppercase tracking-wider text-brand-100/70">{profile.company.name}</div>}
     </div>
   );
 }

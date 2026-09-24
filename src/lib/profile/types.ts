@@ -79,13 +79,6 @@ export interface WorkspaceProfile {
   };
   /** Starter offerings for a fresh workspace (placeholders until real ones are added). */
   starterOfferings: () => Omit<Programme, "createdAt" | "updatedAt">[];
-  /** Optional guided demo path shown at /workspace/demo. */
-  demoGuide?: DemoGuide;
   /** Optional sample dataset used by "Reset demo data". */
   createDemoData?: (today: string) => Database;
-}
-
-export interface DemoGuide {
-  story: string;
-  steps: { title: string; href: string; cta: string; say: string; show: string }[];
 }

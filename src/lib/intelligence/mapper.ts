@@ -15,7 +15,7 @@ export interface ProgrammeMatch {
   levelMatch: boolean;
 }
 
-/** Step 2: translate selected business problems into ranked needs (capability gaps for Bloom). */
+/** Step 2: translate selected business problems into ranked needs. */
 export function capabilityGaps(profile: WorkspaceProfile, challengeKeys: string[], extra: CapabilityKey[] = []): GapResult[] {
   const map = new Map<CapabilityKey, GapResult>();
   const add = (cap: CapabilityKey, weight: number, reason: string) => {
