@@ -10,6 +10,13 @@
   --color-brand-700: #1c5c43;
   --color-brand-800: #164a36;
   --color-brand-900: #10382a;
+
+  /* Public site: ink + muted gold, serif display */
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --color-ink-800: #1f2d42;
+  --color-ink-900: #14202f;
+  --color-gold-600: #9a7b3f;
+  --color-gold-700: #7d6331;
 }
 
 html {
@@ -28,6 +35,7 @@ body {
 }
 
 @media print {
-  aside, header, .no-print { display: none !important; }
+  aside, body > div > header, header.sticky, footer, .no-print { display: none !important; }
+  body { background: #fff; }
   main { padding: 0 !important; }
 }
