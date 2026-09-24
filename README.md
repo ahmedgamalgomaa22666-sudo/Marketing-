@@ -1,7 +1,11 @@
-# AHMED GAMAL — Personal Business Development Platform
+# AHMED GAMAL — Personal Commercial & Business Development Platform
 
 The personal professional platform of **Ahmed Gamal El-Din Gomaa** —
-Commercial Growth · B2B Business Development · Consultative Selling · GCC Markets.
+Commercial Sales Leadership · Business Development · B2B Consultative Selling · GCC Markets.
+
+It shows the transition from 15+ years of pharmaceutical commercial sales into GCC business
+development, backed by verified results. Before deploying, complete
+`docs/PUBLICATION_CHECKLIST.md`.
 
 It belongs to its owner, not to any employer, and is designed to stay useful across
 companies and industries (training, SaaS, healthcare, pharma, medical devices, consulting…).
@@ -9,11 +13,11 @@ companies and industries (training, SaaS, healthcare, pharma, medical devices, c
 | Side | Route | Purpose |
 |---|---|---|
 | **Public professional website** | `/` | Positioning for UAE / Saudi / GCC and international or remote B2B opportunities: about, commercial track record, experience, business development approach, case studies, commercial projects, skills, certifications, CV, contact. |
-| **Personal BD Workspace** (private) | `/workspace` | A personal intelligence layer for BD: account strategy and prioritisation, stakeholder mapping, discovery and meeting preparation, opportunity thinking, objection analysis, next-best-action planning, personal BD metrics. |
+| **BD Intelligence Workspace** (private feature) | `/workspace` | A personal intelligence layer for BD: account strategy and prioritisation, stakeholder mapping, discovery and meeting preparation, opportunity thinking, objection analysis, next-best-action planning, personal BD metrics. |
 
 ### Not a CRM replacement
 
-| Company CRM (Bitrix, HubSpot, Salesforce, Zoho, Dynamics…) | Personal BD Workspace |
+| Company CRM (Bitrix, HubSpot, Salesforce, Zoho, Dynamics…) | BD Intelligence Workspace |
 |---|---|
 | Official customer and company records | My account strategy and preparation |
 | Team pipeline, forecasting, reporting | My thinking, frameworks and learning |

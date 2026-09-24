@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Personal Business Development Platform",
-  description: "Case study: the personal BD platform Ahmed Gamal uses alongside any company CRM — account strategy, discovery preparation, win/loss learning and personal BD metrics.",
+  title: "BD Intelligence Workspace — Commercial Lab",
+  description: "Proof of work: the BD Intelligence Workspace Ahmed Gamal designed and uses alongside any company CRM — account strategy, discovery preparation and personal BD metrics.",
 };
 
 const SPLIT = [
   ["Company CRM (Bitrix, HubSpot, Salesforce, Zoho, Dynamics…)", ["Official customer and company records", "Team pipeline and forecasting", "Company reporting and compliance", "Owned by the employer"]],
-  ["My personal BD platform", ["Account strategy and prioritisation logic", "Stakeholder thinking, discovery and meeting preparation", "Objection analysis, next-best-action planning, win/loss learning", "Personal BD metrics, frameworks and development — owned by me"]],
+  ["My BD Intelligence Workspace", ["Account strategy and prioritisation logic", "Stakeholder thinking, discovery and meeting preparation", "Objection analysis, next-best-action planning, win/loss learning", "Personal BD metrics, frameworks and development — owned by me"]],
 ] as const;
 
 const CAPABILITIES = [
@@ -23,10 +23,10 @@ const CAPABILITIES = [
 export default function PlatformCaseStudy() {
   return (
     <article className="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">Commercial project · Case study</p>
-      <h1 className="mt-3 font-serif text-4xl leading-tight tracking-tight text-ink-900 sm:text-5xl">Personal Business Development Platform</h1>
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">Commercial Lab · Proof of work</p>
+      <h1 className="mt-3 font-serif text-4xl leading-tight tracking-tight text-ink-900 sm:text-5xl">BD Intelligence Workspace</h1>
       <p className="mt-5 text-lg leading-relaxed text-stone-600">
-        A personal intelligence layer for business development that I designed and use alongside whichever CRM my employer runs. It keeps my method consistent across companies and industries — and turns my BD work into measurable evidence.
+        A personal intelligence layer for business development that I designed and use alongside whichever CRM my employer runs. It keeps my method consistent across companies and industries, and is designed to turn my BD work into measurable, verifiable evidence over time.
       </p>
 
       <Block title="The problem">
@@ -80,7 +80,7 @@ export default function PlatformCaseStudy() {
 
       <Block title="What it demonstrates">
         <p>
-          Account strategy, stakeholder management, consultative discovery, commercial analytics and follow-up discipline — the fundamentals I have practised through years of commercial and pharmaceutical sales leadership, made explicit and measurable.
+          Account strategy, stakeholder management, consultative discovery, commercial analytics and follow-up discipline — the fundamentals I practised in pharmaceutical sales leadership, made explicit and measurable for B2B business development.
         </p>
       </Block>
     </article>

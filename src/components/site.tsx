@@ -18,18 +18,18 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-[#fbfaf7]/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link href="/" className="leading-tight">
+        <Link href="/" className="shrink-0 whitespace-nowrap leading-tight">
           <span className="block font-serif text-lg uppercase tracking-[0.12em] text-ink-900">{person.brand}</span>
-          <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-gold-700">{person.brandLine}</span>
+          <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-gold-700 sm:tracking-[0.2em]">{person.brandLine}</span>
         </Link>
-        <nav className="hidden items-center gap-6 text-sm text-stone-600 lg:flex">
+        <nav className="hidden items-center gap-5 text-[13px] text-stone-600 xl:flex">
           {nav.map((n) => (
             <Link key={n.href} href={n.href} className="hover:text-ink-900">
               {n.label}
             </Link>
           ))}
         </nav>
-        <details className="relative lg:hidden">
+        <details className="relative xl:hidden">
           <summary className="cursor-pointer list-none rounded border border-stone-300 px-3 py-1.5 text-sm text-stone-700">Menu</summary>
           <nav className="absolute right-0 mt-2 flex w-48 flex-col rounded-md border border-stone-200 bg-white py-2 text-sm shadow-lg">
             {nav.map((n) => (
@@ -51,7 +51,7 @@ export function SiteFooter() {
         <span>© {new Date().getFullYear()} {person.name}</span>
         <span className="flex gap-5">
           <Link href="/cv" className="hover:text-ink-900">CV</Link>
-          <Link href="/projects/bd-operating-system" className="hover:text-ink-900">BD Platform</Link>
+          <Link href="/projects/bd-operating-system" className="hover:text-ink-900">Commercial Lab</Link>
           <Link href="/workspace" className="hover:text-ink-900">Workspace</Link>
         </span>
       </div>

@@ -4,10 +4,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Ahmed Gamal — International Business Development",
+    default: "Ahmed Gamal — Commercial & Business Development",
     template: "%s — Ahmed Gamal",
   },
-  description: "Commercial growth, B2B business development, consultative selling and GCC market development — Ahmed Gamal El-Din Gomaa.",
+  description: "Ahmed Gamal El-Din Gomaa — 15+ years of pharmaceutical commercial sales leadership, now in B2B business development for the GCC. Verified results, case studies and proof of work.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

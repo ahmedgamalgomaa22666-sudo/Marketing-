@@ -53,8 +53,8 @@ function Brand() {
   return (
     <div className="px-2.5">
       <div className="text-sm font-semibold uppercase tracking-[0.12em] text-white">Ahmed Gamal</div>
-      <div className="text-[11px] text-brand-100/90">Personal BD Workspace</div>
-      {profile.company.name !== "Personal BD Workspace" && <div className="text-[11px] uppercase tracking-wider text-brand-100/70">{profile.company.name}</div>}
+      <div className="text-[11px] text-brand-100/90">BD Intelligence Workspace</div>
+      {profile.company.name !== "BD Intelligence Workspace" && <div className="text-[11px] uppercase tracking-wider text-brand-100/70">{profile.company.name}</div>}
     </div>
   );
 }

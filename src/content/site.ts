@@ -1,157 +1,196 @@
 /**
- * Public website content — single source of truth for the site and the printable CV.
+ * PUBLIC PLATFORM CONTENT — the single source for the website and the printable CV.
  *
- * RULE: only verified facts. Anything in [square brackets] is a placeholder and is rendered
- * visibly as one. Replace placeholders with verified details (employer names, dates, numbers)
- * or delete them. Never add achievements, logos or testimonials that cannot be evidenced.
+ * Rules
+ * - Only verified facts supplied by Ahmed. Anything in [square brackets] is a placeholder and
+ *   is rendered visibly as one; replace it or delete it before publication.
+ * - SHOW > CLAIM: every claim should point to evidence. No generic adjectives.
+ * - 15+ years = COMMERCIAL SALES experience. Business development roles began in 2026 and are
+ *   presented as such — never as 15 years of BD.
+ * - This file is never generated from private workspace data. Evidence may only be added here
+ *   manually, anonymised and approved (see docs/ROADMAP.md → Evidence Log).
+ *
+ * Every result below is editable: review wording, context and figures before publishing.
  */
 
 export const person = {
   name: "Ahmed Gamal El-Din Gomaa",
-  /** Short brand used in the header and titles. */
   brand: "Ahmed Gamal",
-  brandLine: "International Business Development",
-  headline: "Commercial Growth · B2B Business Development · Consultative Selling · GCC Markets",
-  summary:
-    "Commercial professional with 15+ years in sales — from pharmaceutical sales leadership, product launches and territory development to B2B business development, consultative selling and C-level outreach across the UAE, Saudi Arabia and Egypt.",
+  brandLine: "Commercial & Business Development",
+  headline: "Commercial Sales Leadership · Business Development · B2B Consultative Selling · GCC Markets",
+  /** One-sentence answer to "Who is Ahmed?" */
+  intro:
+    "15+ years in pharmaceutical commercial sales — from medical representative to acting district supervisor — now applying that commercial discipline to B2B business development for Dubai-based businesses.",
   location: "[City, Country]",
-  email: "[your.email@example.com]",
-  linkedin: "[LinkedIn profile URL]",
-  phone: "[Phone — optional]",
+  email: "[professional.email@example.com]",
+  linkedin: "[https://www.linkedin.com/in/your-profile]",
+  /** Path of an uploaded CV PDF in /public (e.g. "/Ahmed-Gamal-CV.pdf"). Placeholder until provided. */
+  cvFile: "[/Ahmed-Gamal-CV.pdf]",
   availability:
-    "Open to conversations with founders, CEOs and commercial leaders about business development and commercial growth roles in the UAE, Saudi Arabia and the wider GCC — and international or remote B2B roles.",
+    "Open to conversations with CEOs, founders, commercial directors and recruiters about business development and commercial roles in the UAE, Saudi Arabia and the wider GCC.",
 };
 
-export const keyFacts = [
-  { value: "15+", label: "years in commercial sales" },
-  { value: "3", label: "markets: UAE · Saudi Arabia · Egypt" },
-  { value: "B2B", label: "business development & consultative selling" },
-  { value: "Data", label: "commercial analytics & pipeline discipline" },
+/**
+ * Verified commercial results. Editable before publication — confirm wording and add context.
+ * `context` fields in [brackets] are optional details (product area, year, employer); anonymise
+ * product names if required.
+ */
+export const results = [
+  { id: "launch", value: "400%", label: "of target on a product launch", context: "[Year · therapeutic area — optional]" },
+  { id: "position", value: "#1", label: "market position in Minya & Fayoum within 24 months", context: "[Product / therapeutic area — optional]" },
+  { id: "turnaround", value: "+240%", label: "growth on a product turnaround", context: "[Period · starting position — optional]" },
+  { id: "volume", value: "~5×", label: "monthly volume growth — 5,000 → 25,000 packs", context: "[Period — optional]" },
+  { id: "award", value: "2024", label: "Best Acting Supervisor, company-wide", context: "Apex Pharma" },
 ];
 
-export const about = [
-  "My career has been built in commercial roles — most of it in pharmaceutical sales leadership. That work covered the full commercial cycle: preparing and executing product launches, developing territories and markets, leading and coaching sales teams, and building relationships with the customers and senior stakeholders who shape decisions.",
-  "Today I focus on international business development: identifying the right accounts, reaching decision-makers at C-level, understanding their business problems through consultative discovery, and developing accounts over time. Alongside whichever CRM my employer uses, I keep a personal BD platform for account strategy, preparation and learning — so my approach stays consistent and my results are measured, not guessed.",
-];
+export const about = {
+  title: "A commercial career built on results in the field",
+  paragraphs: [
+    "I started in pharmaceutical sales in 2010 and have spent my career since then in commercial roles: launching products, building market position territory by territory, turning around products that were losing ground, and — as Acting District Supervisor at Apex Pharma — leading and coaching a field team.",
+    "Since 2026 I have been applying that experience to B2B business development: remote sales and business development work for Dubai-based Pella Nova / Pella Group, and freelance business development for Bloom Business School. It is an early-stage chapter, and I treat it the way I treated every territory — with a clear method, disciplined follow-up and honest measurement.",
+  ],
+  facts: [
+    { label: "Commercial sales experience", value: "15+ years (since 2010)" },
+    { label: "Current role", value: "Acting District Supervisor, Apex Pharma" },
+    { label: "Business development", value: "Since 2026 — Dubai-based B2B" },
+    { label: "Education", value: "B.Sc. Pharmaceutical Sciences, Minia University" },
+  ],
+};
 
-export const trackRecord = [
-  {
-    title: "Commercial & sales leadership",
-    body: "Leading pharmaceutical sales teams and territories in regulated, relationship-driven markets.",
-    evidence: "[Add verified result — e.g. team size led, growth vs. target, ranking]",
-  },
-  {
-    title: "Product launches",
-    body: "Preparing and executing launches: targeting, messaging, field execution and early-adoption tracking.",
-    evidence: "[Add verified launch — product category, market, outcome]",
-  },
-  {
-    title: "Territory & market development",
-    body: "Opening and growing territories and accounts across the UAE, Saudi Arabia and Egypt.",
-    evidence: "[Add verified result — e.g. new accounts, coverage, share]",
-  },
-  {
-    title: "B2B business development",
-    body: "Account prioritisation, C-level outreach, consultative discovery and disciplined follow-up with organisational buyers.",
-    evidence: "[Add verified result — e.g. meetings secured, pipeline built, deals closed]",
-  },
-  {
-    title: "Account development",
-    body: "Growing existing relationships by mapping stakeholders, understanding priorities and expanding scope over time.",
-    evidence: "[Add verified result — e.g. account growth, retention, expansion]",
-  },
-  {
-    title: "Commercial analytics",
-    body: "Using sales and pipeline data to decide where to focus, what to change and how to forecast.",
-    evidence: "[Add verified example — e.g. analysis that changed a decision]",
-  },
+/** "What commercial problems can Ahmed solve?" — each problem links to evidence. */
+export const problems = [
+  { problem: "Launching a product into a market", evidence: "400% of target on a product launch" },
+  { problem: "Building market leadership in a territory", evidence: "#1 in Minya & Fayoum within 24 months" },
+  { problem: "Turning around an underperforming product", evidence: "+240% growth; ~5× monthly volume" },
+  { problem: "Leading and developing a field team", evidence: "Best Acting Supervisor 2024, company-wide" },
+  { problem: "Opening B2B conversations with decision-makers", evidence: "Current BD work for Dubai-based businesses (2026 –)" },
 ];
 
 export const experience = [
   {
-    role: "[Job title] — Pharmaceutical Sales Leadership",
-    company: "[Company name]",
-    period: "[Year – Present]",
-    location: "[UAE / Saudi Arabia]",
-    points: ["[Scope: team, territory, portfolio]", "[Key verified achievement]", "[Key verified achievement]"],
+    chapter: "Business development",
+    company: "Pella Nova / Pella Group",
+    location: "Dubai-based · remote",
+    period: "2026 – Present",
+    roles: [{ title: "Remote Sales Specialist — business development exposure", period: "2026 – Present" }],
+    points: ["[Scope — e.g. markets, segments, type of clients approached]", "[What you do — e.g. prospecting, discovery calls, proposals]"],
   },
   {
-    role: "[Job title] — Business Development / Sales",
-    company: "[Company name]",
-    period: "[Year – Year]",
-    location: "[Market]",
-    points: ["[Scope]", "[Key verified achievement]"],
+    chapter: "Business development",
+    company: "Bloom Business School",
+    location: "Freelance",
+    period: "2026 – Present",
+    roles: [{ title: "Freelance Business Developer", period: "2026 – Present" }],
+    points: ["[Scope — e.g. corporate training accounts, markets]", "[What you do — e.g. account research, outreach, meetings]"],
   },
   {
-    role: "[Job title] — Pharmaceutical Sales",
-    company: "[Company name]",
-    period: "[Year – Year]",
+    chapter: "Commercial sales leadership",
+    company: "Apex Pharma",
     location: "Egypt",
-    points: ["[Scope]", "[Key verified achievement]"],
-  },
-];
-
-export const skills = [
-  { group: "Business development", items: ["B2B business development", "C-level outreach", "Consultative selling & discovery", "Account qualification & prioritisation", "Stakeholder mapping", "Account development"] },
-  { group: "Commercial leadership", items: ["Pharmaceutical sales leadership", "Team leadership & coaching", "Product launches", "Territory & market development"] },
-  { group: "Analytics", items: ["Commercial analytics & KPI tracking", "Pipeline & funnel analysis", "Commercial problem-solving", "[Tools — e.g. CRM, Excel, BI]"] },
-  { group: "Markets", items: ["United Arab Emirates", "Saudi Arabia", "Egypt", "Wider GCC"] },
-];
-
-export const caseStudies = [
-  {
-    title: "Product launch in a competitive therapeutic area",
-    tag: "Launch",
-    situation: "[Market, product category and starting position — anonymise if needed]",
-    approach: "[Targeting, stakeholder engagement, field execution, tracking]",
-    result: "[Verified outcome — uptake, share, growth vs. plan]",
+    period: "2011 – Present",
+    roles: [
+      { title: "Acting District Supervisor", period: "[Year] – Present" },
+      { title: "Senior Medical Representative", period: "[Year – Year]" },
+      { title: "Medical Representative", period: "2011 – [Year]" },
+    ],
+    points: ["Best Acting Supervisor 2024, company-wide", "[Team size and territory you supervise]", "[Link verified results to this role, if applicable]"],
   },
   {
-    title: "Turning around an underperforming territory",
-    tag: "Market development",
-    situation: "[Territory, gap vs. target, root causes]",
-    approach: "[Account prioritisation, call planning, coaching, analytics]",
-    result: "[Verified outcome]",
+    chapter: "Commercial sales leadership",
+    company: "Sigma Pharmaceutical Company",
+    location: "Egypt",
+    period: "2010 – 2011",
+    roles: [{ title: "Medical Sales Representative", period: "2010 – 2011" }],
+    points: ["[Territory / portfolio — optional]"],
   },
 ];
 
-export const certifications = [
-  { name: "[Certification or programme name]", issuer: "[Issuer]", year: "[Year]" },
-  { name: "[Degree]", issuer: "[University]", year: "[Year]" },
-];
-
-/** How I approach business development — method, not claims. */
 export const businessDevelopment = {
   intro:
-    "Business development, for me, is a discipline: choose the right accounts, understand the people and the problem, earn the conversation, and follow through. The same approach applies whether the product is a medicine, a service, software or a programme.",
+    "I approach business development the way I learned to build a territory: choose the right accounts, understand the people and the problem, earn the conversation, and follow through. The product changes — a medicine, a training programme, a service — the discipline does not.",
   pillars: [
-    { title: "Commercial growth", body: "Start from the growth target and work back to the accounts, markets and activities that can realistically deliver it." },
-    { title: "Market development", body: "Build presence in a market step by step: segment, prioritise, win reference accounts, then expand coverage." },
-    { title: "Account strategy", body: "Prioritise accounts on explicit criteria — fit, need, access, strategic value and engagement — and plan each key account." },
-    { title: "Stakeholder management", body: "Map the buying group: who decides, who champions, who influences and who controls procurement. Never rely on a single thread." },
-    { title: "Consultative selling", body: "Lead with the client's business problem. Treat assumptions as hypotheses and validate them through discovery before proposing." },
-    { title: "C-level outreach", body: "Short, relevant, respectful outreach to senior decision-makers — a clear business reason and one genuine question." },
-    { title: "Commercial analytics", body: "Measure the funnel honestly — response, engagement, qualification, conversion and win rates — and act on what the data shows." },
-    { title: "Sales leadership", body: "Set clear priorities, coach on real accounts, and build follow-up discipline so no opportunity is lost to inattention." },
+    { title: "Account strategy", body: "Prioritise accounts on explicit criteria — fit, need, access, strategic value, engagement — before spending time on them." },
+    { title: "Stakeholder mapping", body: "Identify who decides, who champions, who influences and who controls procurement. Never rely on a single contact." },
+    { title: "Consultative discovery", body: "Lead with the client's business problem; treat assumptions as hypotheses and validate them before proposing." },
+    { title: "Decision-maker outreach", body: "Short, relevant messages to senior people — a clear business reason and one genuine question." },
+    { title: "Follow-up discipline", body: "Every priority account has a dated next action. Many opportunities are lost to silence, not to competitors." },
+    { title: "Commercial analytics", body: "Measure response, engagement, qualification and conversion honestly — and change the approach when the data says so." },
+  ],
+  /** "Why could Ahmed create value in a GCC commercial role?" — reasoned, not claimed. */
+  gccValue: [
+    { title: "Proven in the field", body: "Launch, market-position, turnaround and volume results achieved in competitive pharmaceutical markets." },
+    { title: "Leadership recognised", body: "Named Best Acting Supervisor 2024 company-wide at Apex Pharma." },
+    { title: "Already working in the region's B2B market", body: "Business development work for Dubai-based businesses since 2026." },
+    { title: "Structured and data-literate", body: "Google Data Analytics certificate, and a personal BD system for prioritisation and measurement (see Commercial Lab)." },
   ],
   markets: ["United Arab Emirates", "Saudi Arabia", "Wider GCC", "International / remote B2B"],
 };
 
-export const projects = [
+/**
+ * Case studies from verified results. Situation/approach details are placeholders to complete
+ * (anonymise products or customers if needed). The result line is verified.
+ */
+export const caseStudies = [
   {
-    slug: "bd-operating-system",
-    title: "Personal Business Development Platform",
-    kicker: "Proof of work · How I think about BD",
+    id: "launch",
+    tag: "Product launch",
+    title: "A launch delivered at 400% of target",
+    result: "400% of target",
+    situation: "[Market, product category and competitive context — anonymise if needed]",
+    approach: "[Targeting, key customers, messaging, field execution]",
+    lesson: "[What you would repeat in any new market]",
+  },
+  {
+    id: "position",
+    tag: "Market development",
+    title: "From entry to #1 in Minya & Fayoum in 24 months",
+    result: "#1 market position within 24 months",
+    situation: "[Starting position and competitors]",
+    approach: "[Account prioritisation, relationships, coverage, follow-up]",
+    lesson: "[What this shows about building a territory]",
+  },
+  {
+    id: "turnaround",
+    tag: "Turnaround",
+    title: "Turning a declining product around: +240%",
+    result: "+240% growth",
+    situation: "[Why the product was underperforming]",
+    approach: "[Diagnosis, actions taken, how progress was tracked]",
+    lesson: "[What you learned about turnarounds]",
+  },
+];
+
+/** Commercial Lab — proof of work. */
+export const lab = [
+  {
+    slug: "bd-intelligence-workspace",
+    title: "BD Intelligence Workspace",
+    kicker: "Proof of work · personal system",
     summary:
-      "A personal intelligence layer I designed and use alongside any company CRM: account strategy, stakeholder mapping, discovery and meeting preparation, objection analysis, next-best-action planning, win/loss learning and personal BD metrics. Company-independent — it moves with me from employer to employer.",
+      "The personal system I designed and use to plan business development: account prioritisation, stakeholder mapping, discovery and meeting preparation, next-best-action planning and personal BD metrics. It works alongside an employer's CRM — it never replaces it — and moves with me across companies and industries.",
     points: [
-      "Complements the employer's CRM (Bitrix, HubSpot, Salesforce…) — never replaces it",
       "Transparent account prioritisation with reasons and risks",
       "Discovery briefs that separate hypotheses from facts",
-      "Personal BD metrics that turn activity into evidence for CVs and interviews",
+      "Personal BD metrics — the basis for future verified evidence",
     ],
-    links: [{ label: "Read the case study", href: "/projects/bd-operating-system" }],
+    href: "/projects/bd-operating-system",
   },
+];
+
+export const skills = [
+  { group: "Commercial", items: ["Product launches", "Territory & market development", "Product turnarounds", "Key account relationships"] },
+  { group: "Leadership", items: ["Field team supervision & coaching", "Performance follow-up", "Strategic leadership & management (certified)"] },
+  { group: "Business development", items: ["B2B consultative selling", "Account prioritisation", "Stakeholder mapping", "Decision-maker outreach"] },
+  { group: "Analytics & marketing", items: ["Data analytics (Google certificate)", "Sales & funnel analysis", "Marketing (professional diploma)"] },
+];
+
+export const education = [{ name: "B.Sc. Pharmaceutical Sciences", issuer: "Minia University", year: "[Year]" }];
+
+export const certifications = [
+  { name: "Google Data Analytics Professional Certificate", issuer: "Google / Coursera", year: "[Year]" },
+  { name: "Strategic Leadership & Management", issuer: "University of Illinois / Coursera", year: "[Year]" },
+  { name: "Leading People and Teams", issuer: "University of Michigan / Coursera", year: "[Year]" },
+  { name: "Marketing Professional Diploma", issuer: "[Issuing institution]", year: "[Year]" },
 ];
 
 export const nav = [
@@ -160,7 +199,7 @@ export const nav = [
   { href: "/#experience", label: "Experience" },
   { href: "/#business-development", label: "Business development" },
   { href: "/#case-studies", label: "Case studies" },
-  { href: "/#projects", label: "Projects" },
+  { href: "/#lab", label: "Commercial Lab" },
   { href: "/cv", label: "CV" },
   { href: "/#contact", label: "Contact" },
 ];
