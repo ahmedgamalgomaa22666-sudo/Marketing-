@@ -63,16 +63,8 @@ export function ActionLink({ href, children, variant = "primary" }: { href: stri
     variant === "primary"
       ? "bg-ink-900 text-white hover:bg-ink-800"
       : "border border-stone-300 bg-white text-ink-900 hover:border-stone-400";
-  const className = `inline-flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors ${cls}`;
-  if (href.startsWith("mailto:")) {
-    return (
-      <a href={href} className={className}>
-        {children}
-      </a>
-    );
-  }
   return (
-    <Link href={href} className={className}>
+    <Link href={href} className={`inline-flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors ${cls}`}>
       {children}
     </Link>
   );

@@ -44,33 +44,44 @@ describe("public content guardrails", () => {
   });
 
   it("dates business development honestly in the hero (since 2026, never 15+ years)", () => {
-    expect(site.hero.credibility).toMatch(/^15\+ years of commercial sales, market development and leadership experience/);
-    expect(site.hero.credibility).toMatch(/business development work across GCC markets since 2026\.$/);
-    for (const text of [site.hero.offer, site.hero.credibility, site.services.basis, site.person.availability]) {
+    expect(site.hero.lead).toMatch(/with 15\+ years of sales, market development and leadership experience\.$/);
+    expect(site.hero.support).toMatch(/^Hands-on B2B business development across the UAE, Saudi Arabia and wider GCC markets since 2026\./);
+    for (const text of [site.hero.lead, site.hero.support, site.person.availability, ...strings(site.businessDevelopment.capabilities)]) {
       expect(text).not.toMatch(/\d+\+? years (of |in )?(b2b )?business development/i);
     }
   });
 
-  it("claims no client results, numbers or guarantees in services, hero offer or contact copy", () => {
-    const copy = [site.hero.offer, site.person.availability, ...strings(site.services.items)].join(" ").toLowerCase();
+  it("keeps recruiters first: hero CTA hierarchy and results label", () => {
+    expect([site.hero.primaryCta, site.hero.secondaryCta, site.hero.tertiaryCta]).toEqual(["View my track record", "View CV", "Contact me"]);
+    expect(site.hero.resultsLabel).toBe("Selected Commercial Results · Apex Pharma");
+    expect(site.resultsEmployer).toBe("Apex Pharma");
+  });
+
+  it("claims no client results, numbers or guarantees in capabilities, hero or contact copy", () => {
+    const copy = [site.hero.support, site.person.availability, ...strings(site.businessDevelopment.capabilities)].join(" ").toLowerCase().replaceAll("since 2026", ""); // the only permitted figure: the verified BD start year
     expect(copy).not.toMatch(/\b\d[\d,.]*\b|%|revenue|deals|closed|clients won|guarantee|proven|increase[sd]? (sales|revenue)|roi\b/);
-    expect(site.services.items.map((s) => s.title)).toEqual([
-      "B2B Prospect Research",
-      "Account Research",
-      "Decision-Maker Mapping",
-      "GCC Market Research",
-      "Outreach Strategy & Messaging",
-      "Pipeline Support & Follow-Up",
+    expect(site.businessDevelopment.capabilities.map((c) => c.title)).toEqual([
+      "B2B prospect & account research",
+      "Decision-maker mapping",
+      "GCC market research",
+      "Consultative outreach",
+      "Opportunity qualification",
+      "Pipeline development & follow-up",
     ]);
+    const bdCompanies = site.experience.filter((e) => e.chapter === "Business development").map((e) => e.company);
+    for (const c of site.businessDevelopment.capabilities) {
+      expect(bdCompanies.some((company) => company.startsWith(c.where.split(" · ")[0])), c.title).toBe(true);
+    }
   });
 
   it("never positions the owner as a developer, engineer, founder, agency or SaaS specialist", () => {
     expect(allText).not.toMatch(/software developer|web developer|ai engineer|\bengineer\b|\bsaas\b|\bfounder of\b|\bagency\b|\bconsultant\b/);
   });
 
-  it("contact copy invites projects, not only job offers", () => {
-    expect(site.person.availability.toLowerCase()).toMatch(/freelance business development projects/);
-    expect(site.person.availability.toLowerCase()).not.toMatch(/recruiter/);
+  it("contact copy invites both recruiters and project enquiries", () => {
+    const text = site.person.availability.toLowerCase();
+    expect(text).toMatch(/recruiters and hiring managers/);
+    expect(text).toMatch(/b2b business development projects/);
   });
 
   it("never links public content to the private workspace or AI API", () => {

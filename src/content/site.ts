@@ -34,36 +34,18 @@ export const person = {
   /** Approved CV PDF in /public. The phone number appears only inside the PDF, never on the site. */
   cvFile: "/Ahmed-Gamal-CV.pdf" as Maybe,
   availability:
-    "I welcome freelance business development projects, GCC market development work, prospect and account research assignments, and other relevant commercial opportunities. Send a short note on your target market and what you need, and I will reply personally.",
+    "I welcome conversations with recruiters and hiring managers about commercial leadership, business development and B2B sales roles in the UAE, Saudi Arabia and the wider GCC — and with companies looking for support on B2B business development projects in these markets.",
 };
 
-/** First screen — what a client can hire Ahmed for, and why he is credible. BD is dated honestly (since 2026). */
+/** First screen — career positioning first; BD dated honestly (since 2026); freelance only as a closing clause. */
 export const hero = {
-  offer:
-    "B2B prospect research, account intelligence and outreach support for companies targeting the UAE, Saudi Arabia and the wider GCC.",
-  credibility:
-    "15+ years of commercial sales, market development and leadership experience — with hands-on B2B business development work across GCC markets since 2026.",
-  primaryCta: "Discuss a project",
-  secondaryCta: "View proof",
-  enquirySubject: "Project enquiry",
-};
-
-/**
- * "How I can help" — what a client receives. Conservative: every service rests on the verified
- * Pella Nova / Bloom Business School scope or the pharmaceutical commercial record. No results,
- * clients or numbers are claimed here.
- */
-export const services = {
-  basis:
-    "Based on my current B2B business development work with Pella Nova / Pella Group and Bloom Business School (since 2026) and 15+ years of commercial sales in pharmaceuticals.",
-  items: [
-    { title: "B2B Prospect Research", body: "A researched list of target companies that match your ideal customer profile, with the reason each one fits and a suggested order for first outreach." },
-    { title: "Account Research", body: "Short briefs on your priority accounts: what the company does, its likely needs and relevant signals — with assumptions labelled as hypotheses to confirm in discovery." },
-    { title: "Decision-Maker Mapping", body: "The buying group in each account — decision-makers, influencers and functional leads such as HR / L&D — with gaps flagged so outreach never depends on a single contact." },
-    { title: "GCC Market Research", body: "Structured desk research on target segments and accounts in the UAE, Saudi Arabia and the wider GCC, organised into a shortlist of where to focus first." },
-    { title: "Outreach Strategy & Messaging", body: "Short, personalised messages for senior decision-makers, each with a clear business reason and one relevant question — prepared for your review and approval." },
-    { title: "Pipeline Support & Follow-Up", body: "Qualification notes, a dated next action for every priority account and disciplined follow-up, recorded in your CRM." },
-  ],
+  lead: "Commercial growth and business development professional with 15+ years of sales, market development and leadership experience.",
+  support:
+    "Hands-on B2B business development across the UAE, Saudi Arabia and wider GCC markets since 2026. Open to commercial leadership, business development and B2B consultative selling roles — and to selected freelance business development projects.",
+  primaryCta: "View my track record",
+  secondaryCta: "View CV",
+  tertiaryCta: "Contact me",
+  resultsLabel: "Selected Commercial Results · Apex Pharma",
 };
 
 /** Verified commercial results — all achieved at Apex Pharma. Do not strengthen the wording. */
@@ -163,6 +145,15 @@ export const experience = [
 export const businessDevelopment = {
   intro:
     "I approach business development the way I learned to build a territory: choose the right accounts, understand the people and the problem, earn the conversation, and follow through. The product changes — a medicine, a training programme, a service — the discipline does not.",
+  /** Business Development Capabilities — each restates a scope already published in `experience`. No numbers or outcomes. */
+  capabilities: [
+    { title: "B2B prospect & account research", body: "Target companies and priority accounts researched before outreach", where: "Pella Nova" },
+    { title: "Decision-maker mapping", body: "Buying groups mapped, including HR / L&D stakeholders", where: "Bloom Business School" },
+    { title: "GCC market research", body: "Target-account identification across the UAE and Saudi Arabia", where: "Bloom Business School" },
+    { title: "Consultative outreach", body: "Personalised outreach to C-level and senior decision-makers", where: "Pella Nova" },
+    { title: "Opportunity qualification", body: "Discovery and qualification before any proposal", where: "Pella Nova" },
+    { title: "Pipeline development & follow-up", body: "Pipeline built across the UAE, Saudi Arabia and Egypt, with disciplined follow-up", where: "Pella Nova · field KPI discipline at Apex" },
+  ],
   /** "Why could Ahmed create value in a GCC commercial role?" — reasoned, not claimed. */
   gccValue: [
     { title: "Proven in the field", body: "Launch, market-position, turnaround and volume results at Apex Pharma in competitive pharmaceutical markets." },
@@ -224,10 +215,10 @@ export const certifications = [
 ];
 
 export const nav = [
-  { href: "/#services", label: "Services" },
   { href: "/#about", label: "About" },
   { href: "/#track-record", label: "Track record" },
   { href: "/#experience", label: "Experience" },
+  { href: "/#business-development", label: "Business development" },
   { href: "/#case-studies", label: "Case studies" },
   { href: "/#lab", label: "Commercial Lab" },
   { href: "/cv", label: "CV" },

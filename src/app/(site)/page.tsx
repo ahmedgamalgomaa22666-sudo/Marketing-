@@ -17,7 +17,6 @@ import {
   problems,
   results,
   resultsEmployer,
-  services,
   skills,
 } from "@/content/site";
 
@@ -30,22 +29,22 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 pb-16 pt-14 sm:px-6 sm:pt-20">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">{person.headline}</p>
           <h1 className="mt-5 max-w-4xl font-serif text-4xl leading-[1.08] tracking-tight text-ink-900 sm:text-6xl">{person.name}</h1>
-          <p className="mt-6 max-w-3xl font-serif text-2xl leading-snug text-ink-900 sm:text-[28px]">{hero.offer}</p>
-          <p className="mt-4 max-w-3xl text-lg leading-relaxed text-stone-600">{hero.credibility}</p>
+          <p className="mt-6 max-w-3xl font-serif text-2xl leading-snug text-ink-900 sm:text-[28px]">{hero.lead}</p>
+          <p className="mt-4 max-w-3xl text-lg leading-relaxed text-stone-600">{hero.support}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <ActionLink href={has(person.email) ? `mailto:${person.email}?subject=${encodeURIComponent(hero.enquirySubject)}` : "/#contact"}>
-              <Mail /> {hero.primaryCta}
+            <ActionLink href="/#track-record">
+              {hero.primaryCta} <ArrowRight />
             </ActionLink>
-            <ActionLink href="/#track-record" variant="secondary">
-              {hero.secondaryCta} <ArrowRight />
+            <ActionLink href="/cv" variant="secondary">
+              {hero.secondaryCta}
             </ActionLink>
-            <Link href="/cv" className="px-2 py-2.5 text-sm text-stone-600 underline-offset-4 hover:text-ink-900 hover:underline">
-              View CV
+            <Link href="/#contact" className="px-2 py-2.5 text-sm text-stone-600 underline-offset-4 hover:text-ink-900 hover:underline">
+              {hero.tertiaryCta}
             </Link>
           </div>
 
           <div className="mt-14">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">Selected commercial results</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">{hero.resultsLabel}</p>
             <dl className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-stone-200 bg-stone-200 lg:grid-cols-5">
               {results.map((r) => (
                 <div key={r.id} className="bg-[#fbfaf7] px-5 py-5 last:col-span-2 lg:last:col-span-1">
@@ -57,18 +56,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <Section id="services" eyebrow="Services" title="How I can help" tone="muted">
-        <div className="grid gap-px overflow-hidden rounded-lg border border-stone-200 bg-stone-200 sm:grid-cols-2 lg:grid-cols-3">
-          {services.items.map((s) => (
-            <div key={s.title} className="bg-white p-5">
-              <h3 className="font-serif text-lg text-ink-900">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-stone-600">{s.body}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-6 max-w-3xl text-sm text-stone-600">{services.basis}</p>
-      </Section>
 
       <Section id="about" eyebrow="About" title={about.title}>
         <div className="grid gap-10 lg:grid-cols-3">
@@ -152,6 +139,17 @@ export default function HomePage() {
 
       <Section id="business-development" eyebrow="Business development" title="How I think about business development" tone="muted">
         <p className="max-w-3xl text-[17px] leading-relaxed text-stone-700">{businessDevelopment.intro}</p>
+
+        <h3 className="mt-10 text-xs font-semibold uppercase tracking-[0.16em] text-gold-700">Business Development Capabilities</h3>
+        <ul className="mt-4 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+          {businessDevelopment.capabilities.map((c) => (
+            <li key={c.title} className="border-t border-stone-300 pt-3">
+              <p className="font-semibold text-ink-900">{c.title}</p>
+              <p className="mt-1 text-sm leading-relaxed text-stone-600">{c.body}</p>
+              <p className="mt-1 text-xs text-stone-500">{c.where}</p>
+            </li>
+          ))}
+        </ul>
 
         <h3 className="mt-14 font-serif text-2xl text-ink-900">Why I could create value in a GCC commercial role</h3>
         <div className="mt-6 grid gap-6 sm:grid-cols-2">

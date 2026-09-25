@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     default: "Ahmed Gamal — Commercial & Business Development",
     template: "%s — Ahmed Gamal",
   },
-  description: "Ahmed Gamal El-Din Gomaa — B2B prospect research, account intelligence and outreach support for companies targeting the UAE, Saudi Arabia and the wider GCC. 15+ years of commercial sales; B2B business development since 2026.",
+  description: "Ahmed Gamal El-Din Gomaa — commercial growth and business development professional with 15+ years of sales, market development and leadership experience; B2B business development across the UAE, Saudi Arabia and GCC markets since 2026.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
