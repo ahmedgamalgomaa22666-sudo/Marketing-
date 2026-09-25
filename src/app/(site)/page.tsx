@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, Download, Linkedin, Mail, MapPin } from "@/components/siteIcons";
 import { ActionLink, Section } from "@/components/site";
@@ -10,11 +11,13 @@ import {
   experience,
   languages,
   has,
+  hero,
   lab,
   person,
   problems,
   results,
   resultsEmployer,
+  services,
   skills,
 } from "@/content/site";
 
@@ -27,17 +30,18 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 pb-16 pt-14 sm:px-6 sm:pt-20">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">{person.headline}</p>
           <h1 className="mt-5 max-w-4xl font-serif text-4xl leading-[1.08] tracking-tight text-ink-900 sm:text-6xl">{person.name}</h1>
-          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-stone-600">{person.intro}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ActionLink href="/#track-record">
-              See the evidence <ArrowRight />
+          <p className="mt-6 max-w-3xl font-serif text-2xl leading-snug text-ink-900 sm:text-[28px]">{hero.offer}</p>
+          <p className="mt-4 max-w-3xl text-lg leading-relaxed text-stone-600">{hero.credibility}</p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <ActionLink href={has(person.email) ? `mailto:${person.email}?subject=${encodeURIComponent(hero.enquirySubject)}` : "/#contact"}>
+              <Mail /> {hero.primaryCta}
             </ActionLink>
-            <ActionLink href="/#contact" variant="secondary">
-              Contact
+            <ActionLink href="/#track-record" variant="secondary">
+              {hero.secondaryCta} <ArrowRight />
             </ActionLink>
-            <ActionLink href="/cv" variant="secondary">
-              CV
-            </ActionLink>
+            <Link href="/cv" className="px-2 py-2.5 text-sm text-stone-600 underline-offset-4 hover:text-ink-900 hover:underline">
+              View CV
+            </Link>
           </div>
 
           <div className="mt-14">
@@ -53,6 +57,18 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <Section id="services" eyebrow="Services" title="How I can help" tone="muted">
+        <div className="grid gap-px overflow-hidden rounded-lg border border-stone-200 bg-stone-200 sm:grid-cols-2 lg:grid-cols-3">
+          {services.items.map((s) => (
+            <div key={s.title} className="bg-white p-5">
+              <h3 className="font-serif text-lg text-ink-900">{s.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-stone-600">{s.body}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-6 max-w-3xl text-sm text-stone-600">{services.basis}</p>
+      </Section>
 
       <Section id="about" eyebrow="About" title={about.title}>
         <div className="grid gap-10 lg:grid-cols-3">
@@ -136,14 +152,6 @@ export default function HomePage() {
 
       <Section id="business-development" eyebrow="Business development" title="How I think about business development" tone="muted">
         <p className="max-w-3xl text-[17px] leading-relaxed text-stone-700">{businessDevelopment.intro}</p>
-        <div className="mt-8 grid gap-px overflow-hidden rounded-lg border border-stone-200 bg-stone-200 sm:grid-cols-2 lg:grid-cols-3">
-          {businessDevelopment.pillars.map((p) => (
-            <div key={p.title} className="bg-white p-5">
-              <h3 className="font-serif text-lg text-ink-900">{p.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-stone-600">{p.body}</p>
-            </div>
-          ))}
-        </div>
 
         <h3 className="mt-14 font-serif text-2xl text-ink-900">Why I could create value in a GCC commercial role</h3>
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
@@ -287,9 +295,9 @@ function ContactRow({ icon, label, children }: { icon: ReactNode; label: string;
   return (
     <li className="flex items-start gap-3">
       <span className="mt-0.5 text-gold-700">{icon}</span>
-      <span>
+      <span className="min-w-0">
         <span className="block text-xs uppercase tracking-wide text-stone-500">{label}</span>
-        <span className="text-ink-900">{children}</span>
+        <span className="text-ink-900 [overflow-wrap:anywhere]">{children}</span>
       </span>
     </li>
   );

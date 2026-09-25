@@ -34,7 +34,36 @@ export const person = {
   /** Approved CV PDF in /public. The phone number appears only inside the PDF, never on the site. */
   cvFile: "/Ahmed-Gamal-CV.pdf" as Maybe,
   availability:
-    "Open to conversations with CEOs, founders, commercial directors and recruiters about business development and commercial roles in the UAE, Saudi Arabia and the wider GCC.",
+    "I welcome freelance business development projects, GCC market development work, prospect and account research assignments, and other relevant commercial opportunities. Send a short note on your target market and what you need, and I will reply personally.",
+};
+
+/** First screen — what a client can hire Ahmed for, and why he is credible. BD is dated honestly (since 2026). */
+export const hero = {
+  offer:
+    "B2B prospect research, account intelligence and outreach support for companies targeting the UAE, Saudi Arabia and the wider GCC.",
+  credibility:
+    "15+ years of commercial sales, market development and leadership experience — with hands-on B2B business development work across GCC markets since 2026.",
+  primaryCta: "Discuss a project",
+  secondaryCta: "View proof",
+  enquirySubject: "Project enquiry",
+};
+
+/**
+ * "How I can help" — what a client receives. Conservative: every service rests on the verified
+ * Pella Nova / Bloom Business School scope or the pharmaceutical commercial record. No results,
+ * clients or numbers are claimed here.
+ */
+export const services = {
+  basis:
+    "Based on my current B2B business development work with Pella Nova / Pella Group and Bloom Business School (since 2026) and 15+ years of commercial sales in pharmaceuticals.",
+  items: [
+    { title: "B2B Prospect Research", body: "A researched list of target companies that match your ideal customer profile, with the reason each one fits and a suggested order for first outreach." },
+    { title: "Account Research", body: "Short briefs on your priority accounts: what the company does, its likely needs and relevant signals — with assumptions labelled as hypotheses to confirm in discovery." },
+    { title: "Decision-Maker Mapping", body: "The buying group in each account — decision-makers, influencers and functional leads such as HR / L&D — with gaps flagged so outreach never depends on a single contact." },
+    { title: "GCC Market Research", body: "Structured desk research on target segments and accounts in the UAE, Saudi Arabia and the wider GCC, organised into a shortlist of where to focus first." },
+    { title: "Outreach Strategy & Messaging", body: "Short, personalised messages for senior decision-makers, each with a clear business reason and one relevant question — prepared for your review and approval." },
+    { title: "Pipeline Support & Follow-Up", body: "Qualification notes, a dated next action for every priority account and disciplined follow-up, recorded in your CRM." },
+  ],
 };
 
 /** Verified commercial results — all achieved at Apex Pharma. Do not strengthen the wording. */
@@ -134,14 +163,6 @@ export const experience = [
 export const businessDevelopment = {
   intro:
     "I approach business development the way I learned to build a territory: choose the right accounts, understand the people and the problem, earn the conversation, and follow through. The product changes — a medicine, a training programme, a service — the discipline does not.",
-  pillars: [
-    { title: "Account strategy", body: "Prioritise accounts on explicit criteria — fit, need, access, strategic value, engagement — before spending time on them." },
-    { title: "Stakeholder mapping", body: "Identify who decides, who champions, who influences and who controls procurement. Never rely on a single contact." },
-    { title: "Consultative discovery", body: "Lead with the client's business problem; treat assumptions as hypotheses and validate them before proposing." },
-    { title: "Decision-maker outreach", body: "Short, relevant messages to senior people — a clear business reason and one genuine question." },
-    { title: "Follow-up discipline", body: "Every priority account has a dated next action. Many opportunities are lost to silence, not to competitors." },
-    { title: "Commercial analytics", body: "Measure response, engagement, qualification and conversion honestly — and change the approach when the data says so." },
-  ],
   /** "Why could Ahmed create value in a GCC commercial role?" — reasoned, not claimed. */
   gccValue: [
     { title: "Proven in the field", body: "Launch, market-position, turnaround and volume results at Apex Pharma in competitive pharmaceutical markets." },
@@ -203,10 +224,10 @@ export const certifications = [
 ];
 
 export const nav = [
+  { href: "/#services", label: "Services" },
   { href: "/#about", label: "About" },
   { href: "/#track-record", label: "Track record" },
   { href: "/#experience", label: "Experience" },
-  { href: "/#business-development", label: "Business development" },
   { href: "/#case-studies", label: "Case studies" },
   { href: "/#lab", label: "Commercial Lab" },
   { href: "/cv", label: "CV" },

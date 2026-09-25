@@ -43,6 +43,40 @@ describe("public content guardrails", () => {
     ]);
   });
 
+  it("dates business development honestly in the hero (since 2026, never 15+ years)", () => {
+    expect(site.hero.credibility).toMatch(/^15\+ years of commercial sales, market development and leadership experience/);
+    expect(site.hero.credibility).toMatch(/business development work across GCC markets since 2026\.$/);
+    for (const text of [site.hero.offer, site.hero.credibility, site.services.basis, site.person.availability]) {
+      expect(text).not.toMatch(/\d+\+? years (of |in )?(b2b )?business development/i);
+    }
+  });
+
+  it("claims no client results, numbers or guarantees in services, hero offer or contact copy", () => {
+    const copy = [site.hero.offer, site.person.availability, ...strings(site.services.items)].join(" ").toLowerCase();
+    expect(copy).not.toMatch(/\b\d[\d,.]*\b|%|revenue|deals|closed|clients won|guarantee|proven|increase[sd]? (sales|revenue)|roi\b/);
+    expect(site.services.items.map((s) => s.title)).toEqual([
+      "B2B Prospect Research",
+      "Account Research",
+      "Decision-Maker Mapping",
+      "GCC Market Research",
+      "Outreach Strategy & Messaging",
+      "Pipeline Support & Follow-Up",
+    ]);
+  });
+
+  it("never positions the owner as a developer, engineer, founder, agency or SaaS specialist", () => {
+    expect(allText).not.toMatch(/software developer|web developer|ai engineer|\bengineer\b|\bsaas\b|\bfounder of\b|\bagency\b|\bconsultant\b/);
+  });
+
+  it("contact copy invites projects, not only job offers", () => {
+    expect(site.person.availability.toLowerCase()).toMatch(/freelance business development projects/);
+    expect(site.person.availability.toLowerCase()).not.toMatch(/recruiter/);
+  });
+
+  it("never links public content to the private workspace or AI API", () => {
+    expect(allText).not.toMatch(/\/workspace|\/api\//);
+  });
+
   it("does not present the owner as UAE-based", () => {
     expect(site.person.location).toBe("Egypt · Open to UAE & GCC Opportunities");
     expect(allText).not.toMatch(/based in (the )?(uae|dubai)/);
